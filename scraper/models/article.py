@@ -8,6 +8,11 @@ from scraper.utils.text import canonicalize_url
 from pydantic import BaseModel, Field, model_validator, field_validator
 
 
+class Source(str, Enum):
+    RSS = "rss"
+    PLAY = "play"
+
+
 class ArticleStatus(str, Enum):
     RAW = "raw"  # artigo cru, após coleta
     EMBEDDED = "embedded"
@@ -26,11 +31,13 @@ class RawArticle(BaseModel):
     author: Optional[str] = None
     lead: Optional[str] = None
     image_url: Optional[str] = None
-
+    content: Optional[str] = None
     status: ArticleStatus = ArticleStatus.RAW
 
     published_at: Optional[datetime] = None
     collected_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+
+    source: Source
 
     @field_validator("url", mode="before")
     @classmethod

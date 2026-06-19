@@ -1,14 +1,11 @@
 from __future__ import annotations
 
-import asyncio
 import logging
-from typing import Optional
 
 import feedparser
 import httpx
-from bs4 import BeautifulSoup
 
-from scraper.models.article import RawArticle
+from scraper.models.article import RawArticle, Source
 from scraper.models.outlet import OutletConfig
 from scraper.utils.text import (
     canonicalize_url,
@@ -89,7 +86,7 @@ async def fetch_rss_feed(
             image_url=extract_image(entry),
             author=extract_author(entry),
             published_at=published_at,
-            source="rss",
+            source=Source.RSS,
         )
 
         articles.append(article.model_dump(mode="json"))

@@ -5,7 +5,7 @@ import asyncio
 import logging
 from typing import Optional
 
-from scraper.models.article import RawArticle
+from scraper.models.article import RawArticle, Source
 from scraper.models.outlet import OutletConfig
 from scraper.utils.text import (
     canonicalize_url,
@@ -148,7 +148,7 @@ async def _scrape_article(context, url: str, outlet: OutletConfig) -> Optional[d
             author=extract_author(entry),
             image_url=extract_image(entry),
             published_at=parse_date(entry["published"]),
-            source="scraper",
+            source=Source.PLAY,
         )
 
         return article.model_dump(mode="json")
@@ -180,4 +180,3 @@ async def _get_attr(page, selector: str, attr: str) -> Optional[str]:
     except Exception:
         pass
     return None
-
