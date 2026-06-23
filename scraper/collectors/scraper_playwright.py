@@ -14,7 +14,9 @@ from scraper.utils.text import (
     extract_lead,
     html_to_text,
     parse_date,
+    is_within_window,
 )
+from scraper.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -68,13 +70,49 @@ async def scrape_outlet(outlet: OutletConfig) -> list[dict]:
     try:
         from playwright.async_api import async_playwright
     except ImportError:
-        logger.error(
-            "Playwright não instalado. Execute: pip install playwright && python -m playwright install chromium"
+        # Fallback leve: tenta buscar a página de índice via HTTP e extrair links
+        logger.warning(
+            "Playwright não instalado — usando fallback HTTP para coletar links (%s)",
+            outlet.name,
         )
-        return []
+        try:
+            import httpx
+            from bs4 import BeautifulSoup
 
-    if not outlet.url_scrape_target or not outlet.article_link_selector:
+            target = outlet.url_scrape_target or outlet.base_url
+            async with httpx.AsyncClient(timeout=10) as client:
+                resp = await client.get(target)
+                resp.raise_for_status()
+                soup = BeautifulSoup(resp.text, "lxml")
+                els = soup.select(outlet.article_link_selector or "a")
+                links = []
+                from urllib.parse import urljoin
+
+                for el in els:
+                    href = el.get("href") or el.get("data-href") or el.get("data-url")
+                    if not href:
+                        a = el.find("a")
+                        href = a.get("href") if a else None
+                    if not href:
+                        continue
+                    resolved = urljoin(outlet.base_url, href.strip())
+                    links.append(canonicalize_url(resolved))
+
+                links = list(dict.fromkeys(links))
+                articles = []
+                # Não renderizamos páginas — apenas retornamos URLs para processamento
+                for url in links[: outlet.max_articles_per_run]:
+                    articles.append({"url": url, "outlet_name": outlet.name, "outlet_id": outlet.id})
+                return articles
+        except Exception as e:
+            logger.error("Fallback HTTP falhou para %s: %s", outlet.name, e)
+            return []
+
+    if not outlet.url_scrape_target and not outlet.base_url:
         logger.warning("Outlet %s sem configuração de scraping", outlet.name)
+        return []
+    if not outlet.article_link_selector:
+        logger.warning("Outlet %s sem selector de links de artigos", outlet.name)
         return []
 
     async with async_playwright() as pw:
@@ -105,20 +143,43 @@ async def _collect_article_links(context, outlet: OutletConfig) -> list[str]:
     page = await context.new_page()
     links: list[str] = []
     try:
+        # Usa url_scrape_target quando configurado; fallback para base_url
+        target = outlet.url_scrape_target or outlet.base_url
         await page.goto(
-            outlet.url_scrape_target, wait_until="domcontentloaded", timeout=30000
+            target,
+            wait_until="domcontentloaded",
+            timeout=settings.playwright_page_timeout_ms,
         )
-        await page.wait_for_timeout(2000)
+        await page.wait_for_timeout(settings.playwright_wait_after_load_ms)
+
+        # O selector deve apontar para os elementos que contém o link
+        # (normalmente <a> ou um container com data-href). Aceitamos
+        # atributos comuns: href, data-href, data-url.
+        from urllib.parse import urljoin
 
         for el in await page.query_selector_all(outlet.article_link_selector):
-            href = await el.get_attribute("href")
+            href = None
+            for attr in ("href", "data-href", "data-url", "data-link"):
+                try:
+                    href = await el.get_attribute(attr)
+                except Exception:
+                    href = None
+                if href:
+                    break
+            if not href:
+                # Tenta encontrar um <a> dentro do elemento
+                try:
+                    a = await el.query_selector("a")
+                    if a:
+                        href = await a.get_attribute("href")
+                except Exception:
+                    href = None
             if not href:
                 continue
-            if href.startswith("/"):
-                href = outlet.base_url + href
-            elif not href.startswith("http"):
-                continue
-            links.append(canonicalize_url(href))
+            href = href.strip()
+            # Resolve URLs relativas com urljoin usando o base_url do outlet
+            resolved = urljoin(outlet.base_url, href)
+            links.append(canonicalize_url(resolved))
 
         logger.info("Playwright | %s | %d links encontrados", outlet.name, len(links))
     except Exception as e:
@@ -132,8 +193,8 @@ async def _collect_article_links(context, outlet: OutletConfig) -> list[str]:
 async def _scrape_article(context, url: str, outlet: OutletConfig) -> Optional[dict]:
     page = await context.new_page()
     try:
-        await page.goto(url, wait_until="domcontentloaded", timeout=30000)
-        await page.wait_for_timeout(1500)
+        await page.goto(url, wait_until="domcontentloaded", timeout=settings.playwright_page_timeout_ms)
+        await page.wait_for_timeout(settings.playwright_wait_after_load_ms)
 
         html = await page.content()
         entry = await _page_to_entry(page, html, outlet)
@@ -150,6 +211,11 @@ async def _scrape_article(context, url: str, outlet: OutletConfig) -> Optional[d
             published_at=parse_date(entry["published"]),
             source=Source.PLAY,
         )
+
+        # Filtra por janela de coleta (mesma regra do RSS)
+        if not is_within_window(article.published_at):
+            logger.debug("Playwright | %s | artigo fora da janela: %s", outlet.name, url)
+            return None
 
         return article.model_dump(mode="json")
 

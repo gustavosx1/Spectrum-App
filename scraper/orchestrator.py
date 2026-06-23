@@ -44,9 +44,16 @@ async def _collect_one(
         if outlet.rss_feeds:
             articles = await collect_outlet_rss(outlet, client)
 
-        if not articles and outlet.url_scrape_target:
-            logger.info("RSS vazio para %s — usando Playwright", outlet.name)
-            articles = await scrape_outlet(outlet)
+        # Só tentar fallback Playwright se o outlet declarar seletores
+        if not articles:
+            if outlet.article_link_selector and outlet.base_url:
+                logger.info("RSS vazio para %s — usando Playwright", outlet.name)
+                articles = await scrape_outlet(outlet)
+            else:
+                logger.debug(
+                    "Não há artigos RSS para %s e Playwright não está configurado",
+                    outlet.name,
+                )
 
         return articles
 

@@ -10,6 +10,8 @@ from urllib.parse import urlparse, urlunparse
 from bs4 import BeautifulSoup
 from dateutil import parser as dateparser
 
+from scraper.config import settings
+
 logger = logging.getLogger(__name__)
 
 
@@ -83,12 +85,9 @@ def html_to_text(html: str, max_chars: int = 8000) -> str:
     return text[:max_chars]
 
 
-COLLECTION_WINDOW_MINUTES: int = 75
-
-
 def is_within_window(
     published_at: Optional[datetime],
-    window_minutes: int = COLLECTION_WINDOW_MINUTES,
+    window_minutes: Optional[int] = None,
 ) -> bool:
     """
     Retorna True se o artigo está dentro da janela de coleta.
@@ -106,6 +105,9 @@ def is_within_window(
 
     if published_at.tzinfo is None:
         published_at = published_at.replace(tzinfo=timezone.utc)
+
+    if window_minutes is None:
+        window_minutes = settings.collection_window_minutes
 
     cutoff = now - timedelta(minutes=window_minutes)
 
