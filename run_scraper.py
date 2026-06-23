@@ -69,9 +69,6 @@ async def main():
         file=sys.stderr,
     )
 
-
-"""
-
     from worker.tasks.embed import process_article
 
     enqueued = 0
@@ -86,8 +83,5 @@ async def main():
     )
 
 
-"""
-
 if __name__ == "__main__":
     asyncio.run(main())
-

@@ -30,24 +30,29 @@ def process_article(self, article: dict):
 
 def _find_or_create_topic(db, embedding: list[float], title: str):
     result = db.rpc(
-        "find_simular_topic",
+        "find_similar_topic",
         {
             "query_embedding": embedding,
             "similarity_threshold": settings.topic_similarity_threshold,
             "window_hours": settings.topic_window_hours,
         },
-    ).execute
+    ).execute()
     if result.data:
         topic_id = result.data[0]["id"]
         logger.debug("Tópico similar encontrado: %s", topic_id)
         return topic_id
 
-    new_topic = db.table("topic").insert(
-        {
-            "canonical_title": title,
-            "embedding": embedding,
-        }
+    new_topic = (
+        db.table("topics")
+        .insert(
+            {
+                "canonical_title": title,
+                "embedding": embedding,
+            }
+        )
+        .execute()
     )
+
     topic_id = new_topic.data[0]["id"]
     logger.debug("Novo tópico criado: %s", new_topic.data[0]["canonical_title"])
     return topic_id
@@ -58,17 +63,17 @@ async def _process(article: dict) -> None:
     url = article["url"]
 
     # ── 1. Deduplicação ─────────────────────────────────────────────────────
-    existing = db.table("articles").select("id").eq("url", url).maybe_single().execute()
+    existing = db.table("articles").select("id").eq("url", url).limit(1).execute()
     if existing.data:
         logger.debug("Artigo já existe, ignorando: %s", url)
         return
 
     # ── 2. Gera embedding ────────────────────────────────────────────────────
     text = build_embedding_input(article["title"], article.get("lead", ""))
-    embedding = await generate_embedding(text, article["id"], api_key)
+    embedding = await generate_embedding(text)
 
     # ── 3. Busca tópico similar ──────────────────────────────────────────────
-    topic_id = await _find_or_create_topic(db, embedding, article["title"])
+    topic_id = _find_or_create_topic(db, embedding, article["title"])
 
     # ── 4. Insere artigo ─────────────────────────────────────────────────────
     db.table("articles").insert(
@@ -101,7 +106,8 @@ async def _process(article: dict) -> None:
     )
 
     if (
-        topic.data
+        topic
+        and topic.data
         and topic.data["is_hot"]
         and topic.data["article_count"] == settings.hot_topic_threshold
     ):

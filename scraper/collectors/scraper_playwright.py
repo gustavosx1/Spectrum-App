@@ -98,11 +98,58 @@ async def scrape_outlet(outlet: OutletConfig) -> list[dict]:
                     resolved = urljoin(outlet.base_url, href.strip())
                     links.append(canonicalize_url(resolved))
 
+                # Heurística adicional: se o selector não retornou links, varre todos
+                # os <a> e filtra por padrões comuns de artigos (datas no path, tamanho).
+                if not links:
+                    import re
+
+                    candidates = set()
+                    for a in soup.find_all("a"):
+                        href = a.get("href") or a.get("data-href") or a.get("data-url")
+                        if not href:
+                            continue
+                        href = href.strip()
+                        if href.startswith("#") or href.lower().startswith("javascript:"):
+                            continue
+                        # Resolve e normalize
+                        resolved = urljoin(outlet.base_url, href)
+                        # heuristics: contains year pattern (/2023/ /2024/ /2025/ /2026/)
+                        if re.search(r"/20\d{2}/", resolved) or len(resolved) > 50:
+                            candidates.add(canonicalize_url(resolved))
+
+                    # fallback looser: include links that start with base_url
+                    if not candidates:
+                        for a in soup.find_all("a"):
+                            href = a.get("href") or a.get("data-href") or a.get("data-url")
+                            if not href:
+                                continue
+                            href = href.strip()
+                            if href.startswith("#") or href.lower().startswith("javascript:"):
+                                continue
+                            resolved = urljoin(outlet.base_url, href)
+                            if resolved.startswith(outlet.base_url) and len(resolved) > len(outlet.base_url) + 10:
+                                candidates.add(canonicalize_url(resolved))
+
+                    links = list(candidates)
+
                 links = list(dict.fromkeys(links))
                 articles = []
-                # Não renderizamos páginas — apenas retornamos URLs para processamento
+                if not links:
+                    logger.info("Fallback HTTP: nenhum link encontrado em %s", target)
+                # Não renderizamos páginas — retornamos RawArticle mínimos para manter contrato
                 for url in links[: outlet.max_articles_per_run]:
-                    articles.append({"url": url, "outlet_name": outlet.name, "outlet_id": outlet.id})
+                    try:
+                        ra = RawArticle(
+                            url=url,
+                            outlet_name=outlet.name,
+                            outlet_id=outlet.id,
+                            title=url,
+                            source=Source.PLAY,
+                        )
+                        articles.append(ra.model_dump(mode="json"))
+                    except Exception:
+                        # Em caso de problema com validação, caímos para dict simples
+                        articles.append({"url": url, "outlet_name": outlet.name, "outlet_id": outlet.id})
                 return articles
         except Exception as e:
             logger.error("Fallback HTTP falhou para %s: %s", outlet.name, e)
@@ -150,14 +197,31 @@ async def _collect_article_links(context, outlet: OutletConfig) -> list[str]:
             wait_until="domcontentloaded",
             timeout=settings.playwright_page_timeout_ms,
         )
+        # tenta aguardar networkidle também (páginas dinâmicas)
+        try:
+            await page.wait_for_load_state("networkidle", timeout=2000)
+        except Exception:
+            pass
         await page.wait_for_timeout(settings.playwright_wait_after_load_ms)
+
+        # Salva HTML para depuração se o seletor não encontrar nada
+        try:
+            html_raw = await page.content()
+            dbg_path = f"playwright_debug_{outlet.id}.html"
+            with open(dbg_path, "w", encoding="utf8") as fh:
+                fh.write(html_raw[:200000])
+            logger.info("Saved page HTML for %s to %s", outlet.name, dbg_path)
+        except Exception as e:
+            logger.debug("Não foi possível salvar HTML de %s: %s", outlet.name, e)
 
         # O selector deve apontar para os elementos que contém o link
         # (normalmente <a> ou um container com data-href). Aceitamos
         # atributos comuns: href, data-href, data-url.
         from urllib.parse import urljoin
 
-        for el in await page.query_selector_all(outlet.article_link_selector):
+        sel_els = await page.query_selector_all(outlet.article_link_selector)
+        logger.info("Playwright | %s | elements matching selector '%s': %d", outlet.name, outlet.article_link_selector, len(sel_els))
+        for el in sel_els:
             href = None
             for attr in ("href", "data-href", "data-url", "data-link"):
                 try:
@@ -181,7 +245,12 @@ async def _collect_article_links(context, outlet: OutletConfig) -> list[str]:
             resolved = urljoin(outlet.base_url, href)
             links.append(canonicalize_url(resolved))
 
-        logger.info("Playwright | %s | %d links encontrados", outlet.name, len(links))
+        # também loga número total de <a> como diagnóstico
+        try:
+            total_a = len(await page.query_selector_all("a"))
+            logger.info("Playwright | %s | %d links encontrados (total <a>: %d)", outlet.name, len(links), total_a)
+        except Exception:
+            logger.info("Playwright | %s | %d links encontrados", outlet.name, len(links))
     except Exception as e:
         logger.warning("Erro ao coletar links de %s: %s", outlet.name, e)
     finally:

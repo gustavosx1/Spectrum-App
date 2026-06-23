@@ -8,9 +8,12 @@ import httpx
 from worker.config import settings
 import httpx
 
+from google import genai
+
+client = genai.Client(api_key=settings.gemini_api_key)
 logger = logging.getLogger(__name__)
 
-EMBEDDING_MODEL = "models/text-embedding-004"
+EMBEDDING_MODEL = "gemini-embedding-001"
 EMBEDDING_URL = (
     f"https://generativelanguage.googleapis.com/v1beta/{EMBEDDING_MODEL}:embedContent"
 )
@@ -24,22 +27,10 @@ def build_embedding_input(title: str, lead: str):
         return ". ".join(parts)
 
 
-async def generate_embedding(text: str, article_id: str, api_key: str):
-    resp = await httpx.AsyncClient().post(
-        EMBEDDING_URL,
-        headers={"Content-Type": "application/json"},
-        params={"key": api_key},
-        json={
-            "model": EMBEDDING_MODEL,
-            "content": {"parts": [{"text": text}]},
-        },
+async def generate_embedding(text: str) -> list[float]:
+    result = client.models.embed_content(
+        model=EMBEDDING_MODEL,
+        contents=text,
     )
-    if resp.status_code != 200:
-        logger.error(
-            "Gemini Embedding falhou: %s - %s ", resp.status_code, resp.text[:200]
-        )
-    values = resp.json()["embedding"]["values"]
-    logger.debug(
-        "Embedding do artigo: %s gerado: %d dimensões", article_id, len(values)
-    )
-    return values
+
+    return result.embeddings[0].values  # type: ignore[attr-defined]

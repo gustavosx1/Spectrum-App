@@ -40,15 +40,16 @@ async def _collect_one(
 ) -> list[dict]:
     async with semaphore:
         articles: list[dict] = []
-
         if outlet.rss_feeds:
             articles = await collect_outlet_rss(outlet, client)
+        logger.info("Coleta inicial para %s retornou %d artigos via RSS", outlet.name, len(articles))
 
         # Só tentar fallback Playwright se o outlet declarar seletores
         if not articles:
             if outlet.article_link_selector and outlet.base_url:
-                logger.info("RSS vazio para %s — usando Playwright", outlet.name)
+                logger.info("RSS vazio para %s — tentando Playwright/fallback", outlet.name)
                 articles = await scrape_outlet(outlet)
+                logger.info("Playwright/fallback para %s retornou %d artigos", outlet.name, len(articles))
             else:
                 logger.debug(
                     "Não há artigos RSS para %s e Playwright não está configurado",
