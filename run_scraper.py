@@ -16,10 +16,12 @@ import logging
 import sys
 from pathlib import Path
 
+
 sys.path.insert(0, str(Path(__file__).parent))
 
 from scraper.orchestrator import run_collection
-from scraper.models.outlet import OUTLETS
+from scraper.models.outlet import OutletConfig
+from worker.utils.db import getOutlets
 
 
 def parse_args():
@@ -27,7 +29,7 @@ def parse_args():
     parser.add_argument(
         "--outlets",
         nargs="*",
-        help=f"IDs dos veículos. Disponíveis: {', '.join(OUTLETS.keys())}",
+        help="IDs dos veículos (padrão: todos do Supabase)",
     )
     parser.add_argument(
         "--dry-run",
@@ -47,7 +49,25 @@ async def main():
         stream=sys.stderr,
     )
 
-    articles = await run_collection(outlet_ids=args.outlets)
+    # Busca outlets do Supabase
+    try:
+        outlets = getOutlets(args.outlets)
+    except Exception as e:
+        print(f"✗ Erro ao buscar outlets do Supabase: {e}", file=sys.stderr)
+        sys.exit(1)
+
+    if not outlets:
+        print("✗ Nenhum outlet encontrado", file=sys.stderr)
+        sys.exit(1)
+
+    print(
+        f"ℹ Coletando de {len(outlets)} outlet(s): {', '.join(o.name for o in outlets)}",
+        file=sys.stderr,
+    )
+
+    # Coleta artigos
+    articles = await run_collection(outlets)
+    
     if args.dry_run:
         # Modo de teste — não enfileira, só imprime
         print(json.dumps(articles, ensure_ascii=False, indent=2, default=str))
@@ -57,30 +77,30 @@ async def main():
         )
         return
 
-    # Se o caminho de enfileiramento via Celery estiver desabilitado
-    # (comentado durante desenvolvimento), mostramos um resumo mínimo
-    # para que o CLI não fique silencioso.
-    enqueued = 0
-    for article in articles:
-        enqueued += 1
-
+    # Resumo da coleta
     print(
-        f"✓ {enqueued} artigos coletados de {len(set(a['outlet_name'] for a in articles))} veículos",
+        f"✓ {len(articles)} artigos coletados de {len(set(a['outlet_name'] for a in articles)) if articles else 0} veículos",
         file=sys.stderr,
     )
 
-    from worker.tasks.embed import process_article
+    # Enfileira no Celery
+    if articles:
+        from worker.tasks.embed import process_article
 
-    enqueued = 0
-    for article in articles:
-        process_article.delay(article)  # type: ignore[attr-defined]
-        enqueued += 1
+        enqueued = 0
+        for article in articles:
+            try:
+                process_article.delay(article)  # type: ignore[attr-defined]
+                enqueued += 1
+            except Exception as e:
+                print(f"✗ Erro ao enfileirar artigo: {e}", file=sys.stderr)
 
-    print(
-        f"✓ {enqueued} artigos enfileirados de "
-        f"{len(set(a['outlet_name'] for a in articles))} veículos",
-        file=sys.stderr,
-    )
+        print(
+            f"✓ {enqueued} artigos enfileirados",
+            file=sys.stderr,
+        )
+    else:
+        print("⚠ Nenhum artigo coletado", file=sys.stderr)
 
 
 if __name__ == "__main__":

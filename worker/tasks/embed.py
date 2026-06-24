@@ -17,14 +17,14 @@ api_key = settings.gemini_api_key
 @app.task(
     bind=True,
     max_retries=3,
-    defaut_retry_delay=60,
-    name="woker.tasks.embed.process_articles",
+    default_retry_delay=60,
+    name="worker.tasks.embed.process_article",
 )
 def process_article(self, article: dict):
     try:
         asyncio.run(_process(article))
     except Exception as exc:
-        logger.error("Falha ao porcessar artigo: %s: %s ", article.get("url"), exc)
+        logger.error("Falha ao processar artigo: %s: %s ", article.get("url"), exc)
         raise self.retry(exc=exc)
 
 

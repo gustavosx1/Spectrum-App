@@ -12,13 +12,12 @@ class Settings(BaseSettings):
     supabase_key: str
 
     # threshold para agrupar artigos sobre o mesmo tópico
-    topic_similarity_threshold: float = 0.15
+    topic_similarity_threshold: float = 0.17
     hot_topic_threshold: int = 3
 
     topic_window_hours: int = 24
 
-    class Config:
-        env_file = ".env"
+    model_config = {"env_file": ".env"}
 
 
 settings = Settings()

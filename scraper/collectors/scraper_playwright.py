@@ -179,7 +179,7 @@ async def scrape_outlet(outlet: OutletConfig) -> list[dict]:
                 article = await _scrape_article(context, url, outlet)
                 if article:
                     articles.append(article)
-                await asyncio.sleep(outlet.request_delay_seconds)
+                await asyncio.sleep(settings.request_delay_seconds)
 
             return articles
         finally:

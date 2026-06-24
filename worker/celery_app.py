@@ -6,7 +6,7 @@ from worker.config import settings
 
 
 app = Celery(
-    "specrtrum",
+    "spectrum",
     broker=settings.redis_url,
     backend=settings.redis_url,
     include=[

@@ -7,7 +7,7 @@ import httpx
 
 from scraper.collectors.scraper_rss import collect_outlet_rss
 from scraper.collectors.scraper_playwright import scrape_outlet
-from scraper.models.outlet import OUTLETS, OutletConfig
+from scraper.models.outlet import OutletConfig
 
 """
 Orquestrador de coleta.
@@ -42,14 +42,24 @@ async def _collect_one(
         articles: list[dict] = []
         if outlet.rss_feeds:
             articles = await collect_outlet_rss(outlet, client)
-        logger.info("Coleta inicial para %s retornou %d artigos via RSS", outlet.name, len(articles))
+        logger.info(
+            "Coleta inicial para %s retornou %d artigos via RSS",
+            outlet.name,
+            len(articles),
+        )
 
         # Só tentar fallback Playwright se o outlet declarar seletores
         if not articles:
             if outlet.article_link_selector and outlet.base_url:
-                logger.info("RSS vazio para %s — tentando Playwright/fallback", outlet.name)
+                logger.info(
+                    "RSS vazio para %s — tentando Playwright/fallback", outlet.name
+                )
                 articles = await scrape_outlet(outlet)
-                logger.info("Playwright/fallback para %s retornou %d artigos", outlet.name, len(articles))
+                logger.info(
+                    "Playwright/fallback para %s retornou %d artigos",
+                    outlet.name,
+                    len(articles),
+                )
             else:
                 logger.debug(
                     "Não há artigos RSS para %s e Playwright não está configurado",
@@ -60,26 +70,9 @@ async def _collect_one(
 
 
 async def run_collection(
-    outlet_ids: Optional[list[str]] = None,
+    outlets: list[OutletConfig],
     deduplicate: bool = True,
 ) -> list[dict]:
-    """
-    Executa a coleta completa.
-
-    Args:
-        outlet_ids:  IDs dos veículos a coletar. None = todos.
-        deduplicate: Remove artigos com a mesma URL antes de retornar.
-
-    Returns:
-        Lista de dicts serializáveis ordenada por published_at desc.
-    """
-    targets = {
-        k: v for k, v in OUTLETS.items() if outlet_ids is None or k in outlet_ids
-    }
-
-    if not targets:
-        logger.warning("Nenhum veículo encontrado para os IDs informados.")
-        return []
 
     semaphore = asyncio.Semaphore(MAX_CONCURRENT_OUTLETS)
 
@@ -89,20 +82,20 @@ async def run_collection(
         limits=httpx.Limits(max_connections=20),
     ) as client:
         results = await asyncio.gather(
-            *[_collect_one(outlet, client, semaphore) for outlet in targets.values()],
+            *[_collect_one(outlet, client, semaphore) for outlet in outlets],
             return_exceptions=True,
         )
 
     all_articles: list[dict] = []
-    for outlet_id, result in zip(targets.keys(), results):
+    for outlet, result in zip(outlets, results):
         if isinstance(result, Exception):
-            logger.error("Falha ao coletar %s: %s", outlet_id, result)
+            logger.error("Falha ao coletar %s: %s", outlet.id, result)
         elif isinstance(result, list):
             all_articles.extend(result)
         else:
             logger.warning(
                 "Alguma loucura aconteceu que não retornou erro nem lista: %s: %s",
-                outlet_id,
+                outlet.id,
                 result,
             )
 
@@ -120,6 +113,6 @@ async def run_collection(
         reverse=True,
     )
     logger.info(
-        "Coleta concluída: %d artigos de %d veículos", len(all_articles), len(targets)
+        "Coleta concluída: %d artigos de %d veículos", len(all_articles), len(outlets)
     )
     return all_articles

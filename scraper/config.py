@@ -10,6 +10,9 @@ class Settings(BaseSettings):
     # Playwright timeouts (ms)
     playwright_page_timeout_ms: int = 30000
     playwright_wait_after_load_ms: int = 1500
+    # Throttling
+    request_delay_seconds: float = 2.0
+    max_articles_per_run: int = 30
 
     model_config = {"extra": "allow", "env_file": ".env"}
 

@@ -352,4 +352,3 @@ async def _call_gemini(prompt: str) -> dict:
         .strip()
     )
     return json.loads(clean)
-

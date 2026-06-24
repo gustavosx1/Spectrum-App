@@ -15,18 +15,14 @@ class OutletConfig:
     base_url: str
     political_score: float  # 0 = extrema esquerda, 50 = centro, 100 = extrema direita
     rss_feeds: list[str] = field(default_factory=list)
-
-    # Fallback Playwright
-    url_scrape_target: Optional[str] = None  # URL do índice/homepage para scraping
-    article_link_selector: Optional[str] = None  # CSS selector dos links de artigos
+    
+    # Campos para scraping via Playwright (fallback quando RSS vazio)
+    article_link_selector: Optional[str] = None
     title_selector: Optional[str] = None
     lead_selector: Optional[str] = None
-    content_selector: Optional[str] = None
     author_selector: Optional[str] = None
     date_selector: Optional[str] = None
-
-    # Throttling
-    request_delay_seconds: float = 2.0
+    url_scrape_target: Optional[str] = None  # URL de coleta (padrão: base_url)
     max_articles_per_run: int = 30
 
 
@@ -54,7 +50,7 @@ OUTLETS: dict[str, OutletConfig] = {
             "https://theintercept.com/brasil/feed/?rss",
         ],
     ),
-     "revista_forum": OutletConfig(
+    "revista_forum": OutletConfig(
         id="revista_forum",
         name="Revista Fórum",
         base_url="https://revistaforum.com.br",
@@ -77,7 +73,6 @@ OUTLETS: dict[str, OutletConfig] = {
         political_score=35.0,
         rss_feeds=["https://www.nexojornal.com.br/rss.xml"],
     ),
-
     "pragmatismo_politico": OutletConfig(
         id="pragmatismo_politico",
         name="Pragmatismo Político",
@@ -97,16 +92,6 @@ OUTLETS: dict[str, OutletConfig] = {
             "https://agenciabrasil.ebc.com.br/rss/ultimasnoticias/feed.xml",
         ],
     ),
-       "congresso_em_foco": OutletConfig(
-        id="congresso_em_foco",
-        name="Congresso em Foco",
-        base_url="https://congressoemfoco.uol.com.br",
-        political_score=20.0,
-        rss_feeds=[
-            "https://congressoemfoco.uol.com.br/feed/",
-        ],
-    ),
-
     # ── Centro ──────────────────────────────────────────────────────────────
     "g1": OutletConfig(
         id="g1",
@@ -157,7 +142,6 @@ OUTLETS: dict[str, OutletConfig] = {
             "https://oglobo.globo.com/rss.xml",
         ],
     ),
-
     # ── Direita ─────────────────────────────────────────────────────────────
     "o_antagonista": OutletConfig(
         id="o_antagonista",
@@ -168,7 +152,6 @@ OUTLETS: dict[str, OutletConfig] = {
             "https://oantagonista.com.br/feed/",
         ],
     ),
-
     "crusoe": OutletConfig(
         id="crusoe",
         name="Crusoé",
@@ -178,7 +161,6 @@ OUTLETS: dict[str, OutletConfig] = {
             "https://crusoe.com.br/feed/",
         ],
     ),
-
     "revista_oeste": OutletConfig(
         id="revista_oeste",
         name="Revista Oeste",
@@ -188,7 +170,6 @@ OUTLETS: dict[str, OutletConfig] = {
             "https://revistaoeste.com/feed/",
         ],
     ),
-
     "jovem_pan": OutletConfig(
         id="jovem_pan",
         name="Jovem Pan",
@@ -198,7 +179,6 @@ OUTLETS: dict[str, OutletConfig] = {
             "https://jovempan.com.br/feed/",
         ],
     ),
-
     "gazeta_do_povo": OutletConfig(
         id="gazeta_do_povo",
         name="Gazeta do Povo",
@@ -225,7 +205,6 @@ OUTLETS: dict[str, OutletConfig] = {
         political_score=55.0,
         rss_feeds=["https://www.cnnbrasil.com.br/rss/"],
     ),
- 
     "terra": OutletConfig(
         id="terra",
         name="Terra",
@@ -233,8 +212,6 @@ OUTLETS: dict[str, OutletConfig] = {
         political_score=50.0,
         rss_feeds=["https://www.terra.com.br/rss.xml"],
     ),
-
- 
     "poder360": OutletConfig(
         id="poder360",
         name="Poder360",
@@ -242,8 +219,5 @@ OUTLETS: dict[str, OutletConfig] = {
         political_score=60.0,
         rss_feeds=["https://www.poder360.com.br/feed/"],
     ),
-    
-   
- 
 }
- 
+
