@@ -32,8 +32,10 @@ Check individual (topics.initial_check = true)
 logger = logging.getLogger(__name__)
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (compatible; SpectrumBot/1.0; +https://spectrum.app/bot)",
-    "Accept-Language": "pt-BR,pt;q=0.9",
+    "User-Agent": (
+        "Mozilla/5.0 (X11; Linux x86_64; rv:124.0) Gecko/20100101 Firefox/124.0"
+    ),
+    "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
 }
 
 GEMINI_URL = (

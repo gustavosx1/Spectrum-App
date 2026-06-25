@@ -20,6 +20,16 @@ from scraper.config import settings
 
 logger = logging.getLogger(__name__)
 
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (X11; Linux x86_64; rv:124.0) Gecko/20100101 Firefox/124.0"
+    ),
+    "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+}
+
+"""Este PlayWright nunca foi utilizado, utilizamos somente RSS por enquanto.
+ Mantemos o código para caso precisemos de scraping de páginas no futuro."""
 
 async def _page_to_entry(page, html: str, outlet: OutletConfig) -> dict:
     """
@@ -81,7 +91,7 @@ async def scrape_outlet(outlet: OutletConfig) -> list[dict]:
 
             target = outlet.url_scrape_target or outlet.base_url
             async with httpx.AsyncClient(timeout=10) as client:
-                resp = await client.get(target)
+                resp = await client.get(target, headers=HEADERS, follow_redirects=True)
                 resp.raise_for_status()
                 soup = BeautifulSoup(resp.text, "lxml")
                 els = soup.select(outlet.article_link_selector or "a")
@@ -170,6 +180,10 @@ async def scrape_outlet(outlet: OutletConfig) -> list[dict]:
                 "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
             ),
             locale="pt-BR",
+            extra_http_headers={
+                "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            },
         )
 
         try:
