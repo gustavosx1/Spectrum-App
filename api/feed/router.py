@@ -15,6 +15,7 @@ from api.models.schemas import (
     TopicListItem,
 )
 from worker.utils.db import get_client
+from api.utils.premium import require_premium
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -65,23 +66,6 @@ def _build_blindspot(articles: list[dict], outlets_map: dict) -> BlindspotRespon
         dominant_side=dominant,
         description=description,
     )
-
-
-def _require_premium(request: Request, db):
-    """Verifica se usuário tem assinatura ativa. Levanta 403 se não tiver."""
-    user_id = get_user_id(request)
-    result = (
-        db.table("user_profiles")
-        .select("is_premium")
-        .eq("id", user_id)
-        .single()
-        .execute()
-    )
-    if not result.data or not result.data["is_premium"]:
-        raise HTTPException(
-            status_code=403,
-            detail="Assinatura necessária para acessar este conteúdo",
-        )
 
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
@@ -162,7 +146,7 @@ def get_topic(topic_id: str, request: Request):
     Requer assinatura ativa.
     """
     db = get_client()
-    _require_premium(request, db)
+    require_premium(request)
 
     # Tópico
     topic = (
