@@ -4,6 +4,7 @@ import logging
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi.responses import JSONResponse
 
 from api.middleware.auth import get_user_id
 from api.models.schemas import (
@@ -13,6 +14,8 @@ from api.models.schemas import (
     OutletSummary,
     TopicDetail,
     TopicListItem,
+    PaginationMeta,
+    TopicListResponse,
 )
 from worker.utils.db import get_client
 from api.utils.premium import require_premium
@@ -71,7 +74,7 @@ def _build_blindspot(articles: list[dict], outlets_map: dict) -> BlindspotRespon
 # ── Endpoints ─────────────────────────────────────────────────────────────────
 
 
-@router.get("/topics", response_model=list[TopicListItem])
+@router.get("/topics", response_model=TopicListResponse)
 def list_topics(
     request: Request,
     limit: int = Query(default=20, le=50),
@@ -83,7 +86,7 @@ def list_topics(
     Requer assinatura ativa.
     """
     db = get_client()
-    _require_premium(request, db)
+    require_premium(request)
 
     # Busca tópicos
     query = (
@@ -99,9 +102,7 @@ def list_topics(
 
     topics = query.execute().data
 
-    if not topics:
-        return []
-
+    has_more = len(topics) == limit
     topic_ids = [t["id"] for t in topics]
 
     # Busca artigos dos tópicos pra calcular blindspots
@@ -130,13 +131,16 @@ def list_topics(
         if a["topic_id"] in articles_by_topic:
             articles_by_topic[a["topic_id"]].append(a)
 
-    return [
-        TopicListItem(
-            **t,
-            blindspot=_build_blindspot(articles_by_topic[t["id"]], outlets_map),
-        )
-        for t in topics
-    ]
+    return TopicListResponse(
+        data=[
+            TopicListItem(
+                **t,
+                blindspot=_build_blindspot(articles_by_topic[t["id"]], outlets_map),
+            )
+            for t in topics
+        ],
+        meta=PaginationMeta(limit=limit, offset=offset, has_more=has_more),
+    )
 
 
 @router.get("/topics/{topic_id}", response_model=TopicDetail)

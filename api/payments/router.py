@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import hmac
 import json
 import logging
 import time
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Any, Optional
 
 import httpx
 import jwt as pyjwt
@@ -118,6 +119,43 @@ async def payment_webhook(
     return {"status": "ok"}
 
 
+# ── Requisições externas com retries ─────────────────────────────────────────
+
+
+async def _request_with_retries(
+    method: str,
+    url: str,
+    retries: int = 2,
+    timeout_seconds: int = 30,
+    **kwargs: Any,
+) -> httpx.Response:
+    last_exception: Optional[Exception] = None
+    for attempt in range(1, retries + 1):
+        try:
+            async with httpx.AsyncClient(timeout=timeout_seconds) as client:
+                response = await client.request(method, url, **kwargs)
+            if response.status_code < 500:
+                return response
+            last_exception = RuntimeError(
+                f"Server error {response.status_code} on {url}"
+            )
+        except (httpx.TransportError, httpx.TimeoutException) as exc:
+            last_exception = exc
+            logger.warning(
+                "external_request.retry",
+                extra={"url": url, "attempt": attempt, "error": str(exc)},
+            )
+            if attempt < retries:
+                await asyncio.sleep(1)
+                continue
+            raise
+        if attempt < retries:
+            await asyncio.sleep(1)
+    if last_exception:
+        raise last_exception
+    raise RuntimeError("Unexpected error during external request")
+
+
 # ── Verificação Apple ─────────────────────────────────────────────────────────
 
 
@@ -176,13 +214,18 @@ async def _verify_google(purchase_token: str, product_id: str) -> dict:
         f"applications/{settings.android_package_name}/purchases/subscriptions/"
         f"{product_id}/tokens/{purchase_token}"
     )
-    async with httpx.AsyncClient(timeout=30) as client:
-        resp = await client.get(
-            url, headers={"Authorization": f"Bearer {access_token}"}
-        )
+    resp = await _request_with_retries(
+        "GET",
+        url,
+        timeout_seconds=30,
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
 
     if resp.status_code != 200:
-        logger.warning("Google purchase inválido: %s", resp.text[:200])
+        logger.warning(
+            "Google purchase inválido",
+            extra={"url": url, "status_code": resp.status_code},
+        )
         return {"is_valid": False}
 
     data = resp.json()
@@ -210,14 +253,15 @@ async def _google_access_token() -> Optional[str]:
         }
         # PyJWT pra assinar com RS256
         signed = pyjwt.encode(claim, sa["private_key"], algorithm="RS256")
-        async with httpx.AsyncClient() as client:
-            resp = await client.post(
-                "https://oauth2.googleapis.com/token",
-                data={
-                    "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
-                    "assertion": signed,
-                },
-            )
+        resp = await _request_with_retries(
+            "POST",
+            "https://oauth2.googleapis.com/token",
+            timeout_seconds=30,
+            data={
+                "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+                "assertion": signed,
+            },
+        )
         return resp.json().get("access_token")
     except Exception as e:
         logger.error("Erro ao obter token Google: %s", e)

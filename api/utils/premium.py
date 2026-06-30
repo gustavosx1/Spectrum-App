@@ -80,12 +80,18 @@ def activate_premium(
     Usado em verify_purchase e no webhook.
     """
     db = get_client()
+    expires_value = None
+    if isinstance(expires_at, datetime):
+        expires_value = expires_at.isoformat()
+    elif expires_at is not None:
+        expires_value = str(expires_at)
+
     db.table("user_profiles").update(
         {
             "is_premium": True,
             "premium_platform": platform,
             "premium_product_id": product_id,
-            "premium_expires_at": expires_at.isoformat() if expires_at else None,
+            "premium_expires_at": expires_value,
             "premium_auto_renews": auto_renews,
         }
     ).eq("id", user_id).execute()

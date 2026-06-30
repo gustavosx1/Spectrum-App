@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 # ── Auth ─────────────────────────────────────────────────────────────────────
@@ -44,7 +44,7 @@ class ArticleResponse(BaseModel):
     outlet: OutletSummary
     political_lean: str
     checked: bool
-    claims: list[ClaimResponse] = []
+    claims: list[ClaimResponse] = Field(default_factory=list)
 
 
 class BlindspotResponse(BaseModel):
@@ -67,11 +67,23 @@ class TopicListItem(BaseModel):
 
 
 class TopicDetail(TopicListItem):
-    articles_left: list[ArticleResponse] = []
-    articles_center_left: list[ArticleResponse] = []
-    articles_center: list[ArticleResponse] = []
-    articles_center_right: list[ArticleResponse] = []
-    articles_right: list[ArticleResponse] = []
+    articles_left: list[ArticleResponse] = Field(default_factory=list)
+    articles_center_left: list[ArticleResponse] = Field(default_factory=list)
+    articles_center: list[ArticleResponse] = Field(default_factory=list)
+    articles_center_right: list[ArticleResponse] = Field(default_factory=list)
+    articles_right: list[ArticleResponse] = Field(default_factory=list)
+
+
+class PaginationMeta(BaseModel):
+    limit: int
+    offset: int
+    has_more: bool
+    total: Optional[int] = None
+
+
+class TopicListResponse(BaseModel):
+    data: list[TopicListItem]
+    meta: PaginationMeta
 
 
 # ── Payments ─────────────────────────────────────────────────────────────────
