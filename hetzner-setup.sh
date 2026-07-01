@@ -88,9 +88,11 @@ After=network.target redis-server.service
 Type=simple
 WorkingDirectory=/root/spectrum
 Environment=PATH=/root/spectrum/.venv/bin
-ExecStart=/root/spectrum/.venv/bin/uvicorn api.main:app --host 0.0.0.0 --port 8000
+ExecStart=/bin/bash -lc 'source /root/spectrum/.venv/bin/activate && python -m uvicorn api.main:app --host 0.0.0.0 --port 8000'
 Restart=always
 RestartSec=5
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target
