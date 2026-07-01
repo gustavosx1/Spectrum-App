@@ -1,9 +1,17 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Request
+import httpx
+
+from fastapi import APIRouter, HTTPException, Request
 
 from api.middleware.auth import get_user_id
-from api.models.schemas import SubscriptionStatus, UserProfile
+from api.models.schemas import (
+    RefreshTokenRequest,
+    RefreshTokenResponse,
+    SubscriptionStatus,
+    UserProfile,
+)
+from worker.config import settings
 from worker.utils.db import get_client
 
 router = APIRouter()
@@ -57,4 +65,35 @@ def get_subscription(request: Request):
         product_id=p.get("premium_product_id"),
         expires_at=p.get("premium_expires_at"),
         auto_renews=p.get("premium_auto_renews"),
+    )
+
+
+@router.post("/refresh", response_model=RefreshTokenResponse)
+async def refresh_token(body: RefreshTokenRequest):
+    """Renova o access token usando o refresh token do Supabase."""
+    service_key = settings.supabase_service_role_key
+    if not service_key:
+        raise HTTPException(
+            status_code=500,
+            detail="SUPABASE_SERVICE_ROLE_KEY não configurado",
+        )
+
+    url = f"{settings.supabase_url.rstrip('/')}/auth/v1/token?grant_type=refresh_token"
+    headers = {
+        "apikey": service_key,
+        "Authorization": f"Bearer {service_key}",
+    }
+
+    async with httpx.AsyncClient(timeout=30) as client:
+        response = await client.post(url, data={"refresh_token": body.refresh_token}, headers=headers)
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail="Refresh token inválido")
+
+    data = response.json()
+    return RefreshTokenResponse(
+        access_token=data["access_token"],
+        refresh_token=data["refresh_token"],
+        expires_in=data["expires_in"],
+        token_type=data["token_type"],
     )

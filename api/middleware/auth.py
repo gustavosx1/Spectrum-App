@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import logging
 from typing import Optional
 
@@ -16,6 +17,7 @@ PUBLIC_PATHS = {
     "/health",
     "/docs",
     "/openapi.json",
+    "/auth/refresh",
     "/payments/webhook",
 }
 
@@ -50,16 +52,35 @@ def _extract_token(request: Request) -> Optional[str]:
     return None
 
 
+def _get_verification_key(token: str) -> Optional[str]:
+    if settings.supabase_jwt_secret:
+        return settings.supabase_jwt_secret
+
+    try:
+        jwks = json.loads(settings.supabase_jwk_public_key)
+        kid = jwt.get_unverified_header(token).get("kid")
+        for key in jwks.get("keys", []):
+            if key.get("kid") == kid:
+                return jwt.algorithms.ECAlgorithm.from_jwk(json.dumps(key))
+    except Exception as e:
+        logger.debug("Falha ao carregar JWK: %s", e)
+    return None
+
+
 def _verify_token(token: str) -> Optional[dict]:
     """
-    Valida JWT do Supabase com PyJWT (mantido ativamente).
-    python-jose tem CVEs conhecidos e manutenção lenta — não usar.
+    Valida JWT do Supabase com PyJWT usando HS256 ou JWK ES256.
     """
     try:
+        key = _get_verification_key(token)
+        if not key:
+            logger.error("Chave de verificação JWT não configurada")
+            return None
+
         return jwt.decode(
             token,
-            settings.supabase_jwt_secret,
-            algorithms=["HS256"],
+            key,
+            algorithms=["HS256", "ES256"],
             options={"verify_aud": False},
         )
     except jwt.ExpiredSignatureError:

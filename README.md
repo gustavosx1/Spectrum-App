@@ -145,6 +145,12 @@ cp .env.example .env
 # Supabase
 SUPABASE_URL=https://seu-projeto.supabase.co
 SUPABASE_KEY=sua-chave-anon
+# Se o Supabase emitir JWTs HS256
+# SUPABASE_JWT_SECRET=seu-jwt-secret
+# Para refresh token e rotas de renovação
+# SUPABASE_SERVICE_ROLE_KEY=sua-service-role-key
+# Se seu JWT usar JWK/ES256, cole o JSON como string
+# SUPABASE_JWK_PUBLIC_KEY='{"keys":[{"kty":"EC","crv":"P-256","x":"...","y":"...","kid":"...","alg":"ES256","use":"sig"}]}'
 
 # Gemini (para embeddings)
 GEMINI_API_KEY=sua-chave-aqui
@@ -281,6 +287,284 @@ outlets = getOutlets(["g1"])     # Específicos
 # Cliente bruto para queries
 db = get_client()
 result = db.table("articles").select("*").execute()
+```
+
+---
+
+## 🧩 API REST
+
+A API expõe endpoints de autenticação, feed e pagamentos via FastAPI.
+
+### Cabeçalhos necessários
+- `Authorization: Bearer <token>`
+- `Content-Type: application/json`
+
+### Endpoints
+
+#### GET /health
+Status da API.
+
+Response:
+```json
+{
+  "health": "ok"
+}
+```
+
+---
+
+#### GET /auth/me
+Retorna o perfil do usuário autenticado.
+
+Response:
+```json
+{
+  "id": "user-123",
+  "email": "ana@example.com",
+  "is_premium": true,
+  "premium_expires_at": "2024-01-01T00:00:00",
+  "created_at": "2024-01-01T00:00:00"
+}
+```
+
+#### GET /auth/subscription
+Retorna o status de assinatura do usuário.
+
+Response:
+```json
+{
+  "is_premium": true,
+  "platform": "ios",
+  "product_id": "monthly",
+  "expires_at": "2024-01-01T00:00:00",
+  "auto_renews": true
+}
+```
+
+---
+
+#### POST /auth/refresh
+Renova o access token usando um refresh token do Supabase.
+
+Request:
+```json
+{
+  "refresh_token": "seu-refresh-token-aqui"
+}
+```
+
+Response:
+```json
+{
+  "access_token": "novo-access-token",
+  "refresh_token": "novo-refresh-token",
+  "expires_in": 3600,
+  "token_type": "bearer"
+}
+```
+
+---
+
+#### GET /feed/topics
+Lista tópicos com metadados de paginação e blindspot.
+
+Query params:
+- `limit` (opcional, default: `20`, max: `50`)
+- `offset` (opcional, default: `0`)
+- `only_hot` (opcional, default: `false`)
+
+Response:
+```json
+{
+  "data": [
+    {
+      "id": "topic-1",
+      "canonical_title": "Título do tópico",
+      "summary": "Resumo",
+      "article_count": 2,
+      "is_hot": true,
+      "initial_check": true,
+      "created_at": "2024-01-02T00:00:00",
+      "blindspot": {
+        "left_count": 1,
+        "center_count": 0,
+        "right_count": 1,
+        "dominant_side": null,
+        "description": null
+      }
+    }
+  ],
+  "meta": {
+    "limit": 20,
+    "offset": 0,
+    "has_more": false,
+    "total": null
+  }
+}
+```
+
+---
+
+#### GET /feed/topics/{topic_id}
+Retorna o detalhe de um tópico, incluindo artigos agrupados por espectro político.
+
+Response:
+```json
+{
+  "id": "topic-1",
+  "canonical_title": "Título do tópico",
+  "summary": "Resumo",
+  "article_count": 2,
+  "is_hot": true,
+  "initial_check": true,
+  "created_at": "2024-01-02T00:00:00",
+  "blindspot": {
+    "left_count": 1,
+    "center_count": 0,
+    "right_count": 1,
+    "dominant_side": null,
+    "description": null
+  },
+  "articles_left": [
+    {
+      "id": "art-1",
+      "url": "https://a",
+      "title": "A",
+      "lead": "lead",
+      "image_url": null,
+      "author": "Ana",
+      "published_at": "2024-01-03T00:00:00",
+      "outlet": {
+        "id": "out-1",
+        "name": "Outlet A",
+        "political_score": 10
+      },
+      "political_lean": "left",
+      "checked": true,
+      "claims": [
+        {
+          "id": "claim-1",
+          "claim": "Claim 1",
+          "verdict": "true",
+          "confidence": 0.9,
+          "evidence": "evidence"
+        }
+      ]
+    }
+  ],
+  "articles_center_left": [],
+  "articles_center": [],
+  "articles_center_right": [],
+  "articles_right": [
+    {
+      "id": "art-2",
+      "url": "https://b",
+      "title": "B",
+      "lead": "lead",
+      "image_url": null,
+      "author": "Beto",
+      "published_at": "2024-01-04T00:00:00",
+      "outlet": {
+        "id": "out-2",
+        "name": "Outlet B",
+        "political_score": 90
+      },
+      "political_lean": "right",
+      "checked": false,
+      "claims": []
+    }
+  ]
+}
+```
+
+---
+
+#### POST /payments/verify
+Verifica uma compra realizada no iOS/Android e ativa o premium.
+
+Request:
+```json
+{
+  "platform": "ios",
+  "receipt_token": "receipttoken",
+  "product_id": "monthly"
+}
+```
+
+Response:
+```json
+{
+  "is_valid": true,
+  "is_premium": true,
+  "expires_at": "2024-06-01T00:00:00+00:00",
+  "message": "Assinatura ativada com sucesso"
+}
+```
+
+---
+
+#### GET /payments/status
+Retorna o status atual da assinatura do usuário autenticado.
+
+Response:
+```json
+{
+  "is_premium": true,
+  "platform": "ios",
+  "product_id": "monthly",
+  "expires_at": "2024-06-01T00:00:00+00:00",
+  "auto_renews": true
+}
+```
+
+---
+
+#### POST /payments/webhook
+Webhook para notificações do RevenueCat. Não requer `Authorization`.
+
+Request headers:
+- `x-revenuecat-signature`
+
+Payload de exemplo:
+```json
+{
+  "event": {
+    "type": "INITIAL_PURCHASE",
+    "app_user_id": "user-123",
+    "store": "app_store",
+    "product_id": "monthly",
+    "expiration_at_ms": 1710000000000
+  }
+}
+```
+
+Response:
+```json
+{
+  "status": "ok"
+}
+```
+
+---
+
+## ℹ️ Observações para o frontend
+- Todos os endpoints exigem `Bearer token`, exceto `/health` e `/payments/webhook`.
+- O frontend deve enviar `Authorization` em todas as chamadas autenticadas.
+- `GET /feed/topics` já suporta paginação com `limit` e `offset`.
+- `TopicListResponse.meta.has_more` indica se há mais páginas disponíveis.
+
+---
+
+## 📌 Modelo de Erro
+Erros são retornados como JSON uniforme:
+```json
+{
+  "error": {
+    "status": 404,
+    "detail": "Tópico não encontrado",
+    "path": "/feed/topics/unknown"
+  }
+}
 ```
 
 ---

@@ -3,6 +3,7 @@ from types import SimpleNamespace
 import pytest
 from fastapi.testclient import TestClient
 
+import worker.config
 from api.main import app
 
 
@@ -179,3 +180,42 @@ def test_verify_purchase_endpoint_activates_premium(monkeypatch, client):
     assert response.status_code == 200
     assert response.json()["is_valid"] is True
     assert called["payload"]["user_id"] == "user-123"
+
+
+class FakeAsyncClient:
+    def __init__(self, *args, **kwargs):
+        pass
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb):
+        return False
+
+    async def post(self, url, data=None, headers=None):
+        return SimpleNamespace(
+            status_code=200,
+            json=lambda: {
+                "access_token": "new-access-token",
+                "refresh_token": "new-refresh-token",
+                "expires_in": 3600,
+                "token_type": "bearer",
+            },
+        )
+
+
+def test_refresh_token_endpoint_renews_token(monkeypatch, client):
+    monkeypatch.setattr("api.auth.router.httpx.AsyncClient", FakeAsyncClient)
+    monkeypatch.setattr(worker.config.settings, "supabase_service_role_key", "test-service-role-key")
+
+    response = client.post(
+        "/auth/refresh",
+        json={"refresh_token": "old-refresh-token"},
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["access_token"] == "new-access-token"
+    assert body["refresh_token"] == "new-refresh-token"
+    assert body["expires_in"] == 3600
+    assert body["token_type"] == "bearer"

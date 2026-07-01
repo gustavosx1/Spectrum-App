@@ -107,6 +107,17 @@ class PurchaseVerifyResponse(BaseModel):
     message: str
 
 
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
+
+
+class RefreshTokenResponse(BaseModel):
+    access_token: str
+    refresh_token: str
+    expires_in: int
+    token_type: str
+
+
 class SubscriptionStatus(BaseModel):
     is_premium: bool
     platform: Optional[str] = None  # onde comprou
