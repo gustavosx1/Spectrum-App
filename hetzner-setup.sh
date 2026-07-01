@@ -8,6 +8,7 @@ export DEBIAN_FRONTEND=noninteractive
 # -----------------------------
 apt update
 apt upgrade -y
+
 apt install -y \
   git \
   python3 \
@@ -18,16 +19,23 @@ apt install -y \
   curl \
   build-essential \
   libnss3 \
-  libatk1.0-0 \
-  libatk-bridge2.0-0 \
-  libcups2 \
   libdrm2 \
   libxkbcommon0 \
-  libgtk-3-0 \
-  libgbm1 \
-  libasound2 \
   libxss1 \
   libx11-xcb1
+
+# Some Ubuntu versions renamed these packages; install whichever exists.
+for pkg in \
+  libatk1.0-0 libatk1.0-0t64 \
+  libatk-bridge2.0-0 libatk-bridge2.0-0t64 \
+  libcups2 libcups2t64 \
+  libgtk-3-0 libgtk-3-0t64 \
+  libgbm1 \
+  libasound2 libasound2t64; do
+  if apt-cache policy "$pkg" 2>/dev/null | grep -q 'Candidate:'; then
+    apt install -y "$pkg" || true
+  fi
+done
 
 # -----------------------------
 # 2) Clone repo
