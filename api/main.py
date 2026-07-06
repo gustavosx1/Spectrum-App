@@ -13,6 +13,7 @@ from api.auth.router import router as auth_router
 from api.feed.router import router as feed_router
 from api.payments.router import router as payments_router
 from api.middleware.auth import AuthMiddleware
+from worker.config import settings
 
 
 class JsonLogFormatter(logging.Formatter):
@@ -74,16 +75,19 @@ def error_response(status_code: int, detail: str, path: str) -> JSONResponse:
 app = FastAPI(
     title="Spectrum API",
     version="1.0.0",
-    docs_url="/docs",  # desabilitar em produção se quiser
+    docs_url=None if settings.is_production else "/docs",
     redoc_url=None,
 )
 
 setup_logging()
 
+cors_origins = settings.cors_origins
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["GET, POST"],
+    allow_origins=cors_origins,
+    allow_credentials="*" not in cors_origins,
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type"],
 )
 

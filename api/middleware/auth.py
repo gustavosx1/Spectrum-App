@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import Optional
+from typing import Any, Optional
 
 import jwt
 from fastapi import Request
@@ -52,19 +52,49 @@ def _extract_token(request: Request) -> Optional[str]:
     return None
 
 
-def _get_verification_key(token: str) -> Optional[str]:
-    if settings.supabase_jwt_secret:
-        return settings.supabase_jwt_secret
+def _get_jwk_verification_key(token: str) -> Optional[Any]:
+    if not settings.supabase_jwk_public_key:
+        return None
 
     try:
         jwks = json.loads(settings.supabase_jwk_public_key)
         kid = jwt.get_unverified_header(token).get("kid")
-        for key in jwks.get("keys", []):
+        keys = jwks.get("keys", [])
+        for key in keys:
             if key.get("kid") == kid:
                 return jwt.algorithms.ECAlgorithm.from_jwk(json.dumps(key))
+
+        # Fallback when kid is absent and only one key is configured.
+        if len(keys) == 1:
+            return jwt.algorithms.ECAlgorithm.from_jwk(json.dumps(keys[0]))
     except Exception as e:
         logger.debug("Falha ao carregar JWK: %s", e)
     return None
+
+
+def _get_verification_material(token: str) -> tuple[Optional[Any], list[str]]:
+    try:
+        alg = jwt.get_unverified_header(token).get("alg", "")
+    except Exception:
+        return None, []
+
+    if alg.startswith("HS") and settings.supabase_jwt_secret:
+        return settings.supabase_jwt_secret, [alg]
+
+    if alg.startswith("ES"):
+        jwk_key = _get_jwk_verification_key(token)
+        if jwk_key:
+            return jwk_key, [alg]
+
+    # Backward-compatible fallback during migration.
+    if settings.supabase_jwt_secret:
+        return settings.supabase_jwt_secret, ["HS256"]
+
+    jwk_key = _get_jwk_verification_key(token)
+    if jwk_key:
+        return jwk_key, ["ES256"]
+
+    return None, []
 
 
 def _verify_token(token: str) -> Optional[dict]:
@@ -72,19 +102,31 @@ def _verify_token(token: str) -> Optional[dict]:
     Valida JWT do Supabase com PyJWT usando HS256 ou JWK ES256.
     """
     try:
-        key = _get_verification_key(token)
-        if not key:
+        key, algorithms = _get_verification_material(token)
+        if not key or not algorithms:
             logger.error("Chave de verificação JWT não configurada")
             return None
 
-        return jwt.decode(
-            token,
-            key,
-            algorithms=["HS256", "ES256"],
-            options={"verify_aud": False},
-        )
+        verify_aud = bool(settings.jwt_expected_audience)
+        issuer = settings.jwt_expected_issuer or f"{settings.supabase_url.rstrip('/')}/auth/v1"
+
+        decode_kwargs: dict[str, Any] = {
+            "algorithms": algorithms,
+            "options": {"verify_aud": verify_aud},
+            "issuer": issuer,
+        }
+        if verify_aud:
+            decode_kwargs["audience"] = settings.jwt_expected_audience
+
+        return jwt.decode(token, key, **decode_kwargs)
     except jwt.ExpiredSignatureError:
         logger.debug("JWT expirado")
+        return None
+    except jwt.InvalidIssuerError:
+        logger.debug("Issuer JWT inválido")
+        return None
+    except jwt.InvalidAudienceError:
+        logger.debug("Audience JWT inválido")
         return None
     except jwt.InvalidTokenError as e:
         logger.debug("JWT inválido: %s", e)
