@@ -306,6 +306,8 @@ A API expõe endpoints de autenticação, feed e pagamentos via FastAPI.
 ### Rotas públicas (sem Authorization)
 
 - `GET /health`
+- `GET /feed/outlets`
+- `GET /feed/topicsfree`
 - `POST /auth/refresh`
 - `POST /payments/webhook`
 
@@ -615,7 +617,7 @@ Response:
 ---
 
 ## ℹ️ Observações para o frontend
-- Todos os endpoints exigem `Bearer token`, exceto `/health`, `/auth/refresh` e `/payments/webhook`.
+- Todos os endpoints exigem `Bearer token`, exceto `/health`, `/feed/outlets`, `/feed/topicsfree`, `/auth/refresh` e `/payments/webhook`.
 - O frontend deve enviar `Authorization` em todas as chamadas autenticadas.
 - `GET /feed/topics` continua no plano pago.
 - `GET /feed/topicsfree` e `GET /feed/outlets` podem ser usados sem plano pago.

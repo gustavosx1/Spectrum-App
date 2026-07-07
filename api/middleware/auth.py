@@ -18,6 +18,8 @@ PUBLIC_PATHS = {
     "/docs",
     "/openapi.json",
     "/auth/refresh",
+    "/feed/outlets",
+    "/feed/topicsfree",
     "/payments/webhook",
 }
 
