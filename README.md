@@ -295,6 +295,20 @@ result = db.table("articles").select("*").execute()
 
 A API expõe endpoints de autenticação, feed e pagamentos via FastAPI.
 
+### Atualizações para frontend (produção)
+
+- Base URL de produção: `https://api.prismanews.com.br`
+- Requisições HTTP (`http://`) retornam `301` para HTTPS.
+- Em produção, `/docs` e `/openapi.json` ficam desabilitados.
+- CORS aceita apenas origens definidas em `API_CORS_ORIGINS` (sem wildcard em produção).
+- JWT do Supabase é validado por issuer e audience (quando configurada), com suporte a ES256/JWK.
+
+### Rotas públicas (sem Authorization)
+
+- `GET /health`
+- `POST /auth/refresh`
+- `POST /payments/webhook`
+
 ### Cabeçalhos necessários
 - `Authorization: Bearer <token>`
 - `Content-Type: application/json`
@@ -368,6 +382,8 @@ Response:
 #### GET /feed/topics
 Lista tópicos com metadados de paginação e blindspot.
 
+Plano pago.
+
 Query params:
 - `limit` (opcional, default: `20`, max: `50`)
 - `offset` (opcional, default: `0`)
@@ -396,6 +412,57 @@ Response:
   ],
   "meta": {
     "limit": 20,
+    "offset": 0,
+    "has_more": false,
+    "total": null
+  }
+}
+```
+
+---
+
+#### GET /feed/outlets
+Lista outlets disponíveis para filtros do frontend.
+
+Livre para uso no frontend, sem plano pago.
+
+Response:
+```json
+[
+  {
+    "id": "g1",
+    "name": "G1",
+    "political_score": 55.0
+  },
+  {
+    "id": "folha_sp",
+    "name": "Folha de S.Paulo",
+    "political_score": 35.0
+  }
+]
+```
+
+---
+
+#### GET /feed/topicsfree
+Lista uma versão gratuita dos tópicos para o frontend.
+
+Regras:
+- Não exige plano pago.
+- Retorna por padrão `3` tópicos.
+- Filtra apenas tópicos `hot` por padrão.
+
+Query params:
+- `limit` (opcional, default: `3`)
+- `offset` (opcional, default: `0`)
+- `only_hot` (opcional, default: `true`)
+
+Response:
+```json
+{
+  "data": [],
+  "meta": {
+    "limit": 3,
     "offset": 0,
     "has_more": false,
     "total": null
@@ -548,10 +615,14 @@ Response:
 ---
 
 ## ℹ️ Observações para o frontend
-- Todos os endpoints exigem `Bearer token`, exceto `/health` e `/payments/webhook`.
+- Todos os endpoints exigem `Bearer token`, exceto `/health`, `/auth/refresh` e `/payments/webhook`.
 - O frontend deve enviar `Authorization` em todas as chamadas autenticadas.
-- `GET /feed/topics` já suporta paginação com `limit` e `offset`.
+- `GET /feed/topics` continua no plano pago.
+- `GET /feed/topicsfree` e `GET /feed/outlets` podem ser usados sem plano pago.
+- Os dois endpoints de tópicos suportam paginação com `limit` e `offset`.
 - `TopicListResponse.meta.has_more` indica se há mais páginas disponíveis.
+- Em produção, use sempre `https://api.prismanews.com.br` para evitar redirect e bloqueios de mixed content.
+- Se ocorrer `401` em rotas autenticadas, faça refresh de token via `POST /auth/refresh` e repita a requisição.
 
 ---
 
@@ -564,6 +635,24 @@ Erros são retornados como JSON uniforme:
     "detail": "Tópico não encontrado",
     "path": "/feed/topics/unknown"
   }
+}
+```
+
+### Exceção importante (auth middleware)
+
+Algumas falhas de autenticação retornam formato simples:
+
+```json
+{
+  "detail": "Token inválido ou expirado"
+}
+```
+
+ou
+
+```json
+{
+  "detail": "Token de autenticação ausente"
 }
 ```
 

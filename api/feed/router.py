@@ -1,12 +1,9 @@
 from __future__ import annotations
 
 import logging
-from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query, Request
-from fastapi.responses import JSONResponse
 
-from api.middleware.auth import get_user_id
 from api.models.schemas import (
     ArticleResponse,
     BlindspotResponse,
@@ -71,24 +68,12 @@ def _build_blindspot(articles: list[dict], outlets_map: dict) -> BlindspotRespon
     )
 
 
-# ── Endpoints ─────────────────────────────────────────────────────────────────
-
-
-@router.get("/topics", response_model=TopicListResponse)
-def list_topics(
-    request: Request,
-    limit: int = Query(default=20, le=50),
-    offset: int = Query(default=0),
-    only_hot: bool = Query(default=False),
-):
-    """
-    Lista tópicos ordenados por mais recentes.
-    Requer assinatura ativa.
-    """
-    db = get_client()
-    require_premium(request)
-
-    # Busca tópicos
+def _list_topics(
+    db,
+    limit: int,
+    offset: int,
+    only_hot: bool,
+) -> TopicListResponse:
     query = (
         db.table("topics")
         .select(
@@ -105,7 +90,6 @@ def list_topics(
     has_more = len(topics) == limit
     topic_ids = [t["id"] for t in topics]
 
-    # Busca artigos dos tópicos pra calcular blindspots
     articles = (
         db.table("articles")
         .select("topic_id, outlet_id")
@@ -113,7 +97,6 @@ def list_topics(
         .execute()
     ).data
 
-    # Busca outlets pra mapear scores
     outlet_ids = list({a["outlet_id"] for a in articles if a["outlet_id"]})
     outlets_map = {}
     if outlet_ids:
@@ -125,7 +108,6 @@ def list_topics(
         ).data
         outlets_map = {o["id"]: o for o in outlets}
 
-    # Agrupa artigos por tópico
     articles_by_topic: dict[str, list] = {t["id"]: [] for t in topics}
     for a in articles:
         if a["topic_id"] in articles_by_topic:
@@ -141,6 +123,62 @@ def list_topics(
         ],
         meta=PaginationMeta(limit=limit, offset=offset, has_more=has_more),
     )
+
+
+# ── Endpoints ─────────────────────────────────────────────────────────────────
+
+
+@router.get("/outlets", response_model=list[OutletSummary])
+def list_outlets():
+    """
+    Lista outlets disponíveis para filtros do frontend.
+    Requer usuário autenticado.
+    """
+    db = get_client()
+    outlets = (
+        db.table("outlets")
+        .select("id, name, political_score")
+        .order("political_score")
+        .execute()
+    ).data
+
+    if not outlets:
+        return []
+
+    return [
+        OutletSummary(
+            id=outlet["id"],
+            name=outlet["name"],
+            political_score=outlet["political_score"],
+        )
+        for outlet in outlets
+    ]
+
+
+@router.get("/topicsfree", response_model=TopicListResponse)
+def list_topics_free(
+    limit: int = 3,
+    offset: int = 0,
+    only_hot: bool = True,
+) -> TopicListResponse:
+    db = get_client()
+    return _list_topics(db, limit=limit, offset=offset, only_hot=only_hot)
+
+
+@router.get("/topics", response_model=TopicListResponse)
+def list_topics(
+    request: Request,
+    limit: int = Query(default=20, le=50),
+    offset: int = Query(default=0),
+    only_hot: bool = Query(default=False),
+):
+    """
+    Lista tópicos ordenados por mais recentes.
+    Requer assinatura ativa.
+    """
+    db = get_client()
+    require_premium(request)
+    return _list_topics(db, limit=limit, offset=offset, only_hot=only_hot)
 
 
 @router.get("/topics/{topic_id}", response_model=TopicDetail)
