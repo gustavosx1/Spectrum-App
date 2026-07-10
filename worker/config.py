@@ -33,6 +33,21 @@ class Settings(BaseSettings):
 
     # RevenueCat (abstrai iOS + Android)
     revenuecat_webhook_secret: str = ""
+
+    # Push notifications (webhook/provider relay)
+    push_provider: str = "expo"  # expo | webhook
+    push_webhook_url: str = ""
+    push_webhook_bearer: str = ""
+    push_webhook_timeout_seconds: int = 10
+    push_expo_send_url: str = "https://exp.host/--/api/v2/push/send"
+    push_expo_access_token: str = ""
+    push_device_table: str = "device_push_tokens"
+    push_token_column: str = "expo_push_token"
+    push_user_id_column: str = "user_id"
+    push_active_column: str = "is_active"
+    push_locale: str = "pt-BR"
+    push_ai_title_version: str = "gpt-title-v2"
+
     model_config = {"env_file": ".env"}
 
     @property

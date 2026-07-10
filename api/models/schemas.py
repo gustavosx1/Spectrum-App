@@ -124,3 +124,25 @@ class SubscriptionStatus(BaseModel):
     product_id: Optional[str] = None
     expires_at: Optional[datetime] = None
     auto_renews: Optional[bool] = None
+
+
+# ── Notifications ────────────────────────────────────────────────────────────
+
+
+class RegisterPushTokenRequest(BaseModel):
+    expo_push_token: str
+    platform: str  # ios | android
+
+
+class RegisterPushTokenResponse(BaseModel):
+    ok: bool
+    message: str
+
+
+class UnregisterPushTokenRequest(BaseModel):
+    expo_push_token: str
+
+
+class UnregisterPushTokenResponse(BaseModel):
+    ok: bool
+    message: str

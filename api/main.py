@@ -11,6 +11,7 @@ from fastapi.responses import JSONResponse
 
 from api.auth.router import router as auth_router
 from api.feed.router import router as feed_router
+from api.notifications.router import router as notifications_router
 from api.payments.router import router as payments_router
 from api.middleware.auth import AuthMiddleware
 from worker.config import settings
@@ -142,6 +143,7 @@ app.add_middleware(AuthMiddleware)
 
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(feed_router, prefix="/feed", tags=["feed"])
+app.include_router(notifications_router, prefix="/notifications", tags=["notifications"])
 app.include_router(payments_router, prefix="/payments", tags=["payments"])
 
 

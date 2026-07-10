@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+from datetime import datetime, timezone
 
 import httpx
 
@@ -30,6 +31,13 @@ Check individual (topics.initial_check = true)
 ─────────────────────────────────────────────────────────────────────
 """
 logger = logging.getLogger(__name__)
+
+PUSH_BODY_FIXED = "Venha ver todos os lados desta história"
+PUSH_SCHEMA_VERSION = "1"
+PUSH_TYPE_NEW_TOPIC = "NEW_TOPIC"
+PUSH_TARGET_SCREEN = "TopicDetail"
+PUSH_FALLBACK_SCREEN = "Premium"
+EXPO_MAX_BATCH_SIZE = 100
 
 HEADERS = {
     "User-Agent": (
@@ -116,6 +124,8 @@ async def _initial_check(db, topic_id: str) -> None:
         article_id = article_result["article_id"]
         _insert_claims(db, article_id, topic_id, article_result["claims"])
         db.table("articles").update({"checked": True}).eq("id", article_id).execute()
+
+    await _send_new_topic_push(db, topic_id, analysis["canonical_title"])
 
     logger.info(
         "Initial check concluído — tópico %s: '%s'",
@@ -354,3 +364,208 @@ async def _call_gemini(prompt: str) -> dict:
         .strip()
     )
     return json.loads(clean)
+
+
+def _build_new_topic_push_payload(topic_id: str, ai_title: str) -> dict:
+    sent_at = (
+        datetime.now(timezone.utc)
+        .replace(microsecond=0)
+        .isoformat()
+        .replace("+00:00", "Z")
+    )
+    dedup_key = f"topic_{topic_id}_v1"
+
+    return {
+        "notification": {
+            "title": ai_title.strip(),
+            "body": PUSH_BODY_FIXED,
+        },
+        "data": {
+            "schemaVersion": PUSH_SCHEMA_VERSION,
+            "type": PUSH_TYPE_NEW_TOPIC,
+            "topicId": topic_id,
+            "requiresPremium": "true",
+            "targetScreen": PUSH_TARGET_SCREEN,
+            "fallbackScreen": PUSH_FALLBACK_SCREEN,
+            "deeplink": f"spectrum://topic/{topic_id}",
+            "campaign": "new_topic_push",
+            "sentAt": sent_at,
+            "dedupKey": dedup_key,
+            "locale": settings.push_locale,
+            "aiTitleVersion": settings.push_ai_title_version,
+        },
+    }
+
+
+def _is_utc_iso8601(value: str) -> bool:
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return False
+    if parsed.tzinfo is None:
+        return False
+    return parsed.utcoffset() == timezone.utc.utcoffset(parsed)
+
+
+def _validate_push_payload(db, payload: dict) -> tuple[bool, str]:
+    notification = payload.get("notification") or {}
+    data = payload.get("data") or {}
+
+    topic_id = data.get("topicId", "")
+    title = (notification.get("title") or "").strip()
+
+    if not topic_id:
+        return False, "topicId ausente"
+
+    # O contrato exige topic publicado; aqui consideramos publicado
+    # quando já foi processado no initial_check e está hot.
+    topic = (
+        db.table("topics")
+        .select("id, is_hot, initial_check")
+        .eq("id", topic_id)
+        .single()
+        .execute()
+    ).data
+    if not topic:
+        return False, "topicId inexistente"
+    if not topic.get("is_hot") or not topic.get("initial_check"):
+        return False, "tópico ainda não publicado"
+
+    if not title:
+        return False, "title vazio"
+    if not notification.get("body"):
+        return False, "body vazio"
+    if data.get("schemaVersion") != PUSH_SCHEMA_VERSION:
+        return False, "schemaVersion inválido"
+    if data.get("type") != PUSH_TYPE_NEW_TOPIC:
+        return False, "type inválido"
+    if data.get("requiresPremium") not in {"true", "false"}:
+        return False, "requiresPremium inválido"
+    if data.get("requiresPremium") != "true":
+        return False, "requiresPremium incoerente com regra premium"
+    if not data.get("targetScreen") or not data.get("fallbackScreen"):
+        return False, "targetScreen/fallbackScreen ausente"
+    if not data.get("sentAt") or not _is_utc_iso8601(data["sentAt"]):
+        return False, "sentAt inválido"
+    if not data.get("dedupKey"):
+        return False, "dedupKey ausente"
+
+    return True, "ok"
+
+
+async def _dispatch_push(payload: dict) -> None:
+    if not settings.push_webhook_url:
+        logger.info("Push não enviado: PUSH_WEBHOOK_URL não configurado")
+        return
+
+    headers = {"Content-Type": "application/json"}
+    if settings.push_webhook_bearer:
+        headers["Authorization"] = f"Bearer {settings.push_webhook_bearer}"
+
+    async with httpx.AsyncClient(timeout=settings.push_webhook_timeout_seconds) as client:
+        response = await client.post(
+            settings.push_webhook_url,
+            json=payload,
+            headers=headers,
+        )
+    response.raise_for_status()
+
+
+def _fetch_active_push_tokens(db) -> list[str]:
+    rows = (
+        db.table(settings.push_device_table)
+        .select(settings.push_token_column)
+        .eq(settings.push_active_column, True)
+        .execute()
+    ).data or []
+
+    seen: set[str] = set()
+    tokens: list[str] = []
+    for row in rows:
+        token = (row.get(settings.push_token_column) or "").strip()
+        if token and token not in seen:
+            seen.add(token)
+            tokens.append(token)
+    return tokens
+
+
+def _build_expo_messages(tokens: list[str], payload: dict) -> list[dict]:
+    notification = payload.get("notification") or {}
+    data = payload.get("data") or {}
+    return [
+        {
+            "to": token,
+            "title": notification.get("title"),
+            "body": notification.get("body"),
+            "data": data,
+            "sound": "default",
+        }
+        for token in tokens
+    ]
+
+
+def _chunk_messages(messages: list[dict], batch_size: int = EXPO_MAX_BATCH_SIZE) -> list[list[dict]]:
+    return [messages[i : i + batch_size] for i in range(0, len(messages), batch_size)]
+
+
+def _extract_invalid_expo_tokens(messages: list[dict], response_data: dict) -> set[str]:
+    invalid: set[str] = set()
+    tickets = response_data.get("data") or []
+    for idx, ticket in enumerate(tickets):
+        details = ticket.get("details") or {}
+        if details.get("error") == "DeviceNotRegistered" and idx < len(messages):
+            invalid.add(messages[idx]["to"])
+    return invalid
+
+
+def _mark_tokens_inactive(db, tokens: set[str]) -> None:
+    if not tokens:
+        return
+    for token in tokens:
+        (
+            db.table(settings.push_device_table)
+            .update({settings.push_active_column: False})
+            .eq(settings.push_token_column, token)
+            .execute()
+        )
+
+
+async def _dispatch_push_expo(db, payload: dict) -> None:
+    tokens = _fetch_active_push_tokens(db)
+    if not tokens:
+        logger.info("Push não enviado: nenhum token Expo ativo")
+        return
+
+    messages = _build_expo_messages(tokens, payload)
+    headers = {"Content-Type": "application/json"}
+    if settings.push_expo_access_token:
+        headers["Authorization"] = f"Bearer {settings.push_expo_access_token}"
+
+    invalid_tokens: set[str] = set()
+    async with httpx.AsyncClient(timeout=settings.push_webhook_timeout_seconds) as client:
+        for batch in _chunk_messages(messages):
+            response = await client.post(
+                settings.push_expo_send_url,
+                json=batch,
+                headers=headers,
+            )
+            response.raise_for_status()
+            invalid_tokens.update(_extract_invalid_expo_tokens(batch, response.json()))
+
+    _mark_tokens_inactive(db, invalid_tokens)
+    if invalid_tokens:
+        logger.info("Tokens Expo desativados: %d", len(invalid_tokens))
+
+
+async def _send_new_topic_push(db, topic_id: str, ai_title: str) -> None:
+    payload = _build_new_topic_push_payload(topic_id, ai_title)
+    is_valid, reason = _validate_push_payload(db, payload)
+    if not is_valid:
+        logger.warning("Push cancelado para tópico %s: %s", topic_id, reason)
+        return
+
+    if settings.push_provider.lower() == "expo":
+        await _dispatch_push_expo(db, payload)
+    else:
+        await _dispatch_push(payload)
+    logger.info("Push de novo tópico enviado: %s", payload["data"]["dedupKey"])

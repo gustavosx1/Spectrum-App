@@ -295,6 +295,8 @@ result = db.table("articles").select("*").execute()
 
 A API expõe endpoints de autenticação, feed e pagamentos via FastAPI.
 
+Para integração de push no app Expo, veja o guia em `FRONTEND_PUSH_GUIDE.md`.
+
 ### Atualizações para frontend (produção)
 
 - Base URL de produção: `https://api.prismanews.com.br`

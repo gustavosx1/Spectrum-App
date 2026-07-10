@@ -19,39 +19,17 @@ def canonicalize_url(url: str) -> str:
     """
     Normaliza url e retira parametros de tracking
     """
-    TRACKING_PARAMS = {
-        "utm_source",
-        "utm_medium",
-        "utm_campaign",
-        "utm_term",
-        "utm_content",
-        "fbclid",
-        "gclid",
-        "yclid",
-        "ref",
-        "_ga",
-        "mc_cid",
-        "mc_eid",
-    }
     parsed = urlparse(url)
-    if parsed.query:
-        params = [
-            p
-            for p in parsed.query.split("&")
-            if p.split("=")[0].lower() not in TRACKING_PARAMS
-        ]
-        clean_query = "&".join(params)
-    else:
-        clean_query = ""
+    clean_path = parsed.path.rstrip("/")
 
     return urlunparse(
         (
             parsed.scheme,
             parsed.netloc,
-            parsed.path.rstrip("/"),
-            parsed.params,
-            clean_query,
-            "",  # remove fragment
+            clean_path,
+            "",
+            "",
+            "",
         )
     )
 

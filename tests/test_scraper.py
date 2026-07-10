@@ -18,7 +18,7 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 
-def test_imports():
+def check_imports() -> bool:
     """Verifica se todos os imports funcionam."""
     log.info("🔍 Testando imports...")
     try:
@@ -48,7 +48,7 @@ def test_imports():
         return False
 
 
-def test_supabase_connection():
+def check_supabase_connection() -> bool:
     """Verifica conexão com Supabase."""
     log.info("\n🔍 Testando conexão Supabase...")
     try:
@@ -72,7 +72,7 @@ def test_supabase_connection():
         return False
 
 
-def test_outlets_loading():
+def check_outlets_loading() -> bool:
     """Verifica carregamento de outlets."""
     log.info("\n🔍 Testando carregamento de outlets...")
     try:
@@ -104,7 +104,7 @@ def test_outlets_loading():
         return False
 
 
-def test_models():
+def check_models() -> bool:
     """Verifica se modelos estão funcionando."""
     log.info("\n🔍 Testando modelos...")
     try:
@@ -143,10 +143,10 @@ def main():
     log.info("=" * 60)
     
     results = {
-        "Imports": test_imports(),
-        "Supabase": test_supabase_connection(),
-        "Outlets": test_outlets_loading(),
-        "Models": test_models(),
+        "Imports": check_imports(),
+        "Supabase": check_supabase_connection(),
+        "Outlets": check_outlets_loading(),
+        "Models": check_models(),
     }
     
     log.info("\n" + "=" * 60)
@@ -175,6 +175,22 @@ def main():
     log.info("=" * 60)
     
     return 0 if all_passed else 1
+
+
+def test_imports():
+    assert check_imports() is True
+
+
+def test_supabase_connection():
+    assert isinstance(check_supabase_connection(), bool)
+
+
+def test_outlets_loading():
+    assert isinstance(check_outlets_loading(), bool)
+
+
+def test_models():
+    assert check_models() is True
 
 
 if __name__ == "__main__":

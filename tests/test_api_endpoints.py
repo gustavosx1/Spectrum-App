@@ -12,6 +12,8 @@ class FakeTable:
         self.rows = rows
         self._single = False
         self._update_values = None
+        self._upsert_payload = None
+        self._upsert_kwargs = None
 
     def select(self, *args, **kwargs):
         return self
@@ -36,6 +38,15 @@ class FakeTable:
         self._update_values = values
         return self
 
+    def upsert(self, values, **kwargs):
+        self._upsert_payload = values
+        self._upsert_kwargs = kwargs
+        if isinstance(values, list):
+            self.rows.extend(values)
+        else:
+            self.rows.append(values)
+        return self
+
     def execute(self):
         if self._single:
             return SimpleNamespace(data=self.rows[0] if self.rows else None)
@@ -47,6 +58,8 @@ class FakeDB:
         self.tables = tables
 
     def table(self, name):
+        if name not in self.tables:
+            self.tables[name] = []
         return FakeTable(self.tables.get(name, []))
 
 
@@ -90,11 +103,13 @@ def client(monkeypatch):
             "claims": [
                 {"id": "claim-1", "article_id": "art-1", "claim": "Claim 1", "verdict": "true", "confidence": 0.9, "evidence": "evidence"}
             ],
+            "device_push_tokens": [],
         }
     )
 
     monkeypatch.setattr("api.auth.router.get_client", lambda: fake_db)
     monkeypatch.setattr("api.feed.router.get_client", lambda: fake_db)
+    monkeypatch.setattr("api.notifications.router.get_client", lambda: fake_db)
     monkeypatch.setattr("api.feed.router.require_premium", lambda request: None)
     monkeypatch.setattr("api.utils.premium.get_client", lambda: fake_db)
     monkeypatch.setattr("api.payments.router.get_user_id", lambda request: "user-123")
@@ -219,3 +234,67 @@ def test_refresh_token_endpoint_renews_token(monkeypatch, client):
     assert body["refresh_token"] == "new-refresh-token"
     assert body["expires_in"] == 3600
     assert body["token_type"] == "bearer"
+
+
+def test_register_push_token_endpoint_registers_expo_token(client):
+    response = client.post(
+        "/notifications/token",
+        json={
+            "expo_push_token": "ExponentPushToken[valid-token-123]",
+            "platform": "ios",
+        },
+        headers={"Authorization": "Bearer token"},
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["ok"] is True
+
+
+def test_register_push_token_endpoint_validates_input(client):
+    response = client.post(
+        "/notifications/token",
+        json={
+            "expo_push_token": "invalid",
+            "platform": "ios",
+        },
+        headers={"Authorization": "Bearer token"},
+    )
+    assert response.status_code == 400
+
+
+def test_register_push_token_endpoint_validates_platform(client):
+    response = client.post(
+        "/notifications/token",
+        json={
+            "expo_push_token": "ExponentPushToken[valid-token-123]",
+            "platform": "web",
+        },
+        headers={"Authorization": "Bearer token"},
+    )
+
+    assert response.status_code == 400
+
+
+def test_unregister_push_token_endpoint_deactivates_token(client):
+    response = client.request(
+        "DELETE",
+        "/notifications/token",
+        json={"expo_push_token": "ExponentPushToken[valid-token-123]"},
+        headers={"Authorization": "Bearer token"},
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["ok"] is True
+
+
+def test_unregister_push_token_endpoint_validates_input(client):
+    response = client.request(
+        "DELETE",
+        "/notifications/token",
+        json={"expo_push_token": "invalid"},
+        headers={"Authorization": "Bearer token"},
+    )
+
+    assert response.status_code == 400
