@@ -152,6 +152,20 @@ def test_topics_endpoint_returns_blindspot_and_topic_list(client):
     assert body["data"][0]["blindspot"]["dominant_side"] is None
 
 
+def test_topicsfree_detail_endpoint_returns_capped_payload(client):
+    response = client.get("/feed/topicsfree/topic-1?preview_limit=1")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["id"] == "topic-1"
+    assert len(body["articles_left"]) == 1
+    assert len(body["articles_right"]) == 1
+    assert body["articles_left"][0]["id"] == "art-1"
+    assert "claims" not in body["articles_left"][0]
+    assert "checked" not in body["articles_left"][0]
+    assert body["paywall"]["preview_limit"] == 1
+    assert body["paywall"]["locked_article_count"] == 0
+
+
 def test_get_topic_endpoint_returns_grouped_articles(client):
     response = client.get("/feed/topics/topic-1", headers={"Authorization": "Bearer token"})
     assert response.status_code == 200

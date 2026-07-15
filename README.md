@@ -474,6 +474,64 @@ Response:
 }
 ```
 
+Cada item em `data` inclui também `image_url` quando disponível.
+
+---
+
+#### GET /feed/topicsfree/{topic_id}
+Detalhe público capado de um tópico para usuários não autenticados.
+
+Query params:
+- `preview_limit` (opcional, default: `2`, máximo: `5`) - quantidade máxima de previews por espectro.
+
+Response:
+```json
+{
+  "id": "topic-1",
+  "canonical_title": "Título do tópico",
+  "summary": "Resumo",
+  "image_url": "https://cdn.example.com/topic.jpg",
+  "article_count": 8,
+  "is_hot": true,
+  "initial_check": true,
+  "created_at": "2024-01-02T00:00:00",
+  "blindspot": {
+    "left_count": 3,
+    "center_count": 2,
+    "right_count": 3,
+    "dominant_side": null,
+    "description": null
+  },
+  "articles_left": [
+    {
+      "id": "art-1",
+      "url": "https://a",
+      "title": "A",
+      "lead": "lead",
+      "image_url": null,
+      "author": "Ana",
+      "published_at": "2024-01-03T00:00:00",
+      "outlet": {
+        "id": "out-1",
+        "name": "Outlet A",
+        "political_score": 10
+      },
+      "political_lean": "left"
+    }
+  ],
+  "articles_center_left": [],
+  "articles_center": [],
+  "articles_center_right": [],
+  "articles_right": [],
+  "paywall": {
+    "preview_limit": 2,
+    "locked_article_count": 6,
+    "cta_title": "Continue para ver todos os lados",
+    "cta_description": "Assine o premium para desbloquear todos os artigos, claims e comparativos do tópico."
+  }
+}
+```
+
 ---
 
 #### GET /feed/topics/{topic_id}

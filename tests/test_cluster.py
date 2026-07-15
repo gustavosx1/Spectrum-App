@@ -262,6 +262,27 @@ def test_insert_claims_upserts_records(monkeypatch):
     )
 
 
+def test_ensure_topic_image_updates_when_missing():
+    db = FakeDB({"topics": [{"image_url": None}]})
+    articles = [{"image_url": "https://cdn.example.com/topic.jpg"}]
+
+    cluster._ensure_topic_image(db, "topic-1", articles)
+
+    assert any(
+        call[0] == "update" and call[1] == {"image_url": "https://cdn.example.com/topic.jpg"}
+        for call in db.calls
+    )
+
+
+def test_ensure_topic_image_skips_when_already_present():
+    db = FakeDB({"topics": [{"image_url": "https://cdn.example.com/existing.jpg"}]})
+    articles = [{"image_url": "https://cdn.example.com/topic.jpg"}]
+
+    cluster._ensure_topic_image(db, "topic-1", articles)
+
+    assert not any(call[0] == "update" for call in db.calls)
+
+
 @pytest.mark.asyncio
 async def test_process_hot_topic_routes_to_initial_or_individual(monkeypatch):
     calls = []

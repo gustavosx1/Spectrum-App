@@ -102,6 +102,7 @@ async def _initial_check(db, topic_id: str) -> None:
     pra gerar título, summary e claims de todos de uma vez.
     """
     articles = _fetch_articles(db, topic_id, only_unchecked=False)
+    _ensure_topic_image(db, topic_id, articles)
 
     await _fetch_contents(db, articles)
 
@@ -144,6 +145,7 @@ async def _check_new_articles(db, topic_id: str) -> None:
     conteúdo completo dos artigos anteriores — muito mais barato.
     """
     new_articles = _fetch_articles(db, topic_id, only_unchecked=True)
+    _ensure_topic_image(db, topic_id, new_articles)
 
     if not new_articles:
         logger.info("Nenhum artigo novo pra checar no tópico %s", topic_id)
@@ -178,12 +180,34 @@ async def _check_new_articles(db, topic_id: str) -> None:
 def _fetch_articles(db, topic_id: str, only_unchecked: bool) -> list[dict]:
     query = (
         db.table("articles")
-        .select("id, url, title, lead, content, outlet_id")
+        .select("id, url, title, lead, content, outlet_id, image_url")
         .eq("topic_id", topic_id)
     )
     if only_unchecked:
         query = query.eq("checked", False)
     return query.execute().data
+
+
+def _ensure_topic_image(db, topic_id: str, articles: list[dict]) -> None:
+    if not articles:
+        return
+
+    topic = (
+        db.table("topics")
+        .select("image_url")
+        .eq("id", topic_id)
+        .single()
+        .execute()
+    ).data
+
+    if topic and topic.get("image_url"):
+        return
+
+    candidate = next((a.get("image_url") for a in articles if a.get("image_url")), None)
+    if not candidate:
+        return
+
+    db.table("topics").update({"image_url": candidate}).eq("id", topic_id).execute()
 
 
 def _insert_claims(db, article_id: str, topic_id: str, claims: list[dict]) -> None:

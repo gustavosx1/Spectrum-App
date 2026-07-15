@@ -23,10 +23,14 @@ PUBLIC_PATHS = {
     "/payments/webhook",
 }
 
+PUBLIC_PATH_PREFIXES = (
+    "/feed/topicsfree/",
+)
+
 
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        if request.url.path in PUBLIC_PATHS:
+        if _is_public_path(request.url.path):
             return await call_next(request)
 
         token = _extract_token(request)
@@ -45,6 +49,12 @@ class AuthMiddleware(BaseHTTPMiddleware):
 
         request.state.user = user
         return await call_next(request)
+
+
+def _is_public_path(path: str) -> bool:
+    if path in PUBLIC_PATHS:
+        return True
+    return any(path.startswith(prefix) for prefix in PUBLIC_PATH_PREFIXES)
 
 
 def _extract_token(request: Request) -> Optional[str]:

@@ -59,6 +59,7 @@ class TopicListItem(BaseModel):
     id: str
     canonical_title: str
     summary: Optional[str] = None
+    image_url: Optional[str] = None
     article_count: int
     is_hot: bool
     initial_check: bool
@@ -72,6 +73,43 @@ class TopicDetail(TopicListItem):
     articles_center: list[ArticleResponse] = Field(default_factory=list)
     articles_center_right: list[ArticleResponse] = Field(default_factory=list)
     articles_right: list[ArticleResponse] = Field(default_factory=list)
+
+
+class ArticlePreview(BaseModel):
+    id: str
+    url: str
+    title: str
+    lead: Optional[str] = None
+    image_url: Optional[str] = None
+    author: Optional[str] = None
+    published_at: Optional[datetime] = None
+    outlet: OutletSummary
+    political_lean: str
+
+
+class TopicPaywallPreview(BaseModel):
+    preview_limit: int
+    locked_article_count: int
+    cta_title: str
+    cta_description: str
+
+
+class TopicFreeDetail(BaseModel):
+    id: str
+    canonical_title: str
+    summary: Optional[str] = None
+    image_url: Optional[str] = None
+    article_count: int
+    is_hot: bool
+    initial_check: bool
+    created_at: datetime
+    blindspot: BlindspotResponse
+    articles_left: list[ArticlePreview] = Field(default_factory=list)
+    articles_center_left: list[ArticlePreview] = Field(default_factory=list)
+    articles_center: list[ArticlePreview] = Field(default_factory=list)
+    articles_center_right: list[ArticlePreview] = Field(default_factory=list)
+    articles_right: list[ArticlePreview] = Field(default_factory=list)
+    paywall: TopicPaywallPreview
 
 
 class PaginationMeta(BaseModel):
