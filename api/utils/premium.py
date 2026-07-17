@@ -107,3 +107,34 @@ def deactivate_premium(user_id: str) -> None:
             "premium_auto_renews": False,
         }
     ).eq("id", user_id).execute()
+
+
+def claim_purchase(external_id: str, platform: str, user_id: str) -> bool:
+    """
+    Vincula um recibo/token de compra (original_transaction_id da Apple ou
+    purchase_token do Google) a um único usuário, na tabela redeemed_purchases.
+
+    Sem isso, o mesmo recibo válido poderia ser reenviado por N contas
+    diferentes em /payments/verify e todas ganhariam premium de graça
+    (a Apple/Google só atestam que o recibo é válido, não que já foi usado
+    por este app). Retorna False se o recibo já pertence a outro usuário.
+
+    Requer a tabela redeemed_purchases no Supabase (ver migração em
+    ARCHITECTURE.md / relatório de segurança) com external_id único.
+    """
+    db = get_client()
+    existing = (
+        db.table("redeemed_purchases")
+        .select("user_id")
+        .eq("external_id", external_id)
+        .limit(1)
+        .execute()
+    ).data
+
+    if existing:
+        return existing[0]["user_id"] == user_id
+
+    db.table("redeemed_purchases").insert(
+        {"external_id": external_id, "platform": platform, "user_id": user_id}
+    ).execute()
+    return True

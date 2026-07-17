@@ -3,7 +3,6 @@ from types import SimpleNamespace
 import pytest
 from fastapi.testclient import TestClient
 
-import worker.config
 from api.main import app
 
 
@@ -36,6 +35,16 @@ class FakeTable:
 
     def update(self, values):
         self._update_values = values
+        return self
+
+    def limit(self, *args, **kwargs):
+        return self
+
+    def insert(self, values):
+        if isinstance(values, list):
+            self.rows.extend(values)
+        else:
+            self.rows.append(values)
         return self
 
     def upsert(self, values, **kwargs):
@@ -115,6 +124,7 @@ def client(monkeypatch):
     monkeypatch.setattr("api.payments.router.get_user_id", lambda request: "user-123")
 
     with TestClient(app) as test_client:
+        test_client.fake_db = fake_db
         yield test_client
 
 
@@ -235,7 +245,6 @@ class FakeAsyncClient:
 
 def test_refresh_token_endpoint_renews_token(monkeypatch, client):
     monkeypatch.setattr("api.auth.router.httpx.AsyncClient", FakeAsyncClient)
-    monkeypatch.setattr(worker.config.settings, "supabase_service_role_key", "test-service-role-key")
 
     response = client.post(
         "/auth/refresh",
@@ -312,3 +321,59 @@ def test_unregister_push_token_endpoint_validates_input(client):
     )
 
     assert response.status_code == 400
+
+
+def test_verify_purchase_endpoint_rejects_receipt_claimed_by_another_user(monkeypatch, client):
+    async def fake_verify_apple(receipt):
+        return {
+            "is_valid": True,
+            "expires_at": "2024-06-01T00:00:00+00:00",
+            "external_id": "orig-txn-1",
+        }
+
+    monkeypatch.setattr("api.payments.router._verify_apple", fake_verify_apple)
+    client.fake_db.tables["redeemed_purchases"] = [
+        {"external_id": "orig-txn-1", "platform": "ios", "user_id": "other-user"}
+    ]
+
+    response = client.post(
+        "/payments/verify",
+        json={"platform": "ios", "receipt_token": "receipt", "product_id": "monthly"},
+        headers={"Authorization": "Bearer token"},
+    )
+
+    assert response.status_code == 409
+
+
+def test_verify_purchase_endpoint_allows_reverify_by_same_user(monkeypatch, client):
+    async def fake_verify_apple(receipt):
+        return {
+            "is_valid": True,
+            "expires_at": "2024-06-01T00:00:00+00:00",
+            "external_id": "orig-txn-2",
+        }
+
+    monkeypatch.setattr("api.payments.router._verify_apple", fake_verify_apple)
+    monkeypatch.setattr("api.payments.router.activate_premium", lambda **kwargs: None)
+    client.fake_db.tables["redeemed_purchases"] = [
+        {"external_id": "orig-txn-2", "platform": "ios", "user_id": "user-123"}
+    ]
+
+    response = client.post(
+        "/payments/verify",
+        json={"platform": "ios", "receipt_token": "receipt", "product_id": "monthly"},
+        headers={"Authorization": "Bearer token"},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["is_valid"] is True
+
+
+def test_topicsfree_endpoint_rejects_limit_above_max(client):
+    response = client.get("/feed/topicsfree?limit=999")
+    assert response.status_code == 422
+
+
+def test_topicsfree_endpoint_rejects_negative_offset(client):
+    response = client.get("/feed/topicsfree?offset=-1")
+    assert response.status_code == 422

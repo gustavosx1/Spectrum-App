@@ -163,10 +163,15 @@ def list_outlets():
 
 @router.get("/topicsfree", response_model=TopicListResponse)
 def list_topics_free(
-    limit: int = 3,
-    offset: int = 0,
+    limit: int = Query(default=3, ge=1, le=4),
+    offset: int = Query(default=0, ge=0),
     only_hot: bool = True,
 ) -> TopicListResponse:
+    """
+    Endpoint público (sem autenticação) — limit/offset precisam de teto
+    explícito para não permitir que qualquer requisição anônima force uma
+    query arbitrariamente grande no Supabase (negação de serviço barata).
+    """
     db = get_client()
     return _list_topics(db, limit=limit, offset=offset, only_hot=only_hot)
 
@@ -174,8 +179,8 @@ def list_topics_free(
 @router.get("/topics", response_model=TopicListResponse)
 def list_topics(
     request: Request,
-    limit: int = Query(default=20, le=50),
-    offset: int = Query(default=0),
+    limit: int = Query(default=20, ge=1, le=50),
+    offset: int = Query(default=0, ge=0),
     only_hot: bool = Query(default=False),
 ):
     """
@@ -379,8 +384,7 @@ def get_topic_free(
         )
 
     grouped_preview = {
-        lean: items[:preview_limit]
-        for lean, items in grouped_all.items()
+        lean: items[:preview_limit] for lean, items in grouped_all.items()
     }
     preview_count = sum(len(items) for items in grouped_preview.values())
     locked_article_count = max(topic["article_count"] - preview_count, 0)

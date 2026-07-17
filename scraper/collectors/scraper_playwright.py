@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import re
 from typing import Optional
+from urllib.parse import urlparse
 
 from scraper.models.article import RawArticle, Source
 from scraper.models.outlet import OutletConfig
@@ -19,6 +21,28 @@ from scraper.utils.text import (
 from scraper.config import settings
 
 logger = logging.getLogger(__name__)
+
+
+def _safe_filename_component(value: str) -> str:
+    """Sanitiza um valor vindo do banco antes de usá-lo em nome de arquivo."""
+    return re.sub(r"[^A-Za-z0-9_-]", "_", value)[:100]
+
+
+def _is_same_site(url: str, outlet: OutletConfig) -> bool:
+    """
+    Restringe navegação/requisições a hosts do próprio outlet — evita que um
+    link malicioso extraído da página (ex.: anúncio comprometido) ou um
+    base_url adulterado no Supabase force o scraper a acessar hosts
+    internos/arbitrários (SSRF).
+    """
+    try:
+        target_host = (urlparse(url).hostname or "").lower()
+        allowed_host = (urlparse(outlet.base_url).hostname or "").lower()
+    except ValueError:
+        return False
+    if not target_host or not allowed_host:
+        return False
+    return target_host == allowed_host or target_host.endswith("." + allowed_host)
 
 HEADERS = {
     "User-Agent": (
@@ -143,6 +167,7 @@ async def scrape_outlet(outlet: OutletConfig) -> list[dict]:
                     links = list(candidates)
 
                 links = list(dict.fromkeys(links))
+                links = [u for u in links if _is_same_site(u, outlet)]
                 articles = []
                 if not links:
                     logger.info("Fallback HTTP: nenhum link encontrado em %s", target)
@@ -221,7 +246,7 @@ async def _collect_article_links(context, outlet: OutletConfig) -> list[str]:
         # Salva HTML para depuração se o seletor não encontrar nada
         try:
             html_raw = await page.content()
-            dbg_path = f"playwright_debug_{outlet.id}.html"
+            dbg_path = f"playwright_debug_{_safe_filename_component(outlet.id)}.html"
             with open(dbg_path, "w", encoding="utf8") as fh:
                 fh.write(html_raw[:200000])
             logger.info("Saved page HTML for %s to %s", outlet.name, dbg_path)
@@ -270,10 +295,15 @@ async def _collect_article_links(context, outlet: OutletConfig) -> list[str]:
     finally:
         await page.close()
 
-    return list(dict.fromkeys(links))  # dedup mantendo ordem
+    deduped = list(dict.fromkeys(links))  # dedup mantendo ordem
+    return [u for u in deduped if _is_same_site(u, outlet)]
 
 
 async def _scrape_article(context, url: str, outlet: OutletConfig) -> Optional[dict]:
+    if not _is_same_site(url, outlet):
+        logger.warning("Playwright | %s | URL fora do host do outlet, ignorando: %s", outlet.name, url)
+        return None
+
     page = await context.new_page()
     try:
         await page.goto(url, wait_until="domcontentloaded", timeout=settings.playwright_page_timeout_ms)

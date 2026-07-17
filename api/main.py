@@ -78,19 +78,18 @@ app = FastAPI(
     version="1.0.0",
     docs_url=None if settings.is_production else "/docs",
     redoc_url=None,
+    openapi_url=None if settings.is_production else "/openapi.json",
 )
 
 setup_logging()
 
-cors_origins = settings.cors_origins
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=cors_origins,
-    allow_credentials="*" not in cors_origins,
-    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type"],
-)
+# Ordem de registro importa: no Starlette, o middleware adicionado por
+# último fica por fora de tudo. Auth precisa estar por dentro do CORS
+# (senão um preflight OPTIONS bloqueado pelo Auth nunca recebe headers
+# de CORS e o browser derruba a resposta) e por dentro do logging de
+# métricas (senão requisições barradas pelo Auth não aparecem nos logs
+# de request.complete).
+app.add_middleware(AuthMiddleware)
 
 
 @app.middleware("http")
@@ -112,6 +111,17 @@ async def request_metrics(request: Request, call_next):
                 "duration_ms": duration_ms,
             },
         )
+
+
+cors_origins = settings.cors_origins
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_origins,
+    allow_credentials="*" not in cors_origins,
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
+)
 
 
 @app.exception_handler(HTTPException)
@@ -138,8 +148,6 @@ async def generic_exception_handler(request: Request, exc: Exception):
         exc_info=exc,
     )
     return error_response(500, "Internal server error", request.url.path)
-
-app.add_middleware(AuthMiddleware)
 
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(feed_router, prefix="/feed", tags=["feed"])

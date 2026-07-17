@@ -70,18 +70,18 @@ def get_subscription(request: Request):
 
 @router.post("/refresh", response_model=RefreshTokenResponse)
 async def refresh_token(body: RefreshTokenRequest):
-    """Renova o access token usando o refresh token do Supabase."""
-    service_key = settings.supabase_service_role_key
-    if not service_key:
-        raise HTTPException(
-            status_code=500,
-            detail="SUPABASE_SERVICE_ROLE_KEY não configurado",
-        )
+    """
+    Renova o access token usando o refresh token do Supabase.
 
+    Usa a anon key (não a service role key): o grant_type=refresh_token
+    do GoTrue não exige privilégio elevado — é a mesma chave que os SDKs
+    oficiais (supabase-js, etc.) usam para essa chamada. Evita expor a
+    service role key (que ignora RLS) num fluxo que não precisa dela.
+    """
     url = f"{settings.supabase_url.rstrip('/')}/auth/v1/token?grant_type=refresh_token"
     headers = {
-        "apikey": service_key,
-        "Authorization": f"Bearer {service_key}",
+        "apikey": settings.supabase_key,
+        "Authorization": f"Bearer {settings.supabase_key}",
     }
 
     async with httpx.AsyncClient(timeout=30) as client:

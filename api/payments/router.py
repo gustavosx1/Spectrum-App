@@ -13,13 +13,20 @@ import httpx
 import jwt as pyjwt
 from fastapi import APIRouter, Header, HTTPException, Request
 
+from urllib.parse import quote
+
 from api.middleware.auth import get_user_id
 from api.models.schemas import (
     PurchaseVerifyRequest,
     PurchaseVerifyResponse,
     SubscriptionStatus,
 )
-from api.utils.premium import activate_premium, deactivate_premium, get_subscription
+from api.utils.premium import (
+    activate_premium,
+    claim_purchase,
+    deactivate_premium,
+    get_subscription,
+)
 from worker.config import settings
 
 router = APIRouter()
@@ -44,6 +51,13 @@ async def verify_purchase(body: PurchaseVerifyRequest, request: Request):
         )
 
     if result["is_valid"]:
+        external_id = result.get("external_id")
+        if external_id and not claim_purchase(external_id, body.platform, user_id):
+            raise HTTPException(
+                status_code=409,
+                detail="Este recibo de compra já está vinculado a outra conta",
+            )
+
         activate_premium(
             user_id=user_id,
             platform=body.platform,
@@ -195,7 +209,14 @@ async def _verify_apple(receipt: str) -> dict:
         if not expires_at or expires_at < datetime.now(tz=timezone.utc):
             return {"is_valid": False}
 
-        return {"is_valid": True, "expires_at": expires_at}
+        return {
+            "is_valid": True,
+            "expires_at": expires_at,
+            # Identificador estável da assinatura (sobrevive a renovações),
+            # usado para impedir que o mesmo recibo ative premium em contas
+            # diferentes — ver claim_purchase().
+            "external_id": latest.get("original_transaction_id"),
+        }
 
     return {"is_valid": False}
 
@@ -211,8 +232,8 @@ async def _verify_google(purchase_token: str, product_id: str) -> dict:
 
     url = (
         f"https://androidpublisher.googleapis.com/androidpublisher/v3/"
-        f"applications/{settings.android_package_name}/purchases/subscriptions/"
-        f"{product_id}/tokens/{purchase_token}"
+        f"applications/{quote(settings.android_package_name, safe='')}/purchases/subscriptions/"
+        f"{quote(product_id, safe='')}/tokens/{quote(purchase_token, safe='')}"
     )
     resp = await _request_with_retries(
         "GET",
@@ -236,7 +257,8 @@ async def _verify_google(purchase_token: str, product_id: str) -> dict:
     if not expires_at or expires_at < datetime.now(tz=timezone.utc):
         return {"is_valid": False}
 
-    return {"is_valid": True, "expires_at": expires_at}
+    # O próprio purchase_token já é o identificador estável da compra.
+    return {"is_valid": True, "expires_at": expires_at, "external_id": purchase_token}
 
 
 async def _google_access_token() -> Optional[str]:
