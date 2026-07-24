@@ -306,6 +306,8 @@ Analise as matérias abaixo sobre o mesmo acontecimento e retorne um JSON com es
 Regras:
 - O canonical_title deve refletir os fatos confirmados pelas claims, não os títulos originais
 - O summary deve começar com os fatos verificáveis e, quando possível, apontar onde os espectros divergem
+- Ignore divergências de data de publicação entre matérias; assuma que todas foram publicadas hoje (janela de coleta recente)
+- Não use data/hora de publicação como evidência para classificar claims e não destaque inconsistências de formatação de data
 - Extraia 2 a 4 claims por artigo — priorize afirmações verificáveis e divergências entre matérias
 - Use "unverifiable" apenas quando não há informação suficiente nas matérias
 - Retorne SOMENTE o JSON, sem markdown, sem explicação
@@ -357,6 +359,8 @@ Claims já verificadas sobre este mesmo acontecimento (use como contexto para id
 Regras:
 - Extraia 2 a 4 claims da matéria
 - Se uma claim contradiz algo já verificado acima, aponte isso na evidence
+- Ignore datas de publicação como sinal de contradição; trate a matéria como publicada hoje
+- Não use divergências de formato de data (ex.: 07/10/2026 vs 10.jul.2026) para produzir claims
 - Consulte também seu conhecimento sobre bases de dados oficiais (IBGE, Banco Central, TSE, Câmara)
 - Retorne SOMENTE o JSON, sem markdown, sem explicação
 

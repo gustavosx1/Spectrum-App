@@ -204,6 +204,7 @@ async def test_run_initial_prompt_builds_expected_prompt(monkeypatch):
     assert "Título original" in captured["prompt"]
     assert "Lead do artigo" in captured["prompt"]
     assert "Conteúdo completo" in captured["prompt"]
+    assert "assuma que todas foram publicadas hoje" in captured["prompt"]
 
 
 @pytest.mark.asyncio
@@ -231,6 +232,7 @@ async def test_run_individual_prompt_includes_existing_claims(monkeypatch):
     assert result == [{"claim": "Afirmacao", "verdict": "true"}]
     assert "Reclamação anterior" in captured["prompt"]
     assert "Outro título" in captured["prompt"]
+    assert "trate a matéria como publicada hoje" in captured["prompt"]
 
 
 @pytest.mark.asyncio

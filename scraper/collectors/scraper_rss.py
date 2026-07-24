@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from urllib.parse import urlparse
 
 import feedparser
 import httpx
@@ -27,6 +28,23 @@ HEADERS = {
 
 # Janela de coleta — artigos mais antigos que isso são descartados.
 COLLECTION_WINDOW_MINUTES: int = 75
+FOLHA_OUTLET_ID = "folha_sp"
+FOLHA_OUTLET_NAME = "Folha de S.Paulo"
+FOLHA_HOST_SUFFIX = ".folha.uol.com.br"
+
+
+def _resolve_outlet_for_entry(outlet: OutletConfig, url: str) -> tuple[str, str]:
+    """
+    Regra específica para feed da UOL: links da Folha entram no outlet folha_sp.
+    """
+    if outlet.id != "uol_noticias":
+        return outlet.id, outlet.name
+
+    host = (urlparse(url).hostname or "").lower()
+    if host == "folha.uol.com.br" or host.endswith(FOLHA_HOST_SUFFIX):
+        return FOLHA_OUTLET_ID, FOLHA_OUTLET_NAME
+
+    return outlet.id, outlet.name
 
 
 async def fetch_rss_feed(
@@ -66,6 +84,11 @@ async def fetch_rss_feed(
         if not url:
             continue
 
+        resolved_outlet_id, resolved_outlet_name = _resolve_outlet_for_entry(
+            outlet,
+            url,
+        )
+
         published_at = parse_date(entry.get("published") or entry.get("updated"))
 
         if not is_within_window(published_at):
@@ -79,8 +102,8 @@ async def fetch_rss_feed(
 
         article = RawArticle(
             url=canonicalize_url(url),
-            outlet_name=outlet.name,
-            outlet_id=outlet.id,
+            outlet_name=resolved_outlet_name,
+            outlet_id=resolved_outlet_id,
             title=entry.get("title", "").strip(),
             lead=extract_lead(entry),
             image_url=extract_image(entry),
