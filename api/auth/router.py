@@ -6,6 +6,7 @@ from fastapi import APIRouter, HTTPException, Request
 
 from api.middleware.auth import get_user_id
 from api.models.schemas import (
+    DeleteAccountResponse,
     RefreshTokenRequest,
     RefreshTokenResponse,
     SubscriptionStatus,
@@ -15,6 +16,50 @@ from worker.config import settings
 from worker.utils.db import get_client
 
 router = APIRouter()
+
+
+def _get_admin_supabase_client():
+    from supabase import create_client
+
+    if not settings.supabase_service_role_key:
+        raise HTTPException(
+            status_code=503,
+            detail="SUPABASE_SERVICE_ROLE_KEY não configurada",
+        )
+
+    return create_client(settings.supabase_url, settings.supabase_service_role_key)
+
+
+async def _delete_supabase_auth_user(user_id: str) -> None:
+    _get_admin_supabase_client()
+    url = f"{settings.supabase_url.rstrip('/')}/auth/v1/admin/users/{user_id}"
+    headers = {
+        "apikey": settings.supabase_service_role_key,
+        "Authorization": f"Bearer {settings.supabase_service_role_key}",
+        "Content-Type": "application/json",
+    }
+
+    async with httpx.AsyncClient(timeout=30) as client:
+        response = await client.delete(url, headers=headers)
+
+    if response.status_code not in {200, 204}:
+        raise HTTPException(
+            status_code=response.status_code,
+            detail="Falha ao remover usuário do Supabase Auth",
+        )
+
+
+def _cleanup_user_data(user_id: str) -> None:
+    admin_db = _get_admin_supabase_client()
+
+    # Limpa dados de app antes/depois do delete no Auth. Isso evita lixo
+    # em tabelas que não necessariamente usam cascade no Supabase.
+    for table_name, column_name in (
+        ("device_push_tokens", "user_id"),
+        ("redeemed_purchases", "user_id"),
+        ("user_profiles", "id"),
+    ):
+        admin_db.table(table_name).delete().eq(column_name, user_id).execute()
 
 
 @router.get("/me", response_model=UserProfile)
@@ -97,3 +142,23 @@ async def refresh_token(body: RefreshTokenRequest):
         expires_in=data["expires_in"],
         token_type=data["token_type"],
     )
+
+
+@router.delete("/delete", response_model=DeleteAccountResponse)
+async def delete_account(request: Request):
+    """
+    Remove a conta autenticada.
+
+    Fluxo:
+    1. limpa dados de app ligados ao usuário
+    2. remove o usuário do Supabase Auth
+    3. retorna confirmação para o frontend
+    """
+    user_id = get_user_id(request)
+
+    # Se a remoção do Auth falhar, os dados ainda ficam intactos até que a
+    # operação seja concluída; isso evita deletar tudo e deixar a conta viva.
+    await _delete_supabase_auth_user(user_id)
+    _cleanup_user_data(user_id)
+
+    return DeleteAccountResponse(ok=True, message="Conta excluída com sucesso")

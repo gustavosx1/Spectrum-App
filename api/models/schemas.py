@@ -156,6 +156,11 @@ class RefreshTokenResponse(BaseModel):
     token_type: str
 
 
+class DeleteAccountResponse(BaseModel):
+    ok: bool
+    message: str
+
+
 class SubscriptionStatus(BaseModel):
     is_premium: bool
     platform: Optional[str] = None  # onde comprou

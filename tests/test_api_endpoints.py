@@ -47,6 +47,10 @@ class FakeTable:
             self.rows.append(values)
         return self
 
+    def delete(self):
+        self._delete = True
+        return self
+
     def upsert(self, values, **kwargs):
         self._upsert_payload = values
         self._upsert_kwargs = kwargs
@@ -57,6 +61,9 @@ class FakeTable:
         return self
 
     def execute(self):
+        if getattr(self, "_delete", False):
+            self.rows.clear()
+            return SimpleNamespace(data=[])
         if self._single:
             return SimpleNamespace(data=self.rows[0] if self.rows else None)
         return SimpleNamespace(data=self.rows)
@@ -113,6 +120,7 @@ def client(monkeypatch):
                 {"id": "claim-1", "article_id": "art-1", "claim": "Claim 1", "verdict": "true", "confidence": 0.9, "evidence": "evidence"}
             ],
             "device_push_tokens": [],
+            "redeemed_purchases": [],
         }
     )
 
@@ -241,6 +249,9 @@ class FakeAsyncClient:
                 "token_type": "bearer",
             },
         )
+
+    async def delete(self, url, headers=None):
+        return SimpleNamespace(status_code=204, json=lambda: {})
 
 
 def test_refresh_token_endpoint_renews_token(monkeypatch, client):
@@ -377,3 +388,22 @@ def test_topicsfree_endpoint_rejects_limit_above_max(client):
 def test_topicsfree_endpoint_rejects_negative_offset(client):
     response = client.get("/feed/topicsfree?offset=-1")
     assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_delete_account_endpoint_removes_user_and_app_data(monkeypatch, client):
+    monkeypatch.setattr("api.auth.router.httpx.AsyncClient", FakeAsyncClient)
+    monkeypatch.setattr("api.auth.router._get_admin_supabase_client", lambda: client.fake_db)
+
+    response = client.delete(
+        "/auth/delete",
+        headers={"Authorization": "Bearer token"},
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["ok"] is True
+    assert body["message"] == "Conta excluída com sucesso"
+    assert client.fake_db.tables["user_profiles"] == []
+    assert client.fake_db.tables["device_push_tokens"] == []
+    assert client.fake_db.tables["redeemed_purchases"] == []
