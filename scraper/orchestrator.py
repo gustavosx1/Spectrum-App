@@ -31,6 +31,7 @@ Filtrar veículos:
 logger = logging.getLogger(__name__)
 
 MAX_CONCURRENT_OUTLETS = 5
+PLAYWRIGHT_FALLBACK_DISABLED_OUTLETS = {"folha_sp"}
 
 
 async def _collect_one(
@@ -50,7 +51,12 @@ async def _collect_one(
 
         # Só tentar fallback Playwright se o outlet declarar seletores
         if not articles:
-            if outlet.article_link_selector and outlet.base_url:
+            if outlet.id in PLAYWRIGHT_FALLBACK_DISABLED_OUTLETS:
+                logger.info(
+                    "RSS vazio para %s — fallback Playwright desativado para este outlet",
+                    outlet.name,
+                )
+            elif outlet.article_link_selector and outlet.base_url:
                 logger.info(
                     "RSS vazio para %s — tentando Playwright/fallback", outlet.name
                 )
