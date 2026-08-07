@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import httpx
+import logging
 
 from fastapi import APIRouter, HTTPException, Request
 
-from api.middleware.auth import get_user_id
+from api.middleware.auth import get_current_user, get_user_id
 from api.models.schemas import (
     DeleteAccountResponse,
     RefreshTokenRequest,
@@ -16,6 +17,7 @@ from worker.config import settings
 from worker.utils.db import get_client
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 def _get_admin_supabase_client():
@@ -62,6 +64,18 @@ def _cleanup_user_data(user_id: str) -> None:
         admin_db.table(table_name).delete().eq(column_name, user_id).execute()
 
 
+def _provision_user_profile(user_id: str, email: str) -> dict:
+    """Cria o perfil mínimo para instalações sem trigger de `auth.users`."""
+    admin_db = _get_admin_supabase_client()
+    result = admin_db.table("user_profiles").upsert(
+        {"id": user_id, "email": email},
+        on_conflict="id",
+    ).execute()
+    if not result.data:
+        raise HTTPException(status_code=503, detail="Não foi possível inicializar o perfil do usuário")
+    return result.data[0]
+
+
 @router.get("/me", response_model=UserProfile)
 def get_profile(request: Request):
     """
@@ -75,6 +89,13 @@ def get_profile(request: Request):
     result = db.table("user_profiles").select("*").eq("id", user_id).single().execute()
 
     profile = result.data
+    if not profile:
+        claims = get_current_user(request)
+        email = claims.get("email")
+        if not isinstance(email, str) or not email:
+            raise HTTPException(status_code=422, detail="JWT não contém e-mail do usuário")
+        profile = _provision_user_profile(user_id, email)
+
     return UserProfile(
         id=profile["id"],
         email=profile["email"],
@@ -130,9 +151,17 @@ async def refresh_token(body: RefreshTokenRequest):
     }
 
     async with httpx.AsyncClient(timeout=30) as client:
-        response = await client.post(url, data={"refresh_token": body.refresh_token}, headers=headers)
+        try:
+            response = await client.post(url, data={"refresh_token": body.refresh_token}, headers=headers)
+        except httpx.HTTPError as exc:
+            logger.warning("auth.refresh_unavailable", extra={"error": str(exc)})
+            raise HTTPException(
+                status_code=503,
+                detail="Serviço de autenticação temporariamente indisponível",
+            ) from exc
 
     if response.status_code != 200:
+        logger.warning("auth.refresh_rejected", extra={"status_code": response.status_code})
         raise HTTPException(status_code=response.status_code, detail="Refresh token inválido")
 
     data = response.json()

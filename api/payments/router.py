@@ -39,6 +39,12 @@ async def verify_purchase(body: PurchaseVerifyRequest, request: Request):
     Verifica compra feita nas lojas e ativa o premium.
     Chamado pelo mobile logo após o usuário completar a compra.
     """
+    if not settings.enable_legacy_store_receipt_verification:
+        raise HTTPException(
+            status_code=410,
+            detail="Verificação direta de recibos desativada; use o checkout RevenueCat",
+        )
+
     user_id = get_user_id(request)
 
     if body.platform == "ios":
@@ -84,22 +90,26 @@ def subscription_status(request: Request):
 @router.post("/webhook")
 async def payment_webhook(
     request: Request,
-    x_revenuecat_signature: str = Header(default=None),
+    x_revenuecat_webhook_signature: str = Header(default=None),
 ):
     """
     Webhook do RevenueCat — notifica mudanças de assinatura (iOS + Android).
 
     Eventos tratados:
-    - INITIAL_PURCHASE / RENEWAL → ativa premium
-    - CANCELLATION               → desativa auto-renovação
-    - EXPIRATION / REFUND        → desativa premium
+    - INITIAL_PURCHASE / RENEWAL / UNCANCELLATION / SUBSCRIPTION_EXTENDED → ativa premium
+    - CANCELLATION → desativa apenas a renovação automática
+    - EXPIRATION → desativa premium
     """
     body = await request.body()
 
-    if not _verify_revenuecat_signature(body, x_revenuecat_signature):
+    if not _verify_revenuecat_signature(body, x_revenuecat_webhook_signature):
         raise HTTPException(status_code=401, detail="Assinatura do webhook inválida")
 
-    payload = json.loads(body)
+    try:
+        payload = json.loads(body)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(status_code=400, detail="Payload do webhook inválido") from exc
+
     event = payload.get("event", {})
     event_type = event.get("type")
     app_user_id = event.get("app_user_id")  # user_id do Supabase
@@ -107,7 +117,11 @@ async def payment_webhook(
     if not app_user_id:
         return {"status": "ignored"}
 
-    if event_type in ("INITIAL_PURCHASE", "RENEWAL"):
+    if not _has_premium_entitlement(event):
+        logger.info("payment.webhook_ignored", extra={"event_type": event_type, "reason": "entitlement"})
+        return {"status": "ignored"}
+
+    if event_type in ("INITIAL_PURCHASE", "RENEWAL", "UNCANCELLATION", "SUBSCRIPTION_EXTENDED"):
         expires_at = _parse_ms(event.get("expiration_at_ms"))
         activate_premium(
             user_id=app_user_id,
@@ -126,7 +140,7 @@ async def payment_webhook(
         ).execute()
         logger.info("Auto-renovação cancelada: %s", app_user_id)
 
-    elif event_type in ("EXPIRATION", "REFUND"):
+    elif event_type == "EXPIRATION":
         deactivate_premium(app_user_id)
         logger.info("Premium desativado (%s): %s", event_type, app_user_id)
 
@@ -302,9 +316,26 @@ def _parse_ms(ms: Optional[int]) -> Optional[datetime]:
 def _verify_revenuecat_signature(body: bytes, signature: Optional[str]) -> bool:
     if not signature or not settings.revenuecat_webhook_secret:
         return False
+
+    try:
+        parts = dict(part.split("=", 1) for part in signature.split(",") if "=" in part)
+        timestamp = parts["t"]
+        provided_signature = parts["v1"]
+        if abs(time.time() - int(timestamp)) > settings.revenuecat_webhook_tolerance_seconds:
+            return False
+    except (KeyError, TypeError, ValueError):
+        return False
+
+    signed_payload = timestamp.encode() + b"." + body
     expected = hmac.new(
         settings.revenuecat_webhook_secret.encode(),
-        body,
+        signed_payload,
         hashlib.sha256,
     ).hexdigest()
-    return hmac.compare_digest(expected, signature)
+    return hmac.compare_digest(expected, provided_signature)
+
+
+def _has_premium_entitlement(event: dict[str, Any]) -> bool:
+    entitlement_id = settings.revenuecat_premium_entitlement_id.strip()
+    entitlement_ids = event.get("entitlement_ids") or []
+    return bool(entitlement_id and entitlement_id in entitlement_ids)

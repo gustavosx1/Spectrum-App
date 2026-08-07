@@ -72,6 +72,8 @@ JWT/Auth:
 - `SUPABASE_JWK_PUBLIC_KEY` (ES/JWK)
 - `JWT_EXPECTED_AUDIENCE`
 - `JWT_EXPECTED_ISSUER`
+- `SUPABASE_SERVICE_ROLE_KEY` (provisionamento de perfil e exclusão de conta)
+- `APP_ENV=production` e `API_ALLOWED_HOSTS` (obrigatórios em produção); defina `API_CORS_ORIGINS` somente para domínios de clientes web
 
 IA:
 - `GEMINI_API_KEY`
@@ -90,10 +92,8 @@ Push:
 - `PUSH_EXPO_ACCESS_TOKEN`
 
 Pagamentos:
-- `APPLE_SHARED_SECRET`
-- `ANDROID_PACKAGE_NAME`
-- `GOOGLE_SERVICE_ACCOUNT_JSON`
 - `REVENUECAT_WEBHOOK_SECRET`
+- `REVENUECAT_PREMIUM_ENTITLEMENT_ID` (padrão: `premium`)
 
 ## Regras importantes da coleta
 
@@ -179,9 +179,12 @@ ou
 
 Sessao/auth:
 1. Enviar `Authorization: Bearer <access_token>` nas rotas privadas.
-2. Ao receber 401, chamar `POST /auth/refresh`.
-3. Atualizar tokens e repetir requisicao original.
-4. Se refresh falhar, forcar logout.
+2. No Expo, usar o SDK Supabase como fonte única da sessão e seu refresh integrado.
+3. Ao receber `401`, renovar uma vez com o SDK e repetir a requisição original.
+4. Se a renovação falhar, limpar a sessão e solicitar novo login.
+
+O endpoint `POST /auth/refresh` existe apenas para compatibilidade de clientes
+externos legados; o aplicativo Spectrum não deve enviar refresh tokens por ele.
 
 Feed e cache:
 - Paginacao por `limit`/`offset`.

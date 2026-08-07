@@ -1,6 +1,12 @@
+from datetime import datetime, timedelta, timezone
+import hashlib
+import hmac
+import json
+import time
 from types import SimpleNamespace
 
 import pytest
+import jwt
 from fastapi.testclient import TestClient
 
 from api.main import app
@@ -217,6 +223,7 @@ def test_verify_purchase_endpoint_activates_premium(monkeypatch, client):
 
     monkeypatch.setattr("api.payments.router._verify_apple", fake_verify_apple)
     monkeypatch.setattr("api.payments.router.activate_premium", fake_activate)
+    monkeypatch.setattr("api.payments.router.settings.enable_legacy_store_receipt_verification", True)
 
     response = client.post(
         "/payments/verify",
@@ -227,6 +234,16 @@ def test_verify_purchase_endpoint_activates_premium(monkeypatch, client):
     assert response.status_code == 200
     assert response.json()["is_valid"] is True
     assert called["payload"]["user_id"] == "user-123"
+
+
+def test_verify_purchase_endpoint_is_disabled_without_legacy_flag(client):
+    response = client.post(
+        "/payments/verify",
+        json={"platform": "ios", "receipt_token": "receipt", "product_id": "monthly"},
+        headers={"Authorization": "Bearer token"},
+    )
+
+    assert response.status_code == 410
 
 
 class FakeAsyncClient:
@@ -343,6 +360,7 @@ def test_verify_purchase_endpoint_rejects_receipt_claimed_by_another_user(monkey
         }
 
     monkeypatch.setattr("api.payments.router._verify_apple", fake_verify_apple)
+    monkeypatch.setattr("api.payments.router.settings.enable_legacy_store_receipt_verification", True)
     client.fake_db.tables["redeemed_purchases"] = [
         {"external_id": "orig-txn-1", "platform": "ios", "user_id": "other-user"}
     ]
@@ -366,6 +384,7 @@ def test_verify_purchase_endpoint_allows_reverify_by_same_user(monkeypatch, clie
 
     monkeypatch.setattr("api.payments.router._verify_apple", fake_verify_apple)
     monkeypatch.setattr("api.payments.router.activate_premium", lambda **kwargs: None)
+    monkeypatch.setattr("api.payments.router.settings.enable_legacy_store_receipt_verification", True)
     client.fake_db.tables["redeemed_purchases"] = [
         {"external_id": "orig-txn-2", "platform": "ios", "user_id": "user-123"}
     ]
@@ -407,3 +426,108 @@ async def test_delete_account_endpoint_removes_user_and_app_data(monkeypatch, cl
     assert client.fake_db.tables["user_profiles"] == []
     assert client.fake_db.tables["device_push_tokens"] == []
     assert client.fake_db.tables["redeemed_purchases"] == []
+
+
+def test_verify_token_without_configured_verification_key_returns_none(monkeypatch):
+    from api.middleware.auth import _verify_token
+    from worker.config import settings
+
+    token = jwt.encode(
+        {
+            "sub": "user-123",
+            "exp": datetime.now(tz=timezone.utc) + timedelta(minutes=5),
+            "iss": f"{settings.supabase_url.rstrip('/')}/auth/v1",
+        },
+        "untrusted-secret-with-at-least-thirty-two-bytes",
+        algorithm="HS256",
+    )
+    monkeypatch.setattr(settings, "supabase_jwt_secret", None)
+    monkeypatch.setattr(settings, "supabase_jwk_public_key", None)
+
+    assert _verify_token(token) is None
+
+
+def test_production_configuration_requires_jwt_and_public_hosts(monkeypatch):
+    from worker.config import settings
+
+    monkeypatch.setattr(settings, "app_env", "production")
+    monkeypatch.setattr(settings, "supabase_jwt_secret", None)
+    monkeypatch.setattr(settings, "supabase_jwk_public_key", None)
+    monkeypatch.setattr(settings, "api_allowed_hosts", "localhost")
+    monkeypatch.setattr(settings, "api_cors_origins", "http://localhost:8080")
+
+    errors = settings.production_configuration_errors()
+
+    assert any("SUPABASE_JWT_SECRET" in error for error in errors)
+    assert any("API_ALLOWED_HOSTS" in error for error in errors)
+    assert any("API_CORS_ORIGINS" in error for error in errors)
+
+
+def test_production_configuration_rejects_invalid_jwk(monkeypatch):
+    from worker.config import settings
+
+    monkeypatch.setattr(settings, "app_env", "production")
+    monkeypatch.setattr(settings, "supabase_jwt_secret", None)
+    monkeypatch.setattr(settings, "supabase_jwk_public_key", '{"keys":[')
+    monkeypatch.setattr(settings, "api_allowed_hosts", "api.prismanews.com.br")
+    monkeypatch.setattr(settings, "api_cors_origins", "")
+
+    errors = settings.production_configuration_errors()
+
+    assert any("SUPABASE_JWK_PUBLIC_KEY" in error for error in errors)
+
+
+def test_revenuecat_webhook_accepts_current_hmac_signature(monkeypatch, client):
+    secret = "webhook-test-secret"
+    monkeypatch.setattr("api.payments.router.settings.revenuecat_webhook_secret", secret)
+    monkeypatch.setattr("api.payments.router.settings.revenuecat_premium_entitlement_id", "premium")
+    called = {}
+
+    def fake_activate(user_id, platform, product_id, expires_at, auto_renews=True):
+        called.update(
+            user_id=user_id,
+            platform=platform,
+            product_id=product_id,
+            expires_at=expires_at,
+            auto_renews=auto_renews,
+        )
+
+    monkeypatch.setattr("api.payments.router.activate_premium", fake_activate)
+    body = json.dumps(
+        {
+            "event": {
+                "type": "INITIAL_PURCHASE",
+                "app_user_id": "user-123",
+                "store": "APP_STORE",
+                "product_id": "prisma.basic.monthly",
+                "expiration_at_ms": 1_800_000_000_000,
+                "entitlement_ids": ["premium"],
+            }
+        }
+    ).encode()
+    timestamp = str(int(time.time()))
+    digest = hmac.new(secret.encode(), timestamp.encode() + b"." + body, hashlib.sha256).hexdigest()
+
+    response = client.post(
+        "/payments/webhook",
+        content=body,
+        headers={"X-RevenueCat-Webhook-Signature": f"t={timestamp},v1={digest}"},
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+    assert called["user_id"] == "user-123"
+    assert called["platform"] == "app_store"
+
+
+def test_revenuecat_webhook_rejects_invalid_signature(monkeypatch, client):
+    monkeypatch.setattr("api.payments.router.settings.revenuecat_webhook_secret", "webhook-test-secret")
+    body = b'{"event":{"type":"INITIAL_PURCHASE"}}'
+
+    response = client.post(
+        "/payments/webhook",
+        content=body,
+        headers={"X-RevenueCat-Webhook-Signature": "t=1800000000,v1=invalid"},
+    )
+
+    assert response.status_code == 401

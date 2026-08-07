@@ -17,6 +17,8 @@ apt install -y \
   nginx \
   redis-server \
   curl \
+  certbot \
+  python3-certbot-nginx \
   build-essential \
   libnss3 \
   libdrm2 \
@@ -58,23 +60,17 @@ pip install -r requirements.txt
 python -m playwright install chromium
 
 # -----------------------------
-# 4) Create .env
+# 4) Validate production config
 # -----------------------------
 mkdir -p /root/spectrum/logs
-cat > /root/spectrum/.env <<'EOF'
-SUPABASE_URL=
-SUPABASE_KEY=
-SUPABASE_JWT_SECRET=
-SUPABASE_SERVICE_ROLE_KEY=
-SUPABASE_JWK_PUBLIC_KEY=
-GEMINI_API_KEY=
-GEMINI_MODEL=gemini-1.5-flash
-REDIS_URL=redis://localhost:6379/0
-APPLE_SHARED_SECRET=
-ANDROID_PACKAGE_NAME=
-GOOGLE_SERVICE_ACCOUNT_JSON={}
-REVENUECAT_WEBHOOK_SECRET=
-EOF
+if [[ ! -f /root/spectrum/.env ]]; then
+  echo "Missing /root/spectrum/.env. Create it from .env.example with production values before rerunning." >&2
+  exit 1
+fi
+chmod 600 /root/spectrum/.env
+
+: "${SPECTRUM_API_DOMAIN:?Set SPECTRUM_API_DOMAIN, for example api.prismanews.com.br}"
+: "${LETSENCRYPT_EMAIL:?Set LETSENCRYPT_EMAIL for TLS certificate issuance}"
 
 # -----------------------------
 # 5) Create systemd services
@@ -88,8 +84,8 @@ After=network.target redis-server.service
 Type=simple
 WorkingDirectory=/root/spectrum
 Environment=PATH=/root/spectrum/.venv/bin
-ExecStart=/bin/bash -lc 'source /root/spectrum/.venv/bin/activate && python -m uvicorn api.main:app --host 0.0.0.0 --port 8000'
-Restart=always
+ExecStart=/bin/bash -lc 'source /root/spectrum/.venv/bin/activate && python -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips=127.0.0.1'
+Restart=on-failure
 RestartSec=5
 StandardOutput=journal
 StandardError=journal
@@ -108,7 +104,7 @@ Type=simple
 WorkingDirectory=/root/spectrum
 Environment=PATH=/root/spectrum/.venv/bin
 ExecStart=/root/spectrum/.venv/bin/celery -A worker.celery_app worker --loglevel=info
-Restart=always
+Restart=on-failure
 RestartSec=5
 
 [Install]
@@ -118,19 +114,35 @@ EOF
 # -----------------------------
 # 6) Configure Nginx
 # -----------------------------
+cat > /etc/nginx/conf.d/spectrum-rate-limit.conf <<'EOF'
+limit_req_zone $binary_remote_addr zone=spectrum_auth:10m rate=10r/m;
+EOF'
+
 cat > /etc/nginx/sites-available/spectrum <<'EOF'
 server {
     listen 80;
-    server_name _;
+  server_name SPECTRUM_API_DOMAIN_PLACEHOLDER;
 
     location / {
         proxy_pass http://127.0.0.1:8000;
+    proxy_http_version 1.1;
         proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
     }
+
+  location = /auth/refresh {
+    limit_req zone=spectrum_auth burst=5 nodelay;
+    proxy_pass http://127.0.0.1:8000;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
 }
 EOF
+sed -i "s/SPECTRUM_API_DOMAIN_PLACEHOLDER/${SPECTRUM_API_DOMAIN}/g" /etc/nginx/sites-available/spectrum
 ln -sf /etc/nginx/sites-available/spectrum /etc/nginx/sites-enabled/spectrum
 nginx -t
 
@@ -142,6 +154,10 @@ systemctl enable --now redis-server nginx
 systemctl enable --now spectrum-api
 systemctl enable --now spectrum-worker
 systemctl restart nginx
+
+certbot --nginx --non-interactive --agree-tos --redirect \
+  --email "$LETSENCRYPT_EMAIL" \
+  -d "$SPECTRUM_API_DOMAIN"
 
 cat > /root/spectrum/run_scraper.sh <<'EOF'
 #!/bin/bash

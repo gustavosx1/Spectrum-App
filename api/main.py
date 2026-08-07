@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 import json
 import logging
 import time
@@ -8,6 +9,7 @@ from typing import Any
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from api.auth.router import router as auth_router
 from api.feed.router import router as feed_router
@@ -73,15 +75,25 @@ def error_response(status_code: int, detail: str, path: str) -> JSONResponse:
     )
 
 
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    errors = settings.production_configuration_errors()
+    if errors:
+        raise RuntimeError("Configuração de produção inválida: " + "; ".join(errors))
+    yield
+
+
 app = FastAPI(
     title="Spectrum API",
     version="1.0.0",
     docs_url=None if settings.is_production else "/docs",
     redoc_url=None,
     openapi_url=None if settings.is_production else "/openapi.json",
+    lifespan=lifespan,
 )
 
 setup_logging()
+
 
 # Ordem de registro importa: no Starlette, o middleware adicionado por
 # último fica por fora de tudo. Auth precisa estar por dentro do CORS
@@ -98,6 +110,13 @@ async def request_metrics(request: Request, call_next):
     response = None
     try:
         response = await call_next(request)
+        response.headers.setdefault("X-Content-Type-Options", "nosniff")
+        response.headers.setdefault("X-Frame-Options", "DENY")
+        response.headers.setdefault("Referrer-Policy", "no-referrer")
+        if settings.is_production:
+            response.headers.setdefault("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+        if request.url.path.startswith("/auth/") or request.headers.get("Authorization"):
+            response.headers.setdefault("Cache-Control", "no-store")
         return response
     finally:
         duration_ms = round((time.time() - start) * 1000, 2)
@@ -114,6 +133,11 @@ async def request_metrics(request: Request, call_next):
 
 
 cors_origins = settings.cors_origins
+
+app.add_middleware(
+    TrustedHostMiddleware,
+    allowed_hosts=settings.allowed_hosts if settings.is_production else ["*"],
+)
 
 app.add_middleware(
     CORSMiddleware,

@@ -124,7 +124,7 @@ def _verify_token(token: str) -> Optional[dict]:
 
         decode_kwargs: dict[str, Any] = {
             "algorithms": algorithms,
-            "options": {"verify_aud": verify_aud},
+            "options": {"verify_aud": verify_aud, "require": ["exp", "sub"]},
             "issuer": issuer,
         }
         if verify_aud:

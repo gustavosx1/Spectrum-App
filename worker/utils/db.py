@@ -7,7 +7,11 @@ from scraper.models.outlet import OutletConfig
 
 
 def get_client() -> Client:
-    return create_client(settings.supabase_url, settings.supabase_key)
+    # Todas as operações chegam por serviços confiáveis que validam a sessão
+    # antes de consultar o banco. Em produção a service role é obrigatória e
+    # permite manter RLS ativo sem expor permissões administrativas ao app.
+    server_key = settings.supabase_service_role_key or settings.supabase_key
+    return create_client(settings.supabase_url, server_key)
 
 
 def getOutlets(outlet_ids: Optional[list[str]] = None) -> list[OutletConfig]:
