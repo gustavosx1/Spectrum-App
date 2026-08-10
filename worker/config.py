@@ -92,6 +92,19 @@ class Settings(BaseSettings):
 
         return None
 
+    def supabase_api_key_configuration_errors(self) -> list[str]:
+        """Evita caracteres invisíveis em valores enviados como HTTP headers."""
+        errors: list[str] = []
+        for variable_name, value in (
+            ("SUPABASE_KEY", self.supabase_key),
+            ("SUPABASE_SERVICE_ROLE_KEY", self.supabase_service_role_key),
+        ):
+            if value and any(ord(character) > 127 or character.isspace() for character in value):
+                errors.append(
+                    f"{variable_name} contém espaço ou caractere não ASCII; copie a chave novamente do Supabase"
+                )
+        return errors
+
     def production_configuration_errors(self) -> list[str]:
         """Retorna requisitos de segurança que não podem faltar em produção."""
         if not self.is_production:
@@ -105,6 +118,7 @@ class Settings(BaseSettings):
         jwk_error = self.jwk_configuration_error()
         if jwk_error:
             errors.append(jwk_error)
+        errors.extend(self.supabase_api_key_configuration_errors())
         if not self.supabase_service_role_key:
             errors.append("Configure SUPABASE_SERVICE_ROLE_KEY para provisionamento e exclusão de conta")
         if not self.allowed_hosts or any(host in {"*", "localhost", "127.0.0.1", "testserver"} for host in self.allowed_hosts):

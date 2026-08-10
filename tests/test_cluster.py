@@ -192,6 +192,7 @@ async def test_run_initial_prompt_builds_expected_prompt(monkeypatch):
     articles = [
         {
             "id": "article-1",
+            "url": "https://example.com/1",
             "title": "Título original",
             "lead": "Lead do artigo",
             "content": "Conteúdo completo do artigo.",
@@ -204,7 +205,7 @@ async def test_run_initial_prompt_builds_expected_prompt(monkeypatch):
     assert "Título original" in captured["prompt"]
     assert "Lead do artigo" in captured["prompt"]
     assert "Conteúdo completo" in captured["prompt"]
-    assert "assuma que todas foram publicadas hoje" in captured["prompt"]
+    assert "Preserve a linha do tempo" in captured["prompt"]
 
 
 @pytest.mark.asyncio
@@ -219,6 +220,7 @@ async def test_run_individual_prompt_includes_existing_claims(monkeypatch):
 
     article = {
         "id": "article-2",
+        "url": "https://example.com/2",
         "title": "Outro título",
         "lead": "Lead extra",
         "content": "Conteúdo atualizado.",
@@ -229,10 +231,17 @@ async def test_run_individual_prompt_includes_existing_claims(monkeypatch):
 
     result = await cluster._run_individual_prompt(article, existing_claims)
 
-    assert result == [{"claim": "Afirmacao", "verdict": "true"}]
+    assert result == [
+        {
+            "claim": "Afirmacao",
+            "verdict": "true",
+            "confidence": 0.0,
+            "evidence": None,
+        }
+    ]
     assert "Reclamação anterior" in captured["prompt"]
     assert "Outro título" in captured["prompt"]
-    assert "trate a matéria como publicada hoje" in captured["prompt"]
+    assert "Mudanças posteriores" in captured["prompt"]
 
 
 @pytest.mark.asyncio
@@ -253,7 +262,6 @@ def test_insert_claims_upserts_records(monkeypatch):
         "topic-1",
         [{"claim": "Teste", "verdict": "true", "confidence": 0.8, "evidence": "Evidência"}],
     )
-
     assert any(
         call[0] == "upsert"
         and call[1][0]["article_id"] == "article-1"
@@ -262,6 +270,39 @@ def test_insert_claims_upserts_records(monkeypatch):
         and call[2]["ignore_duplicates"] is True
         for call in db.calls
     )
+
+
+def test_normalize_claims_demotes_false_without_traceable_evidence():
+    claims = cluster._normalize_claims(
+        [
+            {
+                "claim": "O candidato desistiu definitivamente da campanha.",
+                "verdict": "false",
+                "confidence": 0.99,
+                "evidence": "Uma análise anterior discorda desta alegação.",
+            }
+        ],
+        {"https://example.com/source"},
+    )
+
+    assert claims[0]["verdict"] == "unverifiable"
+    assert "não permite afirmar falsidade" in claims[0]["evidence"]
+
+
+def test_normalize_initial_analysis_rejects_unknown_article_ids():
+    analysis = cluster._normalize_initial_analysis(
+        {
+            "canonical_title": "Título neutro",
+            "summary": "Resumo baseado nas fontes disponíveis.",
+            "articles": [
+                {"article_id": "unknown", "claims": []},
+                {"article_id": "article-1", "claims": []},
+            ],
+        },
+        [{"id": "article-1", "url": "https://example.com/1"}],
+    )
+
+    assert analysis["articles"] == [{"article_id": "article-1", "claims": []}]
 
 
 def test_ensure_topic_image_updates_when_missing():

@@ -14,6 +14,7 @@ from api.main import app
 
 class FakeTable:
     def __init__(self, rows):
+        self._all_rows = rows
         self.rows = rows
         self._single = False
         self._update_values = None
@@ -24,6 +25,8 @@ class FakeTable:
         return self
 
     def eq(self, *args, **kwargs):
+        key, value = args
+        self.rows = [row for row in self.rows if row.get(key) == value]
         return self
 
     def single(self):
@@ -48,9 +51,9 @@ class FakeTable:
 
     def insert(self, values):
         if isinstance(values, list):
-            self.rows.extend(values)
+            self._all_rows.extend(values)
         else:
-            self.rows.append(values)
+            self._all_rows.append(values)
         return self
 
     def delete(self):
@@ -61,14 +64,15 @@ class FakeTable:
         self._upsert_payload = values
         self._upsert_kwargs = kwargs
         if isinstance(values, list):
-            self.rows.extend(values)
+            self._all_rows.extend(values)
         else:
-            self.rows.append(values)
+            self._all_rows.append(values)
         return self
 
     def execute(self):
         if getattr(self, "_delete", False):
-            self.rows.clear()
+            selected_rows = {id(row) for row in self.rows}
+            self._all_rows[:] = [row for row in self._all_rows if id(row) not in selected_rows]
             return SimpleNamespace(data=[])
         if self._single:
             return SimpleNamespace(data=self.rows[0] if self.rows else None)
@@ -112,6 +116,15 @@ def client(monkeypatch):
                     "is_hot": True,
                     "initial_check": True,
                     "created_at": "2024-01-02T00:00:00",
+                },
+                {
+                    "id": "topic-draft",
+                    "canonical_title": "Rascunho não publicado",
+                    "summary": None,
+                    "article_count": 1,
+                    "is_hot": False,
+                    "initial_check": False,
+                    "created_at": "2024-01-02T01:00:00",
                 }
             ],
             "articles": [
@@ -197,6 +210,14 @@ def test_get_topic_endpoint_returns_grouped_articles(client):
     assert body["id"] == "topic-1"
     assert len(body["articles_left"]) == 1
     assert len(body["articles_right"]) == 1
+
+
+def test_topic_detail_rejects_draft_topics(client):
+    response = client.get("/feed/topics/topic-draft", headers={"Authorization": "Bearer token"})
+    assert response.status_code == 404
+
+    response = client.get("/feed/topicsfree/topic-draft")
+    assert response.status_code == 404
 
 
 def test_payment_status_endpoint_returns_subscription(client):
@@ -475,6 +496,17 @@ def test_production_configuration_rejects_invalid_jwk(monkeypatch):
     errors = settings.production_configuration_errors()
 
     assert any("SUPABASE_JWK_PUBLIC_KEY" in error for error in errors)
+
+
+def test_production_configuration_rejects_non_ascii_supabase_key(monkeypatch):
+    from worker.config import settings
+
+    monkeypatch.setattr(settings, "app_env", "production")
+    monkeypatch.setattr(settings, "supabase_key", "sb_secret_valid\u00a0key")
+
+    errors = settings.production_configuration_errors()
+
+    assert any("SUPABASE_KEY contém espaço ou caractere não ASCII" in error for error in errors)
 
 
 def test_revenuecat_webhook_accepts_current_hmac_signature(monkeypatch, client):

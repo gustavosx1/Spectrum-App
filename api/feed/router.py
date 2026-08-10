@@ -78,18 +78,19 @@ def _list_topics(
     db,
     limit: int,
     offset: int,
-    only_hot: bool,
 ) -> TopicListResponse:
     query = (
         db.table("topics")
         .select(
             "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at"
         )
+        # A topic is only safe to expose once the hot-topic pipeline has
+        # finished producing the editorial fields consumed by the app.
+        .eq("is_hot", True)
+        .eq("initial_check", True)
         .order("created_at", desc=True)
         .range(offset, offset + limit - 1)
     )
-    if only_hot:
-        query = query.eq("is_hot", True)
 
     topics = query.execute().data
 
@@ -165,7 +166,6 @@ def list_outlets():
 def list_topics_free(
     limit: int = Query(default=3, ge=1, le=4),
     offset: int = Query(default=0, ge=0),
-    only_hot: bool = True,
 ) -> TopicListResponse:
     """
     Endpoint público (sem autenticação) — limit/offset precisam de teto
@@ -173,7 +173,7 @@ def list_topics_free(
     query arbitrariamente grande no Supabase (negação de serviço barata).
     """
     db = get_client()
-    return _list_topics(db, limit=limit, offset=offset, only_hot=only_hot)
+    return _list_topics(db, limit=limit, offset=offset)
 
 
 @router.get("/topics", response_model=TopicListResponse)
@@ -181,7 +181,6 @@ def list_topics(
     request: Request,
     limit: int = Query(default=20, ge=1, le=50),
     offset: int = Query(default=0, ge=0),
-    only_hot: bool = Query(default=False),
 ):
     """
     Lista tópicos ordenados por mais recentes.
@@ -189,7 +188,7 @@ def list_topics(
     """
     db = get_client()
     require_premium(request)
-    return _list_topics(db, limit=limit, offset=offset, only_hot=only_hot)
+    return _list_topics(db, limit=limit, offset=offset)
 
 
 @router.get("/topics/{topic_id}", response_model=TopicDetail)
@@ -208,6 +207,8 @@ def get_topic(topic_id: str, request: Request):
             "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at"
         )
         .eq("id", topic_id)
+        .eq("is_hot", True)
+        .eq("initial_check", True)
         .single()
         .execute()
     ).data
@@ -325,6 +326,8 @@ def get_topic_free(
             "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at"
         )
         .eq("id", topic_id)
+        .eq("is_hot", True)
+        .eq("initial_check", True)
         .single()
         .execute()
     ).data
