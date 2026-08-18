@@ -65,6 +65,48 @@ sudo systemctl start spectrum-scraper.service
 sudo systemctl start spectrum-worker.service
 ```
 
+**4. Criar e ativar o agendador de notificações**
+```bash
+# /etc/systemd/system/spectrum-beat.service
+[Unit]
+Description=Spectrum Celery Beat
+After=network.target redis.service
+
+[Service]
+User=spectrum
+WorkingDirectory=/opt/spectrum
+ExecStart=/opt/spectrum/venv/bin/celery -A worker.celery_app beat --loglevel=info
+Restart=on-failure
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now spectrum-beat.service
+```
+
+O Beat deve rodar em uma única instância. Ele envia somente o título do tópico
+com maior cobertura publicado na janela das últimas seis horas.
+
+### Pré-verificação de pagamentos
+
+Antes de reiniciar a API após configurar o RevenueCat, confirme que o arquivo
+`.env` do servidor usa nomes em maiúsculas, por exemplo
+`REVENUECAT_WEBHOOK_SECRET`, e que o processo consegue ler os valores:
+
+```bash
+cd /opt/spectrum
+/opt/spectrum/venv/bin/python -c 'from worker.config import settings; print({"production": settings.is_production, "errors": settings.production_configuration_errors(), "webhook_configured": bool(settings.revenuecat_webhook_secret)})'
+```
+
+Não exiba o segredo no terminal. Em produção, a API não inicia se o segredo do
+webhook ou o entitlement Premium estiverem vazios.
+
 ### Opção 2: Docker
 
 ```dockerfile

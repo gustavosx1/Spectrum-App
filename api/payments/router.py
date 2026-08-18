@@ -23,6 +23,7 @@ from api.models.schemas import (
 )
 from api.utils.premium import (
     activate_premium,
+    claim_revenuecat_webhook_event,
     claim_purchase,
     deactivate_premium,
     get_subscription,
@@ -99,6 +100,8 @@ async def payment_webhook(
     - INITIAL_PURCHASE / RENEWAL / UNCANCELLATION / SUBSCRIPTION_EXTENDED → ativa premium
     - CANCELLATION → desativa apenas a renovação automática
     - EXPIRATION → desativa premium
+
+    Cada evento é processado uma única vez pelo seu ID do RevenueCat.
     """
     body = await request.body()
 
@@ -113,6 +116,7 @@ async def payment_webhook(
     event = payload.get("event", {})
     event_type = event.get("type")
     app_user_id = event.get("app_user_id")  # user_id do Supabase
+    event_id = event.get("id")
 
     if not app_user_id:
         return {"status": "ignored"}
@@ -120,6 +124,25 @@ async def payment_webhook(
     if not _has_premium_entitlement(event):
         logger.info("payment.webhook_ignored", extra={"event_type": event_type, "reason": "entitlement"})
         return {"status": "ignored"}
+
+    if event_id:
+        try:
+            event_timestamp_ms = int(event.get("event_timestamp_ms", 0))
+        except (TypeError, ValueError):
+            event_timestamp_ms = 0
+
+        if not claim_revenuecat_webhook_event(
+            event_id=str(event_id),
+            event_timestamp_ms=event_timestamp_ms,
+            app_user_id=app_user_id,
+            event_type=event_type or "UNKNOWN",
+        ):
+            logger.info("payment.webhook_duplicate", extra={"event_id": event_id, "event_type": event_type})
+            return {"status": "duplicate"}
+    else:
+        # O campo é obrigatório nos eventos atuais do RevenueCat. Mantemos
+        # compatibilidade defensiva com testes/reenvios legados sem bloquear a compra.
+        logger.warning("payment.webhook_missing_event_id", extra={"event_type": event_type})
 
     if event_type in ("INITIAL_PURCHASE", "RENEWAL", "UNCANCELLATION", "SUBSCRIPTION_EXTENDED"):
         expires_at = _parse_ms(event.get("expiration_at_ms"))
@@ -133,12 +156,15 @@ async def payment_webhook(
         logger.info("Premium ativado/renovado: %s até %s", app_user_id, expires_at)
 
     elif event_type == "CANCELLATION":
-        from worker.utils.db import get_client
+        # Um reembolso via suporte não garante que a renovação foi desligada.
+        # Preservamos o estado atual nesse caso e removemos acesso apenas em EXPIRATION.
+        if event.get("cancel_reason") != "CUSTOMER_SUPPORT":
+            from worker.utils.db import get_client
 
-        get_client().table("user_profiles").update({"premium_auto_renews": False}).eq(
-            "id", app_user_id
-        ).execute()
-        logger.info("Auto-renovação cancelada: %s", app_user_id)
+            get_client().table("user_profiles").update({"premium_auto_renews": False}).eq(
+                "id", app_user_id
+            ).execute()
+            logger.info("Auto-renovação cancelada: %s", app_user_id)
 
     elif event_type == "EXPIRATION":
         deactivate_premium(app_user_id)

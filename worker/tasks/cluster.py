@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import httpx
 
@@ -13,7 +13,8 @@ from worker.utils.db import get_client
 
 
 """
-Task cluster — disparado quando um tópico atinge o threshold (is_hot = true).
+Task cluster — analisa tópicos quando atingem o threshold (is_hot = true) e
+envia o tópico com maior cobertura a cada seis horas.
 
 Dois fluxos distintos:
 ─────────────────────────────────────────────────────────────────────
@@ -32,9 +33,8 @@ Check individual (topics.initial_check = true)
 """
 logger = logging.getLogger(__name__)
 
-PUSH_BODY_FIXED = "Venha ver todos os lados desta história"
 PUSH_SCHEMA_VERSION = "1"
-PUSH_TYPE_NEW_TOPIC = "NEW_TOPIC"
+PUSH_TYPE_COVERAGE_DIGEST = "COVERAGE_DIGEST"
 PUSH_TARGET_SCREEN = "TopicDetail"
 PUSH_FALLBACK_SCREEN = "Premium"
 EXPO_MAX_BATCH_SIZE = 100
@@ -69,6 +69,21 @@ def process_hot_topic(self, topic_id: str) -> None:
         asyncio.run(_process(topic_id))
     except Exception as exc:
         logger.error("Falha ao processar tópico %s: %s", topic_id, exc)
+        raise self.retry(exc=exc)
+
+
+@app.task(
+    bind=True,
+    max_retries=3,
+    default_retry_delay=120,
+    name="worker.tasks.cluster.send_coverage_digest",
+)
+def send_coverage_digest(self) -> None:
+    """Envia o único tópico mais coberto em cada janela de seis horas."""
+    try:
+        asyncio.run(_send_coverage_digest())
+    except Exception as exc:
+        logger.error("Falha ao enviar resumo de cobertura: %s", exc)
         raise self.retry(exc=exc)
 
 
@@ -128,8 +143,6 @@ async def _initial_check(db, topic_id: str) -> None:
         article_id = article_result["article_id"]
         _insert_claims(db, article_id, topic_id, article_result["claims"])
         db.table("articles").update({"checked": True}).eq("id", article_id).execute()
-
-    await _send_new_topic_push(db, topic_id, analysis["canonical_title"])
 
     logger.info(
         "Initial check concluído — tópico %s: '%s'",
@@ -534,31 +547,73 @@ async def _call_gemini(prompt: str) -> dict:
     return parsed
 
 
-def _build_new_topic_push_payload(topic_id: str, ai_title: str) -> dict:
+def _fetch_most_covered_topic(db) -> dict | None:
+    """Retorna o único tópico publicado com maior cobertura na janela atual."""
+    cutoff = (
+        datetime.now(timezone.utc)
+        .replace(microsecond=0)
+        - timedelta(hours=settings.push_digest_lookback_hours)
+    ).isoformat()
+    topics = (
+        db.table("topics")
+        .select("id, canonical_title, article_count")
+        .eq("is_hot", True)
+        .eq("initial_check", True)
+        .gte("created_at", cutoff)
+        .order("article_count", desc=True)
+        .order("created_at", desc=True)
+        .limit(1)
+        .execute()
+    ).data or []
+
+    return topics[0] if topics else None
+
+
+def _digest_window_start() -> datetime:
+    now = datetime.now(timezone.utc).replace(minute=0, second=0, microsecond=0)
+    window_hour = now.hour - (now.hour % settings.push_digest_lookback_hours)
+    return now.replace(hour=window_hour)
+
+
+def _build_coverage_digest_body(topic: dict) -> str:
+    coverage = int(topic.get("article_count") or 0)
+    return f"Tema com maior cobertura: {coverage} matérias nas últimas seis horas."
+
+
+def _build_coverage_digest_push_payload(topic: dict) -> dict:
+    topic_id = topic.get("id")
+    topic_title = (topic.get("canonical_title") or "Um novo tema").strip()
+    if not topic_id:
+        raise ValueError("O resumo de cobertura exige um tópico com ID")
+    if not topic_title:
+        raise ValueError("O resumo de cobertura exige um título de tópico")
+
     sent_at = (
         datetime.now(timezone.utc)
         .replace(microsecond=0)
         .isoformat()
         .replace("+00:00", "Z")
     )
-    dedup_key = f"topic_{topic_id}_v1"
+    window_start = _digest_window_start().isoformat().replace("+00:00", "Z")
+    dedup_key = f"coverage_digest_{window_start}_v1"
 
     return {
         "notification": {
-            "title": ai_title.strip(),
-            "body": PUSH_BODY_FIXED,
+            "title": topic_title,
+            "body": _build_coverage_digest_body(topic),
         },
         "data": {
             "schemaVersion": PUSH_SCHEMA_VERSION,
-            "type": PUSH_TYPE_NEW_TOPIC,
+            "type": PUSH_TYPE_COVERAGE_DIGEST,
             "topicId": topic_id,
             "requiresPremium": "true",
             "targetScreen": PUSH_TARGET_SCREEN,
             "fallbackScreen": PUSH_FALLBACK_SCREEN,
             "deeplink": f"spectrum://topic/{topic_id}",
-            "campaign": "new_topic_push",
+            "campaign": "coverage_digest",
             "sentAt": sent_at,
             "dedupKey": dedup_key,
+            "topicCount": "1",
             "locale": settings.push_locale,
             "aiTitleVersion": settings.push_ai_title_version,
         },
@@ -605,7 +660,7 @@ def _validate_push_payload(db, payload: dict) -> tuple[bool, str]:
         return False, "body vazio"
     if data.get("schemaVersion") != PUSH_SCHEMA_VERSION:
         return False, "schemaVersion inválido"
-    if data.get("type") != PUSH_TYPE_NEW_TOPIC:
+    if data.get("type") != PUSH_TYPE_COVERAGE_DIGEST:
         return False, "type inválido"
     if data.get("requiresPremium") not in {"true", "false"}:
         return False, "requiresPremium inválido"
@@ -725,15 +780,21 @@ async def _dispatch_push_expo(db, payload: dict) -> None:
         logger.info("Tokens Expo desativados: %d", len(invalid_tokens))
 
 
-async def _send_new_topic_push(db, topic_id: str, ai_title: str) -> None:
-    payload = _build_new_topic_push_payload(topic_id, ai_title)
+async def _send_coverage_digest() -> None:
+    db = get_client()
+    topic = _fetch_most_covered_topic(db)
+    if not topic:
+        logger.info("Resumo de cobertura não enviado: nenhum tópico publicado na janela")
+        return
+
+    payload = _build_coverage_digest_push_payload(topic)
     is_valid, reason = _validate_push_payload(db, payload)
     if not is_valid:
-        logger.warning("Push cancelado para tópico %s: %s", topic_id, reason)
+        logger.warning("Resumo de cobertura cancelado: %s", reason)
         return
 
     if settings.push_provider.lower() == "expo":
         await _dispatch_push_expo(db, payload)
     else:
         await _dispatch_push(payload)
-    logger.info("Push de novo tópico enviado: %s", payload["data"]["dedupKey"])
+    logger.info("Resumo de cobertura enviado: %s", payload["data"]["dedupKey"])

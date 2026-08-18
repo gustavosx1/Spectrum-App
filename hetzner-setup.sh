@@ -111,6 +111,23 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 
+cat > /etc/systemd/system/spectrum-beat.service <<'EOF'
+[Unit]
+Description=Spectrum Celery Beat
+After=network.target redis-server.service
+
+[Service]
+Type=simple
+WorkingDirectory=/root/spectrum
+Environment=PATH=/root/spectrum/.venv/bin
+ExecStart=/root/spectrum/.venv/bin/celery -A worker.celery_app beat --loglevel=info
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
 # -----------------------------
 # 6) Configure Nginx
 # -----------------------------
@@ -153,6 +170,7 @@ systemctl daemon-reload
 systemctl enable --now redis-server nginx
 systemctl enable --now spectrum-api
 systemctl enable --now spectrum-worker
+systemctl enable --now spectrum-beat
 systemctl restart nginx
 
 certbot --nginx --non-interactive --agree-tos --redirect \

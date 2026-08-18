@@ -13,6 +13,7 @@ from api.models.schemas import (
     SubscriptionStatus,
     UserProfile,
 )
+from api.utils.premium import get_subscription as get_subscription_status
 from worker.config import settings
 from worker.utils.db import get_client
 
@@ -96,11 +97,12 @@ def get_profile(request: Request):
             raise HTTPException(status_code=422, detail="JWT não contém e-mail do usuário")
         profile = _provision_user_profile(user_id, email)
 
+    subscription = get_subscription_status(user_id)
     return UserProfile(
         id=profile["id"],
         email=profile["email"],
-        is_premium=profile["is_premium"],
-        premium_expires_at=profile.get("premium_expires_at"),
+        is_premium=subscription.is_premium,
+        premium_expires_at=subscription.expires_at,
         created_at=profile["created_at"],
     )
 
@@ -111,27 +113,7 @@ def get_subscription(request: Request):
     Retorna status atual da assinatura.
     Consultado pelo mobile ao abrir o app pra decidir o que mostrar.
     """
-    db = get_client()
-    user_id = get_user_id(request)
-
-    result = (
-        db.table("user_profiles")
-        .select(
-            "is_premium, premium_platform, premium_product_id, premium_expires_at, premium_auto_renews"
-        )
-        .eq("id", user_id)
-        .single()
-        .execute()
-    )
-
-    p = result.data
-    return SubscriptionStatus(
-        is_premium=p["is_premium"],
-        platform=p.get("premium_platform"),
-        product_id=p.get("premium_product_id"),
-        expires_at=p.get("premium_expires_at"),
-        auto_renews=p.get("premium_auto_renews"),
-    )
+    return get_subscription_status(get_user_id(request))
 
 
 @router.post("/refresh", response_model=RefreshTokenResponse)

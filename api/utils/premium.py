@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from typing import Optional
 
 from fastapi import HTTPException, Request
+from postgrest import APIError
 
 from api.models.schemas import SubscriptionStatus
 from worker.utils.db import get_client
@@ -98,7 +99,7 @@ def activate_premium(
 
 
 def deactivate_premium(user_id: str) -> None:
-    """Desativa premium — usado em EXPIRATION e REFUND."""
+    """Desativa premium quando o RevenueCat informa EXPIRATION."""
     db = get_client()
     db.table("user_profiles").update(
         {
@@ -107,6 +108,30 @@ def deactivate_premium(user_id: str) -> None:
             "premium_auto_renews": False,
         }
     ).eq("id", user_id).execute()
+
+
+def claim_revenuecat_webhook_event(
+    event_id: str,
+    event_timestamp_ms: int,
+    app_user_id: str,
+    event_type: str,
+) -> bool:
+    """Registra um evento RevenueCat uma única vez e retorna se é inédito."""
+    try:
+        get_client().table("revenuecat_webhook_events").insert(
+            {
+                "event_id": event_id,
+                "event_timestamp_ms": event_timestamp_ms,
+                "app_user_id": app_user_id,
+                "event_type": event_type,
+            }
+        ).execute()
+        return True
+    except APIError as exc:
+        # 23505 é a violação da chave primária única de event_id no PostgreSQL.
+        if exc.code == "23505":
+            return False
+        raise
 
 
 def claim_purchase(external_id: str, platform: str, user_id: str) -> bool:

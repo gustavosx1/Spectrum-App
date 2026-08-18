@@ -17,7 +17,7 @@ Fluxo principal:
 3. Cada artigo vai para `worker.tasks.embed.process_article` (Celery + Redis).
 4. O worker gera embedding, encontra/cria topico e insere artigo.
 5. Quando topico atinge threshold (`article_count == hot_topic_threshold`), dispara `worker.tasks.cluster.process_hot_topic`.
-6. Cluster gera titulo/resumo/claims e envia push de novo topico.
+6. Cluster gera título/resumo/claims. O Celery Beat envia, a cada seis horas, somente o título do tópico com maior cobertura.
 
 ## Requisitos
 
@@ -49,6 +49,11 @@ python -m uvicorn api.main:app --reload --port 8000
 Worker Celery:
 ```bash
 celery -A worker.celery_app worker --loglevel=info
+```
+
+Agendador de notificações:
+```bash
+celery -A worker.celery_app beat --loglevel=info
 ```
 
 Scraper manual:
@@ -90,6 +95,7 @@ Push:
 - `PUSH_WEBHOOK_BEARER`
 - `PUSH_EXPO_SEND_URL`
 - `PUSH_EXPO_ACCESS_TOKEN`
+- `PUSH_DIGEST_LOOKBACK_HOURS` (padrão: `6`)
 
 Pagamentos:
 - `REVENUECAT_WEBHOOK_SECRET`
@@ -98,6 +104,7 @@ Pagamentos:
 ## Regras importantes da coleta
 
 - Janela de recencia padrao: 75 minutos.
+- O feed e os detalhes expõem somente tópicos criados nos últimos 90 dias.
 - Deduplicacao por URL canonicalizada.
 - Outlets sao lidos da tabela `outlets` no Supabase (catalogo local e referencia, nao fonte runtime).
 - Regra especial no RSS:

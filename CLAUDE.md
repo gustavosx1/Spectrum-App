@@ -91,7 +91,9 @@ Observação importante:
 - Fluxo 1 (`initial_check = false`): gera `canonical_title`, `summary` e claims para todos os artigos fundadores.
 - Fluxo 2 (`initial_check = true`): gera claims apenas para novos artigos do tópico.
 - Em ambos os prompts, existe instrução explícita para ignorar divergências de data de publicação e tratar como contexto de notícia recente do mesmo dia.
-- Push de novo tópico usa payload versionado (`schemaVersion = "1"`) com validação pré-envio.
+- O Celery Beat envia, a cada seis horas, somente o título do tópico publicado
+	com maior cobertura na janela; não há push individual quando um tópico vira hot.
+- O feed restringe a exposição de tópicos a conteúdos com no máximo 90 dias.
 
 ### API (FastAPI)
 
@@ -121,7 +123,7 @@ Tier free vs premium:
 
 Assinatura/pagamento:
 - `POST /payments/verify` valida compra Apple/Google e ativa premium.
-- `POST /payments/webhook` processa eventos RevenueCat (renovação/cancelamento/expiração/reembolso).
+- `POST /payments/webhook` processa eventos RevenueCat. Cancelamentos preservam o acesso até a expiração; para `CUSTOMER_SUPPORT`, a renovação pode continuar ativa após o reembolso, conforme o estado devolvido pela loja. A expiração encerra o Premium.
 - `api/utils/premium.py` é a fonte de verdade para ativar/desativar premium.
 - `claim_purchase` impede reutilização de recibo/token por múltiplas contas (tabela `redeemed_purchases`).
 

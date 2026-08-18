@@ -27,6 +27,14 @@ class FakeQuery:
         self.calls.append(("eq", args, kwargs))
         return self
 
+    def gte(self, *args, **kwargs):
+        self.calls.append(("gte", args, kwargs))
+        return self
+
+    def order(self, *args, **kwargs):
+        self.calls.append(("order", args, kwargs))
+        return self
+
     def single(self):
         self.calls.append(("single", (), {}))
         self._single = True
@@ -357,19 +365,37 @@ async def test_process_hot_topic_routes_to_initial_or_individual(monkeypatch):
     assert calls == [("individual", "topic-1")]
 
 
-def test_build_new_topic_push_payload_contract_v1_fields():
-    payload = cluster._build_new_topic_push_payload("topic-abc", "Titulo IA")
+def test_fetch_most_covered_topic_filters_recent_published_topics():
+    topics = [
+        {"id": "topic-1", "canonical_title": "Maior cobertura", "article_count": 12},
+        {"id": "topic-2", "canonical_title": "Outra cobertura", "article_count": 8},
+    ]
+    db = FakeDB({"topics": topics})
+
+    result = cluster._fetch_most_covered_topic(db)
+
+    assert result == topics[0]
+    assert any(call[0] == "gte" and call[1][0] == "created_at" for call in db.calls)
+    assert ("order", ("article_count",), {"desc": True}) in db.calls
+    assert ("limit", (1,), {}) in db.calls
+
+
+def test_build_coverage_digest_push_payload_contract_v1_fields():
+    payload = cluster._build_coverage_digest_push_payload(
+        {"id": "topic-abc", "canonical_title": "Titulo IA", "article_count": 8}
+    )
 
     assert payload["notification"]["title"] == "Titulo IA"
-    assert payload["notification"]["body"] == "Venha ver todos os lados desta história"
+    assert payload["notification"]["body"] == "Tema com maior cobertura: 8 matérias nas últimas seis horas."
     assert payload["data"]["schemaVersion"] == "1"
-    assert payload["data"]["type"] == "NEW_TOPIC"
+    assert payload["data"]["type"] == "COVERAGE_DIGEST"
     assert payload["data"]["topicId"] == "topic-abc"
     assert payload["data"]["requiresPremium"] == "true"
     assert payload["data"]["targetScreen"] == "TopicDetail"
     assert payload["data"]["fallbackScreen"] == "Premium"
-    assert payload["data"]["dedupKey"] == "topic_topic-abc_v1"
+    assert payload["data"]["dedupKey"].startswith("coverage_digest_")
     assert payload["data"]["deeplink"] == "spectrum://topic/topic-abc"
+    assert payload["data"]["topicCount"] == "1"
 
 
 def test_fetch_active_push_tokens_deduplicates_and_skips_empty():
@@ -389,13 +415,15 @@ def test_fetch_active_push_tokens_deduplicates_and_skips_empty():
 
 
 def test_build_expo_messages_maps_contract_payload():
-    payload = cluster._build_new_topic_push_payload("topic-1", "Titulo IA")
+    payload = cluster._build_coverage_digest_push_payload(
+        {"id": "topic-1", "canonical_title": "Titulo IA", "article_count": 3}
+    )
     messages = cluster._build_expo_messages(["ExponentPushToken[a]"], payload)
 
     assert messages[0]["to"] == "ExponentPushToken[a]"
     assert messages[0]["title"] == "Titulo IA"
-    assert messages[0]["body"] == "Venha ver todos os lados desta história"
-    assert messages[0]["data"]["type"] == "NEW_TOPIC"
+    assert messages[0]["body"] == "Tema com maior cobertura: 3 matérias nas últimas seis horas."
+    assert messages[0]["data"]["type"] == "COVERAGE_DIGEST"
 
 
 def test_chunk_messages_respects_batch_size():
@@ -435,7 +463,9 @@ async def test_dispatch_push_expo_marks_invalid_tokens_inactive(monkeypatch):
             ]
         }
     )
-    payload = cluster._build_new_topic_push_payload("topic-1", "Titulo IA")
+    payload = cluster._build_coverage_digest_push_payload(
+        {"id": "topic-1", "canonical_title": "Titulo IA", "article_count": 3}
+    )
 
     monkeypatch.setattr(cluster.httpx, "AsyncClient", FakeExpoAsyncClient)
 
@@ -448,7 +478,7 @@ async def test_dispatch_push_expo_marks_invalid_tokens_inactive(monkeypatch):
 
 
 @pytest.mark.asyncio
-async def test_send_new_topic_push_uses_webhook_provider(monkeypatch):
+async def test_send_coverage_digest_uses_webhook_provider(monkeypatch):
     db = FakeDB({"topics": [{"id": "topic-1", "is_hot": True, "initial_check": True}]})
     called = {"webhook": 0, "expo": 0}
 
@@ -459,17 +489,25 @@ async def test_send_new_topic_push_uses_webhook_provider(monkeypatch):
         called["expo"] += 1
 
     monkeypatch.setattr(cluster.settings, "push_provider", "webhook")
+    monkeypatch.setattr(
+        cluster,
+        "_fetch_most_covered_topic",
+        lambda _db: {"id": "topic-1", "canonical_title": "Titulo IA", "article_count": 3},
+    )
     monkeypatch.setattr(cluster, "_dispatch_push", fake_webhook)
     monkeypatch.setattr(cluster, "_dispatch_push_expo", fake_expo)
 
-    await cluster._send_new_topic_push(db, "topic-1", "Titulo IA")
+    monkeypatch.setattr(cluster, "get_client", lambda: db)
+    await cluster._send_coverage_digest()
 
     assert called == {"webhook": 1, "expo": 0}
 
 
 def test_validate_push_payload_accepts_valid_payload():
     db = FakeDB({"topics": [{"id": "topic-1", "is_hot": True, "initial_check": True}]})
-    payload = cluster._build_new_topic_push_payload("topic-1", "Titulo IA")
+    payload = cluster._build_coverage_digest_push_payload(
+        {"id": "topic-1", "canonical_title": "Titulo IA", "article_count": 3}
+    )
 
     is_valid, reason = cluster._validate_push_payload(db, payload)
 
@@ -479,13 +517,16 @@ def test_validate_push_payload_accepts_valid_payload():
 
 def test_validate_push_payload_rejects_invalid_fields():
     db = FakeDB({"topics": [{"id": "topic-1", "is_hot": True, "initial_check": True}]})
-    payload = cluster._build_new_topic_push_payload("topic-1", "")
+    payload = cluster._build_coverage_digest_push_payload(
+        {"id": "topic-1", "canonical_title": "Titulo IA", "article_count": 3}
+    )
+    payload["notification"]["body"] = ""
     payload["data"]["sentAt"] = "invalid"
 
     is_valid, reason = cluster._validate_push_payload(db, payload)
 
     assert is_valid is False
-    assert reason in {"title vazio", "sentAt inválido"}
+    assert reason in {"body vazio", "sentAt inválido"}
 
 
 def test_is_utc_iso8601_accepts_utc_and_rejects_naive():
@@ -495,7 +536,7 @@ def test_is_utc_iso8601_accepts_utc_and_rejects_naive():
 
 
 @pytest.mark.asyncio
-async def test_initial_check_triggers_push_dispatch(monkeypatch):
+async def test_initial_check_does_not_dispatch_an_immediate_push(monkeypatch):
     db = FakeDB(
         {
             "topics": [{"id": "topic-1", "is_hot": True, "initial_check": True}],
@@ -522,16 +563,9 @@ async def test_initial_check_triggers_push_dispatch(monkeypatch):
             "articles": [{"article_id": "article-1", "claims": []}],
         }
 
-    sent = {}
-
-    async def fake_send_push(_db, topic_id, ai_title):
-        sent["topic_id"] = topic_id
-        sent["ai_title"] = ai_title
-
     monkeypatch.setattr(cluster, "_fetch_contents", fake_fetch_contents)
     monkeypatch.setattr(cluster, "_run_initial_prompt", fake_run_initial_prompt)
-    monkeypatch.setattr(cluster, "_send_new_topic_push", fake_send_push)
 
     await cluster._initial_check(db, "topic-1")
 
-    assert sent == {"topic_id": "topic-1", "ai_title": "Titulo IA Final"}
+    assert not any(call[0] == "table" and call[1] == "device_push_tokens" for call in db.calls)

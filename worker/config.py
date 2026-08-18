@@ -52,6 +52,7 @@ class Settings(BaseSettings):
     push_active_column: str = "is_active"
     push_locale: str = "pt-BR"
     push_ai_title_version: str = "gpt-title-v2"
+    push_digest_lookback_hours: int = 6
 
     model_config = {"env_file": ".env"}
 
@@ -121,6 +122,10 @@ class Settings(BaseSettings):
         errors.extend(self.supabase_api_key_configuration_errors())
         if not self.supabase_service_role_key:
             errors.append("Configure SUPABASE_SERVICE_ROLE_KEY para provisionamento e exclusão de conta")
+        if not self.revenuecat_webhook_secret:
+            errors.append("Configure REVENUECAT_WEBHOOK_SECRET para validar eventos de assinatura")
+        if not self.revenuecat_premium_entitlement_id.strip():
+            errors.append("Configure REVENUECAT_PREMIUM_ENTITLEMENT_ID com o entitlement Premium do RevenueCat")
         if not self.allowed_hosts or any(host in {"*", "localhost", "127.0.0.1", "testserver"} for host in self.allowed_hosts):
             errors.append("Configure API_ALLOWED_HOSTS somente com domínios públicos da API")
         if "*" in self.cors_origins:

@@ -29,6 +29,11 @@ class FakeTable:
         self.rows = [row for row in self.rows if row.get(key) == value]
         return self
 
+    def gte(self, *args, **kwargs):
+        key, value = args
+        self.rows = [row for row in self.rows if row.get(key, "") >= value]
+        return self
+
     def single(self):
         self._single = True
         return self
@@ -92,6 +97,7 @@ class FakeDB:
 @pytest.fixture()
 def client(monkeypatch):
     monkeypatch.setattr("api.middleware.auth._verify_token", lambda token: {"sub": "user-123"})
+    recent_created_at = datetime.now(timezone.utc).isoformat()
 
     fake_db = FakeDB(
         {
@@ -115,7 +121,7 @@ def client(monkeypatch):
                     "article_count": 2,
                     "is_hot": True,
                     "initial_check": True,
-                    "created_at": "2024-01-02T00:00:00",
+                    "created_at": recent_created_at,
                 },
                 {
                     "id": "topic-draft",
@@ -124,7 +130,7 @@ def client(monkeypatch):
                     "article_count": 1,
                     "is_hot": False,
                     "initial_check": False,
-                    "created_at": "2024-01-02T01:00:00",
+                    "created_at": recent_created_at,
                 }
             ],
             "articles": [
@@ -177,6 +183,24 @@ def test_subscription_endpoint_returns_subscription_status(client):
     assert body["platform"] == "ios"
 
 
+def test_profile_and_subscription_hide_an_expired_premium_subscription(client):
+    client.fake_db.tables["user_profiles"][0].update(
+        {
+            "is_premium": True,
+            "premium_expires_at": "2020-01-01T00:00:00+00:00",
+        }
+    )
+
+    headers = {"Authorization": "Bearer token"}
+    profile_response = client.get("/auth/me", headers=headers)
+    subscription_response = client.get("/auth/subscription", headers=headers)
+
+    assert profile_response.status_code == 200
+    assert profile_response.json()["is_premium"] is False
+    assert subscription_response.status_code == 200
+    assert subscription_response.json()["is_premium"] is False
+
+
 def test_topics_endpoint_returns_blindspot_and_topic_list(client):
     response = client.get("/feed/topics", headers={"Authorization": "Bearer token"})
     assert response.status_code == 200
@@ -187,6 +211,25 @@ def test_topics_endpoint_returns_blindspot_and_topic_list(client):
     assert len(body["data"]) == 1
     assert body["data"][0]["canonical_title"] == "Título do tópico"
     assert body["data"][0]["blindspot"]["dominant_side"] is None
+
+
+def test_topics_endpoint_hides_content_older_than_ninety_days(client):
+    client.fake_db.tables["topics"].append(
+        {
+            "id": "topic-expired",
+            "canonical_title": "Tópico antigo",
+            "summary": "Resumo antigo",
+            "article_count": 10,
+            "is_hot": True,
+            "initial_check": True,
+            "created_at": "2020-01-01T00:00:00+00:00",
+        }
+    )
+
+    response = client.get("/feed/topics", headers={"Authorization": "Bearer token"})
+
+    assert response.status_code == 200
+    assert [topic["id"] for topic in response.json()["data"]] == ["topic-1"]
 
 
 def test_topicsfree_detail_endpoint_returns_capped_payload(client):
@@ -476,12 +519,16 @@ def test_production_configuration_requires_jwt_and_public_hosts(monkeypatch):
     monkeypatch.setattr(settings, "supabase_jwk_public_key", None)
     monkeypatch.setattr(settings, "api_allowed_hosts", "localhost")
     monkeypatch.setattr(settings, "api_cors_origins", "http://localhost:8080")
+    monkeypatch.setattr(settings, "revenuecat_webhook_secret", "")
+    monkeypatch.setattr(settings, "revenuecat_premium_entitlement_id", "")
 
     errors = settings.production_configuration_errors()
 
     assert any("SUPABASE_JWT_SECRET" in error for error in errors)
     assert any("API_ALLOWED_HOSTS" in error for error in errors)
     assert any("API_CORS_ORIGINS" in error for error in errors)
+    assert any("REVENUECAT_WEBHOOK_SECRET" in error for error in errors)
+    assert any("REVENUECAT_PREMIUM_ENTITLEMENT_ID" in error for error in errors)
 
 
 def test_production_configuration_rejects_invalid_jwk(monkeypatch):
@@ -509,11 +556,12 @@ def test_production_configuration_rejects_non_ascii_supabase_key(monkeypatch):
     assert any("SUPABASE_KEY contém espaço ou caractere não ASCII" in error for error in errors)
 
 
-def test_revenuecat_webhook_accepts_current_hmac_signature(monkeypatch, client):
+def test_revenuecat_webhook_activates_premium_for_valid_signed_google_play_event(monkeypatch, client):
     secret = "webhook-test-secret"
     monkeypatch.setattr("api.payments.router.settings.revenuecat_webhook_secret", secret)
     monkeypatch.setattr("api.payments.router.settings.revenuecat_premium_entitlement_id", "premium")
     called = {}
+    claimed_events = []
 
     def fake_activate(user_id, platform, product_id, expires_at, auto_renews=True):
         called.update(
@@ -525,12 +573,18 @@ def test_revenuecat_webhook_accepts_current_hmac_signature(monkeypatch, client):
         )
 
     monkeypatch.setattr("api.payments.router.activate_premium", fake_activate)
+    monkeypatch.setattr(
+        "api.payments.router.claim_revenuecat_webhook_event",
+        lambda **payload: claimed_events.append(payload) or True,
+    )
     body = json.dumps(
         {
             "event": {
+                "id": "google-play-initial-purchase-001",
+                "event_timestamp_ms": 1_800_000_000_000,
                 "type": "INITIAL_PURCHASE",
                 "app_user_id": "user-123",
-                "store": "APP_STORE",
+                "store": "PLAY_STORE",
                 "product_id": "prisma.basic.monthly",
                 "expiration_at_ms": 1_800_000_000_000,
                 "entitlement_ids": ["premium"],
@@ -549,7 +603,17 @@ def test_revenuecat_webhook_accepts_current_hmac_signature(monkeypatch, client):
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
     assert called["user_id"] == "user-123"
-    assert called["platform"] == "app_store"
+    assert called["platform"] == "play_store"
+    assert called["product_id"] == "prisma.basic.monthly"
+    assert called["auto_renews"] is True
+    assert claimed_events == [
+        {
+            "event_id": "google-play-initial-purchase-001",
+            "event_timestamp_ms": 1_800_000_000_000,
+            "app_user_id": "user-123",
+            "event_type": "INITIAL_PURCHASE",
+        }
+    ]
 
 
 def test_revenuecat_webhook_rejects_invalid_signature(monkeypatch, client):
@@ -563,3 +627,35 @@ def test_revenuecat_webhook_rejects_invalid_signature(monkeypatch, client):
     )
 
     assert response.status_code == 401
+
+
+def test_revenuecat_webhook_ignores_duplicate_event(monkeypatch, client):
+    secret = "webhook-test-secret"
+    monkeypatch.setattr("api.payments.router.settings.revenuecat_webhook_secret", secret)
+    monkeypatch.setattr("api.payments.router.settings.revenuecat_premium_entitlement_id", "premium")
+    monkeypatch.setattr("api.payments.router.claim_revenuecat_webhook_event", lambda **_: False)
+    activated = []
+    monkeypatch.setattr("api.payments.router.activate_premium", lambda *args, **kwargs: activated.append(args))
+    body = json.dumps(
+        {
+            "event": {
+                "id": "event-already-processed",
+                "event_timestamp_ms": 1_800_000_000_000,
+                "type": "RENEWAL",
+                "app_user_id": "user-123",
+                "entitlement_ids": ["premium"],
+            }
+        }
+    ).encode()
+    timestamp = str(int(time.time()))
+    digest = hmac.new(secret.encode(), timestamp.encode() + b"." + body, hashlib.sha256).hexdigest()
+
+    response = client.post(
+        "/payments/webhook",
+        content=body,
+        headers={"X-RevenueCat-Webhook-Signature": f"t={timestamp},v1={digest}"},
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {"status": "duplicate"}
+    assert activated == []

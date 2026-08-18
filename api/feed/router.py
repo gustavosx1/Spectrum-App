@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, HTTPException, Query, Request
 
@@ -25,6 +26,14 @@ logger = logging.getLogger(__name__)
 
 FREE_TOPIC_ARTICLE_PREVIEW_LIMIT_DEFAULT = 2
 FREE_TOPIC_ARTICLE_PREVIEW_LIMIT_MAX = 5
+NEWS_CONTENT_MAX_AGE_DAYS = 90
+
+
+def _news_content_cutoff() -> str:
+    """Retorna o início da janela máxima de conteúdo permitida no aplicativo."""
+    return (
+        datetime.now(timezone.utc) - timedelta(days=NEWS_CONTENT_MAX_AGE_DAYS)
+    ).isoformat()
 
 
 # Mapeamento de score político → lean
@@ -88,6 +97,7 @@ def _list_topics(
         # finished producing the editorial fields consumed by the app.
         .eq("is_hot", True)
         .eq("initial_check", True)
+        .gte("created_at", _news_content_cutoff())
         .order("created_at", desc=True)
         .range(offset, offset + limit - 1)
     )
@@ -209,6 +219,7 @@ def get_topic(topic_id: str, request: Request):
         .eq("id", topic_id)
         .eq("is_hot", True)
         .eq("initial_check", True)
+        .gte("created_at", _news_content_cutoff())
         .single()
         .execute()
     ).data
@@ -328,6 +339,7 @@ def get_topic_free(
         .eq("id", topic_id)
         .eq("is_hot", True)
         .eq("initial_check", True)
+        .gte("created_at", _news_content_cutoff())
         .single()
         .execute()
     ).data
