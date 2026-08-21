@@ -87,6 +87,7 @@ def _list_topics(
     db,
     limit: int,
     offset: int,
+    search: str | None = None,
 ) -> TopicListResponse:
     query = (
         db.table("topics")
@@ -98,11 +99,21 @@ def _list_topics(
         .eq("is_hot", True)
         .eq("initial_check", True)
         .gte("created_at", _news_content_cutoff())
-        .order("created_at", desc=True)
-        .range(offset, offset + limit - 1)
     )
 
-    topics = query.execute().data
+    if search:
+        # Escape PostgREST pattern metacharacters so user input is treated as
+        # literal text, not as an ilike pattern.
+        escaped = search.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+        pattern = f"%{escaped}%"
+        query = query.or_(f"canonical_title.ilike.{pattern},summary.ilike.{pattern}")
+
+    topics = (
+        query
+        .order("created_at", desc=True)
+        .range(offset, offset + limit - 1)
+        .execute()
+    ).data
 
     has_more = len(topics) == limit
     topic_ids = [t["id"] for t in topics]
@@ -421,3 +432,19 @@ def get_topic_free(
             cta_description="Assine o premium para desbloquear todos os artigos, claims e comparativos do tópico.",
         ),
     )
+
+
+@router.get("/topics/search", response_model=TopicListResponse)
+def search_topics(
+    request: Request,
+    q: str = Query(min_length=2, max_length=120),
+    limit: int = Query(default=20, ge=1, le=30),
+    offset: int = Query(default=0, ge=0),
+) -> TopicListResponse:
+    """
+    Pesquisa tópicos por título e resumo editorial.
+    Requer assinatura ativa.
+    """
+    db = get_client()
+    require_premium(request)
+    return _list_topics(db, limit=limit, offset=offset, search=q.strip())
