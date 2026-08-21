@@ -231,6 +231,21 @@ def test_topic_search_route_is_not_captured_by_topic_id_route(monkeypatch, clien
     assert calls == [{"limit": 20, "offset": 0, "search": "Banco Central"}]
 
 
+def test_topic_search_route_requires_premium_in_middleware(monkeypatch, client):
+    client.fake_db.tables["user_profiles"][0]["is_premium"] = False
+    monkeypatch.setattr("api.feed.router.require_premium", lambda request: None)
+
+    response = client.get(
+        "/feed/topics/search?q=Banco+Central",
+        headers={"Authorization": "Bearer token"},
+    )
+
+    assert response.status_code == 403
+    assert response.json() == {
+        "detail": "Assinatura necessária para acessar este conteúdo"
+    }
+
+
 def test_topics_endpoint_hides_content_older_than_ninety_days(client):
     client.fake_db.tables["topics"].append(
         {

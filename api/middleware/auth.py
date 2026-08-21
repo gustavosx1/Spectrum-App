@@ -5,7 +5,7 @@ import logging
 from typing import Any, Optional
 
 import jwt
-from fastapi import Request
+from fastapi import HTTPException, Request
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
@@ -26,6 +26,10 @@ PUBLIC_PATHS = {
 PUBLIC_PATH_PREFIXES = (
     "/feed/topicsfree/",
 )
+
+PREMIUM_PATHS = {
+    "/feed/topics/search",
+}
 
 
 class AuthMiddleware(BaseHTTPMiddleware):
@@ -48,6 +52,18 @@ class AuthMiddleware(BaseHTTPMiddleware):
             )
 
         request.state.user = user
+        if _is_premium_path(request.url.path):
+            # Importação tardia evita a dependência circular: require_premium
+            # usa get_user_id definido neste módulo.
+            from api.utils.premium import require_premium
+
+            try:
+                require_premium(request)
+            except HTTPException as exc:
+                return JSONResponse(
+                    status_code=exc.status_code,
+                    content={"detail": exc.detail},
+                )
         return await call_next(request)
 
 
@@ -55,6 +71,10 @@ def _is_public_path(path: str) -> bool:
     if path in PUBLIC_PATHS:
         return True
     return any(path.startswith(prefix) for prefix in PUBLIC_PATH_PREFIXES)
+
+
+def _is_premium_path(path: str) -> bool:
+    return path in PREMIUM_PATHS
 
 
 def _extract_token(request: Request) -> Optional[str]:
