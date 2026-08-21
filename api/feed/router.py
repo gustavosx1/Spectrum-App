@@ -212,6 +212,22 @@ def list_topics(
     return _list_topics(db, limit=limit, offset=offset)
 
 
+@router.get("/topics/search", response_model=TopicListResponse)
+def search_topics(
+    request: Request,
+    q: str = Query(min_length=2, max_length=120),
+    limit: int = Query(default=20, ge=1, le=30),
+    offset: int = Query(default=0, ge=0),
+) -> TopicListResponse:
+    """
+    Pesquisa tópicos por título e resumo editorial.
+    Requer assinatura ativa.
+    """
+    db = get_client()
+    require_premium(request)
+    return _list_topics(db, limit=limit, offset=offset, search=q.strip())
+
+
 @router.get("/topics/{topic_id}", response_model=TopicDetail)
 def get_topic(topic_id: str, request: Request):
     """
@@ -432,19 +448,3 @@ def get_topic_free(
             cta_description="Assine o premium para desbloquear todos os artigos, claims e comparativos do tópico.",
         ),
     )
-
-
-@router.get("/topics/search", response_model=TopicListResponse)
-def search_topics(
-    request: Request,
-    q: str = Query(min_length=2, max_length=120),
-    limit: int = Query(default=20, ge=1, le=30),
-    offset: int = Query(default=0, ge=0),
-) -> TopicListResponse:
-    """
-    Pesquisa tópicos por título e resumo editorial.
-    Requer assinatura ativa.
-    """
-    db = get_client()
-    require_premium(request)
-    return _list_topics(db, limit=limit, offset=offset, search=q.strip())

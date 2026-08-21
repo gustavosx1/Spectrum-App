@@ -213,6 +213,24 @@ def test_topics_endpoint_returns_blindspot_and_topic_list(client):
     assert body["data"][0]["blindspot"]["dominant_side"] is None
 
 
+def test_topic_search_route_is_not_captured_by_topic_id_route(monkeypatch, client):
+    calls = []
+
+    def fake_list_topics(db, limit, offset, search=None):
+        calls.append({"limit": limit, "offset": offset, "search": search})
+        return {"data": [], "meta": {"limit": limit, "offset": offset, "has_more": False}}
+
+    monkeypatch.setattr("api.feed.router._list_topics", fake_list_topics)
+
+    response = client.get(
+        "/feed/topics/search?q=Banco+Central",
+        headers={"Authorization": "Bearer token"},
+    )
+
+    assert response.status_code == 200
+    assert calls == [{"limit": 20, "offset": 0, "search": "Banco Central"}]
+
+
 def test_topics_endpoint_hides_content_older_than_ninety_days(client):
     client.fake_db.tables["topics"].append(
         {
