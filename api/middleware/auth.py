@@ -28,7 +28,7 @@ PUBLIC_PATH_PREFIXES = (
 )
 
 PREMIUM_PATHS = {
-    "/feed/topics/search",
+    "/feed/search",
 }
 
 

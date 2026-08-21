@@ -212,7 +212,7 @@ def list_topics(
     return _list_topics(db, limit=limit, offset=offset)
 
 
-@router.get("/topics/search", response_model=TopicListResponse)
+@router.get("/search", response_model=TopicListResponse)
 def search_topics(
     request: Request,
     q: str = Query(min_length=2, max_length=120),

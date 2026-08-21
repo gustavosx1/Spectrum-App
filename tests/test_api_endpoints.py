@@ -223,7 +223,7 @@ def test_topic_search_route_is_not_captured_by_topic_id_route(monkeypatch, clien
     monkeypatch.setattr("api.feed.router._list_topics", fake_list_topics)
 
     response = client.get(
-        "/feed/topics/search?q=Banco+Central",
+        "/feed/search?q=Banco+Central",
         headers={"Authorization": "Bearer token"},
     )
 
@@ -236,7 +236,7 @@ def test_topic_search_route_requires_premium_in_middleware(monkeypatch, client):
     monkeypatch.setattr("api.feed.router.require_premium", lambda request: None)
 
     response = client.get(
-        "/feed/topics/search?q=Banco+Central",
+        "/feed/search?q=Banco+Central",
         headers={"Authorization": "Bearer token"},
     )
 
