@@ -212,6 +212,22 @@ def list_topics(
     return _list_topics(db, limit=limit, offset=offset)
 
 
+@router.get("/topics/search", response_model=TopicListResponse)
+def search_topics(
+    request: Request,
+    q: str = Query(min_length=2, max_length=120),
+    limit: int = Query(default=20, ge=1, le=30),
+    offset: int = Query(default=0, ge=0),
+) -> TopicListResponse:
+    """
+    Pesquisa tópicos por título e resumo editorial.
+    Requer assinatura ativa.
+    """
+    db = get_client()
+    require_premium(request)
+    return _list_topics(db, limit=limit, offset=offset, search=q.strip())
+
+
 @router.get("/topics/{topic_id}", response_model=TopicDetail)
 def get_topic(topic_id: str, request: Request):
     """
@@ -434,17 +450,223 @@ def get_topic_free(
     )
 
 
-@router.get("/topics/search", response_model=TopicListResponse)
-def search_topics(
-    request: Request,
-    q: str = Query(min_length=2, max_length=120),
-    limit: int = Query(default=20, ge=1, le=30),
-    offset: int = Query(default=0, ge=0),
-) -> TopicListResponse:
+@router.get("/topics/{topic_id}", response_model=TopicDetail)
+def get_topic(topic_id: str, request: Request):
     """
-    Pesquisa tópicos por título e resumo editorial.
+    Detalhe de um tópico com artigos agrupados por espectro e claims.
     Requer assinatura ativa.
     """
     db = get_client()
     require_premium(request)
-    return _list_topics(db, limit=limit, offset=offset, search=q.strip())
+
+    # Tópico
+    topic = (
+        db.table("topics")
+        .select(
+            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at"
+        )
+        .eq("id", topic_id)
+        .eq("is_hot", True)
+        .eq("initial_check", True)
+        .gte("created_at", _news_content_cutoff())
+        .single()
+        .execute()
+    ).data
+
+    if not topic:
+        raise HTTPException(status_code=404, detail="Tópico não encontrado")
+
+    # Artigos com outlet
+    articles_raw = (
+        db.table("articles")
+        .select(
+            "id, url, title, lead, image_url, author, published_at, outlet_id, political_lean, checked"
+        )
+        .eq("topic_id", topic_id)
+        .order("published_at", desc=True)
+        .execute()
+    ).data
+
+    # Outlets
+    outlet_ids = list({a["outlet_id"] for a in articles_raw if a["outlet_id"]})
+    outlets_map = {}
+    if outlet_ids:
+        outlets = (
+            db.table("outlets")
+            .select("id, name, political_score")
+            .in_("id", outlet_ids)
+            .execute()
+        ).data
+        outlets_map = {o["id"]: o for o in outlets}
+
+    # Claims por artigo
+    article_ids = [a["id"] for a in articles_raw]
+    claims_map: dict[str, list] = {a["id"]: [] for a in articles_raw}
+    if article_ids:
+        claims = (
+            db.table("claims")
+            .select("id, article_id, claim, verdict, confidence, evidence")
+            .in_("article_id", article_ids)
+            .execute()
+        ).data
+        for c in claims:
+            if c["article_id"] in claims_map:
+                claims_map[c["article_id"]].append(
+                    ClaimResponse(
+                        id=c["id"],
+                        claim=c["claim"],
+                        verdict=c["verdict"],
+                        confidence=c["confidence"] or 0.0,
+                        evidence=c.get("evidence"),
+                    )
+                )
+
+    # Monta ArticleResponse e agrupa por espectro
+    grouped: dict[str, list[ArticleResponse]] = {
+        "left": [],
+        "center_left": [],
+        "center": [],
+        "center_right": [],
+        "right": [],
+    }
+
+    for a in articles_raw:
+        outlet = outlets_map.get(a["outlet_id"])
+        if not outlet:
+            continue
+
+        lean = _score_to_lean(outlet["political_score"])
+        grouped[lean].append(
+            ArticleResponse(
+                id=a["id"],
+                url=a["url"],
+                title=a["title"],
+                lead=a.get("lead"),
+                image_url=a.get("image_url"),
+                author=a.get("author"),
+                published_at=a.get("published_at"),
+                outlet=OutletSummary(
+                    id=outlet["id"],
+                    name=outlet["name"],
+                    political_score=outlet["political_score"],
+                ),
+                political_lean=lean,
+                checked=a["checked"],
+                claims=claims_map[a["id"]],
+            )
+        )
+
+    blindspot = _build_blindspot(articles_raw, outlets_map)
+
+    return TopicDetail(
+        **topic,
+        blindspot=blindspot,
+        articles_left=grouped["left"],
+        articles_center_left=grouped["center_left"],
+        articles_center=grouped["center"],
+        articles_center_right=grouped["center_right"],
+        articles_right=grouped["right"],
+    )
+
+
+@router.get("/topicsfree/{topic_id}", response_model=TopicFreeDetail)
+def get_topic_free(
+    topic_id: str,
+    preview_limit: int = Query(
+        default=FREE_TOPIC_ARTICLE_PREVIEW_LIMIT_DEFAULT,
+        ge=1,
+        le=FREE_TOPIC_ARTICLE_PREVIEW_LIMIT_MAX,
+    ),
+):
+    db = get_client()
+
+    topic = (
+        db.table("topics")
+        .select(
+            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at"
+        )
+        .eq("id", topic_id)
+        .eq("is_hot", True)
+        .eq("initial_check", True)
+        .gte("created_at", _news_content_cutoff())
+        .single()
+        .execute()
+    ).data
+
+    if not topic:
+        raise HTTPException(status_code=404, detail="Tópico não encontrado")
+
+    articles_raw = (
+        db.table("articles")
+        .select("id, url, title, lead, image_url, author, published_at, outlet_id")
+        .eq("topic_id", topic_id)
+        .order("published_at", desc=True)
+        .execute()
+    ).data
+
+    outlet_ids = list({a["outlet_id"] for a in articles_raw if a["outlet_id"]})
+    outlets_map = {}
+    if outlet_ids:
+        outlets = (
+            db.table("outlets")
+            .select("id, name, political_score")
+            .in_("id", outlet_ids)
+            .execute()
+        ).data
+        outlets_map = {o["id"]: o for o in outlets}
+
+    grouped_all: dict[str, list[ArticlePreview]] = {
+        "left": [],
+        "center_left": [],
+        "center": [],
+        "center_right": [],
+        "right": [],
+    }
+
+    for a in articles_raw:
+        outlet = outlets_map.get(a["outlet_id"])
+        if not outlet:
+            continue
+
+        lean = _score_to_lean(outlet["political_score"])
+        grouped_all[lean].append(
+            ArticlePreview(
+                id=a["id"],
+                url=a["url"],
+                title=a["title"],
+                lead=a.get("lead"),
+                image_url=a.get("image_url"),
+                author=a.get("author"),
+                published_at=a.get("published_at"),
+                outlet=OutletSummary(
+                    id=outlet["id"],
+                    name=outlet["name"],
+                    political_score=outlet["political_score"],
+                ),
+                political_lean=lean,
+            )
+        )
+
+    grouped_preview = {
+        lean: items[:preview_limit] for lean, items in grouped_all.items()
+    }
+    preview_count = sum(len(items) for items in grouped_preview.values())
+    locked_article_count = max(topic["article_count"] - preview_count, 0)
+
+    blindspot = _build_blindspot(articles_raw, outlets_map)
+
+    return TopicFreeDetail(
+        **topic,
+        blindspot=blindspot,
+        articles_left=grouped_preview["left"],
+        articles_center_left=grouped_preview["center_left"],
+        articles_center=grouped_preview["center"],
+        articles_center_right=grouped_preview["center_right"],
+        articles_right=grouped_preview["right"],
+        paywall=TopicPaywallPreview(
+            preview_limit=preview_limit,
+            locked_article_count=locked_article_count,
+            cta_title="Continue para ver todos os lados",
+            cta_description="Assine o premium para desbloquear todos os artigos, claims e comparativos do tópico.",
+        ),
+    )

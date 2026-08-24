@@ -79,6 +79,12 @@ class FakeTable:
             selected_rows = {id(row) for row in self.rows}
             self._all_rows[:] = [row for row in self._all_rows if id(row) not in selected_rows]
             return SimpleNamespace(data=[])
+        if self._update_values is not None:
+            selected_rows = {id(row) for row in self.rows}
+            for row in self._all_rows:
+                if id(row) in selected_rows:
+                    row.update(self._update_values)
+            self._update_values = None
         if self._single:
             return SimpleNamespace(data=self.rows[0] if self.rows else None)
         return SimpleNamespace(data=self.rows)
@@ -223,7 +229,7 @@ def test_topic_search_route_is_not_captured_by_topic_id_route(monkeypatch, clien
     monkeypatch.setattr("api.feed.router._list_topics", fake_list_topics)
 
     response = client.get(
-        "/feed/search?q=Banco+Central",
+        "/feed/topics/search?q=Banco+Central",
         headers={"Authorization": "Bearer token"},
     )
 
@@ -233,16 +239,28 @@ def test_topic_search_route_is_not_captured_by_topic_id_route(monkeypatch, clien
 
 def test_topic_search_route_requires_premium_in_middleware(monkeypatch, client):
     client.fake_db.tables["user_profiles"][0]["is_premium"] = False
-    monkeypatch.setattr("api.feed.router.require_premium", lambda request: None)
+    monkeypatch.setattr(
+        "api.feed.router.require_premium",
+        lambda request: (_ for _ in ()).throw(
+            __import__("fastapi").HTTPException(
+                status_code=403,
+                detail="Assinatura necessária para acessar este conteúdo",
+            )
+        ),
+    )
 
     response = client.get(
-        "/feed/search?q=Banco+Central",
+        "/feed/topics/search?q=Banco+Central",
         headers={"Authorization": "Bearer token"},
     )
 
     assert response.status_code == 403
     assert response.json() == {
-        "detail": "Assinatura necessária para acessar este conteúdo"
+        "error": {
+            "status": 403,
+            "detail": "Assinatura necessária para acessar este conteúdo",
+            "path": "/feed/topics/search",
+        }
     }
 
 
@@ -692,3 +710,83 @@ def test_revenuecat_webhook_ignores_duplicate_event(monkeypatch, client):
     assert response.status_code == 200
     assert response.json() == {"status": "duplicate"}
     assert activated == []
+
+
+def _signed_revenuecat_event(
+    client,
+    monkeypatch,
+    event: dict,
+    secret: str = "webhook-test-secret",
+):
+    monkeypatch.setattr("api.payments.router.settings.revenuecat_webhook_secret", secret)
+    monkeypatch.setattr("api.payments.router.settings.revenuecat_premium_entitlement_id", "premium")
+    monkeypatch.setattr("api.payments.router.claim_revenuecat_webhook_event", lambda **_: True)
+    monkeypatch.setattr("worker.utils.db.get_client", lambda: client.fake_db)
+    body = json.dumps({"event": event}).encode()
+    timestamp = str(int(time.time()))
+    digest = hmac.new(secret.encode(), timestamp.encode() + b"." + body, hashlib.sha256).hexdigest()
+    return client.post(
+        "/payments/webhook",
+        content=body,
+        headers={"X-RevenueCat-Webhook-Signature": f"t={timestamp},v1={digest}"},
+    )
+
+
+def test_revenuecat_webhook_cancellation_disables_auto_renewal_but_keeps_access(monkeypatch, client):
+    response = _signed_revenuecat_event(
+        client,
+        monkeypatch,
+        {
+            "id": "cancellation-user-requested",
+            "event_timestamp_ms": 1_800_000_000_000,
+            "type": "CANCELLATION",
+            "app_user_id": "user-123",
+            "cancel_reason": "UNSUBSCRIBE",
+            "entitlement_ids": ["premium"],
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+    assert client.fake_db.tables["user_profiles"][0]["is_premium"] is True
+    assert client.fake_db.tables["user_profiles"][0]["premium_auto_renews"] is False
+
+
+def test_revenuecat_webhook_customer_support_cancellation_preserves_current_state(monkeypatch, client):
+    response = _signed_revenuecat_event(
+        client,
+        monkeypatch,
+        {
+            "id": "cancellation-customer-support",
+            "event_timestamp_ms": 1_800_000_000_000,
+            "type": "CANCELLATION",
+            "app_user_id": "user-123",
+            "cancel_reason": "CUSTOMER_SUPPORT",
+            "entitlement_ids": ["premium"],
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+    assert client.fake_db.tables["user_profiles"][0]["is_premium"] is True
+    assert client.fake_db.tables["user_profiles"][0]["premium_auto_renews"] is True
+
+
+def test_revenuecat_webhook_expiration_deactivates_premium(monkeypatch, client):
+    response = _signed_revenuecat_event(
+        client,
+        monkeypatch,
+        {
+            "id": "expiration-event",
+            "event_timestamp_ms": 1_800_000_000_000,
+            "type": "EXPIRATION",
+            "app_user_id": "user-123",
+            "entitlement_ids": ["premium"],
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+    assert client.fake_db.tables["user_profiles"][0]["is_premium"] is False
+    assert client.fake_db.tables["user_profiles"][0]["premium_expires_at"] is None
+    assert client.fake_db.tables["user_profiles"][0]["premium_auto_renews"] is False
