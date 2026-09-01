@@ -102,11 +102,15 @@ def _list_topics(
     )
 
     if search:
-        # Escape PostgREST pattern metacharacters so user input is treated as
-        # literal text, not as an ilike pattern.
-        escaped = search.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
-        pattern = f"%{escaped}%"
-        query = query.or_(f"canonical_title.ilike.{pattern},summary.ilike.{pattern}")
+        # Busca full-text em português usando a coluna gerada search_vector.
+        # plainto_tsquery trata a entrada como texto literal e evita erros com
+        # caracteres especiais de tsquery.
+        query = query.text_search(
+            "search_vector",
+            search,
+            config="portuguese",
+            type="plain",
+        )
 
     topics = (
         query
