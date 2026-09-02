@@ -187,6 +187,93 @@ def list_outlets():
     ]
 
 
+@router.get("/outlets/{outlet_id}/topics", response_model=TopicListResponse)
+def list_outlet_topics(
+    outlet_id: str,
+    request: Request,
+    limit: int = Query(default=20, ge=1, le=20),
+) -> TopicListResponse:
+    """
+    Lista os tópicos recentes cobertos por um veículo específico.
+    Requer assinatura ativa e limita a resposta a no máximo 20 tópicos.
+    """
+    db = get_client()
+    require_premium(request)
+
+    outlet = (
+        db.table("outlets")
+        .select("id")
+        .eq("id", outlet_id)
+        .single()
+        .execute()
+    ).data
+    if not outlet:
+        raise HTTPException(status_code=404, detail="Veículo não encontrado")
+
+    articles = (
+        db.table("articles")
+        .select("topic_id, published_at")
+        .eq("outlet_id", outlet_id)
+        .gte("published_at", _news_content_cutoff())
+        .order("published_at", desc=True)
+        .limit(200)
+        .execute()
+    ).data
+
+    topic_ids = list(dict.fromkeys(a["topic_id"] for a in articles if a.get("topic_id")))[:limit]
+    if not topic_ids:
+        return TopicListResponse(data=[], meta=PaginationMeta(limit=limit, offset=0, has_more=False))
+
+    topics = (
+        db.table("topics")
+        .select(
+            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at"
+        )
+        .in_("id", topic_ids)
+        .eq("is_hot", True)
+        .eq("initial_check", True)
+        .gte("created_at", _news_content_cutoff())
+        .execute()
+    ).data
+
+    topics_by_id = {topic["id"]: topic for topic in topics}
+    ordered_topics = [topics_by_id[topic_id] for topic_id in topic_ids if topic_id in topics_by_id]
+
+    all_articles = (
+        db.table("articles")
+        .select("topic_id, outlet_id")
+        .in_("topic_id", [topic["id"] for topic in ordered_topics])
+        .execute()
+    ).data
+
+    outlet_ids = list({a["outlet_id"] for a in all_articles if a.get("outlet_id")})
+    outlets_map = {}
+    if outlet_ids:
+        outlets = (
+            db.table("outlets")
+            .select("id, political_score")
+            .in_("id", outlet_ids)
+            .execute()
+        ).data
+        outlets_map = {o["id"]: o for o in outlets}
+
+    articles_by_topic: dict[str, list] = {topic["id"]: [] for topic in ordered_topics}
+    for article in all_articles:
+        if article["topic_id"] in articles_by_topic:
+            articles_by_topic[article["topic_id"]].append(article)
+
+    return TopicListResponse(
+        data=[
+            TopicListItem(
+                **topic,
+                blindspot=_build_blindspot(articles_by_topic[topic["id"]], outlets_map),
+            )
+            for topic in ordered_topics
+        ],
+        meta=PaginationMeta(limit=limit, offset=0, has_more=False),
+    )
+
+
 @router.get("/topicsfree", response_model=TopicListResponse)
 def list_topics_free(
     limit: int = Query(default=3, ge=1, le=4),

@@ -249,7 +249,17 @@ def _insert_claims(db, article_id: str, topic_id: str, claims: list[dict]) -> No
 def _clean_text(value: object, *, max_length: int) -> str:
     if not isinstance(value, str):
         return ""
-    return " ".join(value.split())[:max_length].strip()
+
+    text = " ".join(value.split()).strip()
+    if len(text) <= max_length:
+        return text
+
+    truncated = text[:max_length].rstrip()
+    last_space = truncated.rfind(" ")
+    if last_space >= max_length * 0.6:
+        truncated = truncated[:last_space].rstrip()
+
+    return truncated
 
 
 def _coerce_confidence(value: object) -> float:
@@ -317,7 +327,7 @@ def _normalize_initial_analysis(raw_analysis: object, articles: list[dict]) -> d
     if not isinstance(raw_analysis, dict):
         raise ValueError("Resposta da IA não é um objeto JSON")
 
-    canonical_title = _clean_text(raw_analysis.get("canonical_title"), max_length=80)
+    canonical_title = _clean_text(raw_analysis.get("canonical_title"), max_length=180)
     summary = _clean_text(raw_analysis.get("summary"), max_length=2_000)
     if not canonical_title or not summary:
         raise ValueError("Resposta da IA não contém título e resumo publicáveis")
@@ -419,7 +429,7 @@ async def _run_initial_prompt(articles: list[dict]) -> dict:
 Analise as matérias abaixo sobre o mesmo acontecimento e retorne um JSON com esta estrutura:
 
 {{
-  "canonical_title": "título neutro e objetivo em português (máx 80 caracteres)",
+  "canonical_title": "título neutro, completo e gramaticalmente fechado em português (máx 80 caracteres)",
   "summary": "Resumo dos fatos verificáveis. [Se houver divergência entre espectros políticos, adicione:] Os espectros políticos diferem quanto a [ponto de divergência].",
   "articles": [
     {{

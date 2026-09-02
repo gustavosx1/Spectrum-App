@@ -1,4 +1,3 @@
-
 import asyncio
 from datetime import datetime, timezone
 from types import SimpleNamespace
@@ -214,6 +213,7 @@ async def test_run_initial_prompt_builds_expected_prompt(monkeypatch):
     assert "Lead do artigo" in captured["prompt"]
     assert "Conteúdo completo" in captured["prompt"]
     assert "Preserve a linha do tempo" in captured["prompt"]
+    assert "máx 80 caracteres" in captured["prompt"]
 
 
 @pytest.mark.asyncio
