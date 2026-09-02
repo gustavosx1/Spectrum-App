@@ -108,8 +108,7 @@ def _list_topics(
         query = query.text_search(
             "search_vector",
             search,
-            config="portuguese",
-            type="plain",
+            {"config": "portuguese", "type": "plain"},
         )
 
     topics = (

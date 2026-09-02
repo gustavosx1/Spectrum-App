@@ -237,6 +237,38 @@ def test_topic_search_route_is_not_captured_by_topic_id_route(monkeypatch, clien
     assert calls == [{"limit": 20, "offset": 0, "search": "Banco Central"}]
 
 
+def test_topic_search_uses_postgrest_text_search_options(monkeypatch, client):
+    captured = {}
+
+    class SearchFakeTable(FakeTable):
+        def text_search(self, column, query, options={}):
+            captured["column"] = column
+            captured["query"] = query
+            captured["options"] = options
+            return self
+
+    class SearchFakeDB(FakeDB):
+        def table(self, name):
+            if name not in self.tables:
+                self.tables[name] = []
+            return SearchFakeTable(self.tables.get(name, []))
+
+    fake_db = SearchFakeDB(client.fake_db.tables)
+    monkeypatch.setattr("api.feed.router.get_client", lambda: fake_db)
+
+    response = client.get(
+        "/feed/topics/search?q=Banco+Central",
+        headers={"Authorization": "Bearer token"},
+    )
+
+    assert response.status_code == 200
+    assert captured == {
+        "column": "search_vector",
+        "query": "Banco Central",
+        "options": {"config": "portuguese", "type": "plain"},
+    }
+
+
 def test_topic_search_route_requires_premium_in_middleware(monkeypatch, client):
     client.fake_db.tables["user_profiles"][0]["is_premium"] = False
     monkeypatch.setattr(
