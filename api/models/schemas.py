@@ -64,6 +64,7 @@ class TopicListItem(BaseModel):
     is_hot: bool
     initial_check: bool
     created_at: datetime
+    categories: list[str] = Field(default_factory=list)
     blindspot: BlindspotResponse
 
 

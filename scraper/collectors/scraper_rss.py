@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from datetime import datetime, timezone
 from urllib.parse import urlparse
 
 import feedparser
@@ -93,10 +94,12 @@ async def fetch_rss_feed(
 
         if not is_within_window(published_at):
             skipped += 1
-            logger.debug(
-                "Fora da janela (%s) — ignorando: %s",
-                published_at.strftime("%d/%m %H:%M") if published_at else "sem data",
+            logger.info(
+                "RSS fora da janela | outlet=%s | url=%s | published_at=%s | agora=%s",
+                outlet.id,
                 url,
+                published_at.isoformat() if published_at else "sem data",
+                datetime.now(tz=timezone.utc).isoformat(),
             )
             continue
 

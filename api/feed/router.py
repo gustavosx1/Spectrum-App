@@ -92,7 +92,7 @@ def _list_topics(
     query = (
         db.table("topics")
         .select(
-            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at"
+            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at, categories"
         )
         # A topic is only safe to expose once the hot-topic pipeline has
         # finished producing the editorial fields consumed by the app.
@@ -226,7 +226,7 @@ def list_outlet_topics(
     topics = (
         db.table("topics")
         .select(
-            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at"
+            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at, categories"
         )
         .in_("id", topic_ids)
         .eq("is_hot", True)
@@ -331,7 +331,7 @@ def get_topic(topic_id: str, request: Request):
     topic = (
         db.table("topics")
         .select(
-            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at"
+            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at, categories"
         )
         .eq("id", topic_id)
         .eq("is_hot", True)
@@ -451,7 +451,7 @@ def get_topic_free(
     topic = (
         db.table("topics")
         .select(
-            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at"
+            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at, categories"
         )
         .eq("id", topic_id)
         .eq("is_hot", True)
@@ -553,7 +553,7 @@ def get_topic(topic_id: str, request: Request):
     topic = (
         db.table("topics")
         .select(
-            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at"
+            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at, categories"
         )
         .eq("id", topic_id)
         .eq("is_hot", True)
@@ -673,7 +673,7 @@ def get_topic_free(
     topic = (
         db.table("topics")
         .select(
-            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at"
+            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at, categories"
         )
         .eq("id", topic_id)
         .eq("is_hot", True)
