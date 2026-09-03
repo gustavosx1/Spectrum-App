@@ -101,6 +101,12 @@ def _list_topics(
         .gte("created_at", _news_content_cutoff())
     )
 
+    # No cliente PostgREST, order/range pertencem ao builder de seleção. Já
+    # text_search devolve um SyncQueryRequestBuilder, que só expõe execute().
+    # Os parâmetros HTTP são combináveis, portanto a ordem de montagem mantém
+    # a mesma query SQL e evita encadear métodos indisponíveis após a busca.
+    query = query.order("created_at", desc=True).range(offset, offset + limit - 1)
+
     if search:
         # Busca full-text em português usando a coluna gerada search_vector.
         # plainto_tsquery trata a entrada como texto literal e evita erros com
@@ -111,12 +117,7 @@ def _list_topics(
             {"config": "portuguese", "type": "plain"},
         )
 
-    topics = (
-        query
-        .order("created_at", desc=True)
-        .range(offset, offset + limit - 1)
-        .execute()
-    ).data
+    topics = query.execute().data
 
     has_more = len(topics) == limit
     topic_ids = [t["id"] for t in topics]

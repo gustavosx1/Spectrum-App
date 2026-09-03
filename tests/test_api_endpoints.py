@@ -240,12 +240,21 @@ def test_topic_search_route_is_not_captured_by_topic_id_route(monkeypatch, clien
 def test_topic_search_uses_postgrest_text_search_options(monkeypatch, client):
     captured = {}
 
+    class SearchExecutionBuilder:
+        """Reproduz o builder devolvido por text_search no PostgREST real."""
+
+        def __init__(self, table):
+            self._table = table
+
+        def execute(self):
+            return self._table.execute()
+
     class SearchFakeTable(FakeTable):
         def text_search(self, column, query, options={}):
             captured["column"] = column
             captured["query"] = query
             captured["options"] = options
-            return self
+            return SearchExecutionBuilder(self)
 
     class SearchFakeDB(FakeDB):
         def table(self, name):
