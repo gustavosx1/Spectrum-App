@@ -577,25 +577,48 @@ async def _call_gemini(prompt: str) -> dict:
 
 
 def _fetch_most_covered_topic(db) -> dict | None:
-    """Retorna o único tópico publicado com maior cobertura na janela atual."""
+    """Retorna o tópico publicado com mais matérias na janela atual."""
     cutoff = (
         datetime.now(timezone.utc)
         .replace(microsecond=0)
         - timedelta(hours=settings.push_digest_lookback_hours)
     ).isoformat()
-    topics = (
-        db.table("topics")
-        .select("id, canonical_title, article_count")
-        .eq("is_hot", True)
-        .eq("initial_check", True)
-        .gte("created_at", cutoff)
-        .order("article_count", desc=True)
-        .order("created_at", desc=True)
-        .limit(1)
+    recent_articles = (
+        db.table("articles")
+        .select("topic_id, published_at")
+        .gte("published_at", cutoff)
         .execute()
     ).data or []
 
-    return topics[0] if topics else None
+    coverage_by_topic: dict[str, int] = {}
+    for article in recent_articles:
+        topic_id = article.get("topic_id")
+        if topic_id:
+            coverage_by_topic[topic_id] = coverage_by_topic.get(topic_id, 0) + 1
+
+    if not coverage_by_topic:
+        return None
+
+    topics = (
+        db.table("topics")
+        .select("id, canonical_title, article_count, created_at")
+        .in_("id", list(coverage_by_topic))
+        .eq("is_hot", True)
+        .eq("initial_check", True)
+        .execute()
+    ).data or []
+
+    if not topics:
+        return None
+
+    return max(
+        topics,
+        key=lambda topic: (
+            coverage_by_topic.get(topic["id"], 0),
+            int(topic.get("article_count") or 0),
+            topic.get("created_at") or "",
+        ),
+    )
 
 
 def _digest_window_start() -> datetime:
@@ -802,7 +825,17 @@ async def _dispatch_push_expo(db, payload: dict) -> None:
                 headers=headers,
             )
             response.raise_for_status()
-            invalid_tokens.update(_extract_invalid_expo_tokens(batch, response.json()))
+            response_data = response.json()
+            invalid_tokens.update(_extract_invalid_expo_tokens(batch, response_data))
+            tickets = response_data.get("data") or []
+            accepted = sum(ticket.get("status") == "ok" for ticket in tickets)
+            rejected = len(tickets) - accepted
+            logger.info(
+                "Lote Expo enviado: total=%d aceitos=%d rejeitados=%d",
+                len(batch),
+                accepted,
+                rejected,
+            )
 
     _mark_tokens_inactive(db, invalid_tokens)
     if invalid_tokens:

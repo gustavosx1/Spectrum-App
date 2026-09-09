@@ -30,6 +30,10 @@ class FakeQuery:
         self.calls.append(("gte", args, kwargs))
         return self
 
+    def in_(self, *args, **kwargs):
+        self.calls.append(("in_", args, kwargs))
+        return self
+
     def order(self, *args, **kwargs):
         self.calls.append(("order", args, kwargs))
         return self
@@ -365,19 +369,29 @@ async def test_process_hot_topic_routes_to_initial_or_individual(monkeypatch):
     assert calls == [("individual", "topic-1")]
 
 
-def test_fetch_most_covered_topic_filters_recent_published_topics():
+def test_fetch_most_covered_topic_uses_recent_article_coverage():
     topics = [
         {"id": "topic-1", "canonical_title": "Maior cobertura", "article_count": 12},
         {"id": "topic-2", "canonical_title": "Outra cobertura", "article_count": 8},
     ]
-    db = FakeDB({"topics": topics})
+    db = FakeDB(
+        {
+            "articles": [
+                {"topic_id": "topic-1"},
+                {"topic_id": "topic-1"},
+                {"topic_id": "topic-2"},
+                {"topic_id": "topic-2"},
+                {"topic_id": "topic-2"},
+            ],
+            "topics": topics,
+        }
+    )
 
     result = cluster._fetch_most_covered_topic(db)
 
-    assert result == topics[0]
-    assert any(call[0] == "gte" and call[1][0] == "created_at" for call in db.calls)
-    assert ("order", ("article_count",), {"desc": True}) in db.calls
-    assert ("limit", (1,), {}) in db.calls
+    assert result == topics[1]
+    assert any(call[0] == "gte" and call[1][0] == "published_at" for call in db.calls)
+    assert ("in_", ("id", ["topic-1", "topic-2"]), {}) in db.calls
 
 
 def test_build_coverage_digest_push_payload_contract_v1_fields():

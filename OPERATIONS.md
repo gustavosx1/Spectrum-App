@@ -93,6 +93,22 @@ sudo systemctl enable --now spectrum-beat.service
 O Beat deve rodar em uma única instância. Ele envia somente o título do tópico
 com maior cobertura publicado na janela das últimas seis horas.
 
+### Diagnóstico de notificações push
+
+O envio é uma responsabilidade separada do `spectrum-api`: exige os serviços
+`spectrum-beat` e `spectrum-worker` ativos, além de tokens registrados na
+tabela `device_push_tokens`. Na VPS, verifique primeiro:
+
+```bash
+sudo systemctl status spectrum-beat spectrum-worker --no-pager
+sudo journalctl -u spectrum-beat -u spectrum-worker --since '24 hours ago' --no-pager | grep -Ei 'coverage|resumo|expo|push|erro|falha'
+```
+
+O Beat agenda o trabalho às 00:00, 06:00, 12:00 e 18:00 (horário de São Paulo).
+O worker escolhe o tópico publicado que recebeu mais matérias nas seis horas
+anteriores. Mensagens como `nenhum token Expo ativo` indicam cadastro/permissão
+no dispositivo; ausência de logs do Beat indica serviço desativado ou parado.
+
 ### Pré-verificação de pagamentos
 
 Antes de reiniciar a API após configurar o RevenueCat, confirme que o arquivo
