@@ -191,11 +191,12 @@ def list_outlets():
 def list_outlet_topics(
     outlet_id: str,
     request: Request,
-    limit: int = Query(default=20, ge=1, le=20),
+    limit: int = Query(default=10, ge=1, le=50),
 ) -> TopicListResponse:
     """
-    Lista os tópicos recentes cobertos por um veículo específico.
-    Requer assinatura ativa e limita a resposta a no máximo 20 tópicos.
+    Lista tópicos cobertos por um veículo específico.
+    Requer assinatura ativa e tenta preencher até o limite solicitado
+    sem depender apenas da janela temporal recente.
     """
     db = get_client()
     require_premium(request)
@@ -214,30 +215,30 @@ def list_outlet_topics(
         db.table("articles")
         .select("topic_id, published_at")
         .eq("outlet_id", outlet_id)
-        .gte("published_at", _news_content_cutoff())
         .order("published_at", desc=True)
-        .limit(200)
+        .limit(1000)
         .execute()
     ).data
 
-    topic_ids = list(dict.fromkeys(a["topic_id"] for a in articles if a.get("topic_id")))[:limit]
+    topic_ids = list(dict.fromkeys(a["topic_id"] for a in articles if a.get("topic_id")))
     if not topic_ids:
         return TopicListResponse(data=[], meta=PaginationMeta(limit=limit, offset=0, has_more=False))
+
+    candidate_topic_ids = topic_ids[:250]
 
     topics = (
         db.table("topics")
         .select(
             "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at, categories"
         )
-        .in_("id", topic_ids)
+        .in_("id", candidate_topic_ids)
         .eq("is_hot", True)
         .eq("initial_check", True)
-        .gte("created_at", _news_content_cutoff())
         .execute()
     ).data
 
     topics_by_id = {topic["id"]: topic for topic in topics}
-    ordered_topics = [topics_by_id[topic_id] for topic_id in topic_ids if topic_id in topics_by_id]
+    ordered_topics = [topics_by_id[topic_id] for topic_id in candidate_topic_ids if topic_id in topics_by_id][:limit]
 
     all_articles = (
         db.table("articles")
