@@ -430,7 +430,7 @@ async def _run_initial_prompt(articles: list[dict]) -> dict:
     Uma chamada → título + summary + claims de todos os artigos.
     """
     context_parts = []
-    for a in articles[:10]:
+    for a in articles:
         part = f"[ID: {a['id']}]\nFonte: {a['url']}\nTítulo: {a['title']}"
         if a.get("published_at"):
             part += f"\nPublicada em: {a['published_at']}"
