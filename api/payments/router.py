@@ -32,6 +32,7 @@ from worker.config import settings
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
+REVENUECAT_SUBSCRIBER_URL = "https://api.revenuecat.com/v1/subscribers"
 
 
 @router.post("/verify", response_model=PurchaseVerifyResponse)
@@ -88,6 +89,45 @@ def subscription_status(request: Request):
     return get_subscription(get_user_id(request))
 
 
+@router.post("/sync", response_model=SubscriptionStatus)
+async def sync_subscription(request: Request):
+    """Confirma uma compra no RevenueCat sem depender do atraso do webhook."""
+    if not settings.revenuecat_secret_api_key:
+        raise HTTPException(
+            status_code=503,
+            detail="Sincronização de assinatura indisponível",
+        )
+
+    user_id = get_user_id(request)
+    subscriber = await _get_revenuecat_subscriber(user_id)
+    entitlement_id = settings.revenuecat_premium_entitlement_id.strip()
+    entitlements = subscriber.get("entitlements", {}) if subscriber else {}
+    entitlement = entitlements.get(entitlement_id) if isinstance(entitlements, dict) else None
+
+    if not isinstance(entitlement, dict):
+        deactivate_premium(user_id)
+        return get_subscription(user_id)
+
+    expires_at = _parse_revenuecat_date(entitlement.get("expires_date"))
+    if expires_at and expires_at < datetime.now(tz=timezone.utc):
+        deactivate_premium(user_id)
+        return get_subscription(user_id)
+
+    product_id = entitlement.get("product_identifier")
+    if not isinstance(product_id, str) or not product_id:
+        deactivate_premium(user_id)
+        return get_subscription(user_id)
+
+    activate_premium(
+        user_id=user_id,
+        platform=str(entitlement.get("store") or "revenuecat").lower(),
+        product_id=product_id,
+        expires_at=expires_at,
+        auto_renews=bool(entitlement.get("will_renew")),
+    )
+    return get_subscription(user_id)
+
+
 @router.post("/webhook")
 async def payment_webhook(
     request: Request,
@@ -125,26 +165,19 @@ async def payment_webhook(
         logger.info("payment.webhook_ignored", extra={"event_type": event_type, "reason": "entitlement"})
         return {"status": "ignored"}
 
-    if event_id:
-        try:
-            event_timestamp_ms = int(event.get("event_timestamp_ms", 0))
-        except (TypeError, ValueError):
-            event_timestamp_ms = 0
-
-        if not claim_revenuecat_webhook_event(
-            event_id=str(event_id),
-            event_timestamp_ms=event_timestamp_ms,
-            app_user_id=app_user_id,
-            event_type=event_type or "UNKNOWN",
-        ):
-            logger.info("payment.webhook_duplicate", extra={"event_id": event_id, "event_type": event_type})
-            return {"status": "duplicate"}
-    else:
-        # O campo é obrigatório nos eventos atuais do RevenueCat. Mantemos
-        # compatibilidade defensiva com testes/reenvios legados sem bloquear a compra.
-        logger.warning("payment.webhook_missing_event_id", extra={"event_type": event_type})
-
     if event_type in ("INITIAL_PURCHASE", "RENEWAL", "UNCANCELLATION", "SUBSCRIPTION_EXTENDED"):
+        external_id = event.get("original_transaction_id") or event.get("transaction_id")
+        if external_id and not claim_purchase(
+            external_id=str(external_id),
+            platform=str(event.get("store", "")).lower(),
+            user_id=app_user_id,
+        ):
+            logger.warning(
+                "payment.webhook_ownership_conflict",
+                extra={"event_id": event_id, "app_user_id": app_user_id},
+            )
+            return {"status": "ownership_conflict"}
+
         expires_at = _parse_ms(event.get("expiration_at_ms"))
         activate_premium(
             user_id=app_user_id,
@@ -169,6 +202,25 @@ async def payment_webhook(
     elif event_type == "EXPIRATION":
         deactivate_premium(app_user_id)
         logger.info("Premium desativado (%s): %s", event_type, app_user_id)
+
+    # Registra a idempotência apenas depois da transição de estado. Se uma
+    # chamada anterior falhar, um reenvio do RevenueCat pode concluir o fluxo.
+    if event_id:
+        try:
+            event_timestamp_ms = int(event.get("event_timestamp_ms", 0))
+        except (TypeError, ValueError):
+            event_timestamp_ms = 0
+
+        if not claim_revenuecat_webhook_event(
+            event_id=str(event_id),
+            event_timestamp_ms=event_timestamp_ms,
+            app_user_id=app_user_id,
+            event_type=event_type or "UNKNOWN",
+        ):
+            logger.info("payment.webhook_duplicate", extra={"event_id": event_id, "event_type": event_type})
+            return {"status": "duplicate"}
+    else:
+        logger.warning("payment.webhook_missing_event_id", extra={"event_type": event_type})
 
     return {"status": "ok"}
 
@@ -208,6 +260,25 @@ async def _request_with_retries(
     if last_exception:
         raise last_exception
     raise RuntimeError("Unexpected error during external request")
+
+
+async def _get_revenuecat_subscriber(user_id: str) -> Optional[dict[str, Any]]:
+    """Busca o cliente no RevenueCat com uma chave secreta exclusiva do backend."""
+    response = await _request_with_retries(
+        "GET",
+        f"{REVENUECAT_SUBSCRIBER_URL}/{quote(user_id, safe='')}",
+        headers={"Authorization": f"Bearer {settings.revenuecat_secret_api_key}"},
+    )
+    if response.status_code == 404:
+        return None
+    if response.status_code != 200:
+        logger.warning("revenuecat.subscriber_lookup_failed", extra={"status_code": response.status_code})
+        raise HTTPException(status_code=503, detail="Sincronização de assinatura indisponível")
+
+    subscriber = response.json().get("subscriber")
+    if not isinstance(subscriber, dict):
+        raise HTTPException(status_code=503, detail="Resposta inválida da sincronização de assinatura")
+    return subscriber
 
 
 # ── Verificação Apple ─────────────────────────────────────────────────────────
@@ -337,6 +408,16 @@ def _parse_ms(ms: Optional[int]) -> Optional[datetime]:
     if not ms:
         return None
     return datetime.fromtimestamp(ms / 1000, tz=timezone.utc)
+
+
+def _parse_revenuecat_date(value: Any) -> Optional[datetime]:
+    if not isinstance(value, str) or not value:
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
 
 
 def _verify_revenuecat_signature(body: bytes, signature: Optional[str]) -> bool:

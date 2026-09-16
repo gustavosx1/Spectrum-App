@@ -620,6 +620,7 @@ def test_production_configuration_requires_jwt_and_public_hosts(monkeypatch):
     assert any("API_ALLOWED_HOSTS" in error for error in errors)
     assert any("API_CORS_ORIGINS" in error for error in errors)
     assert any("REVENUECAT_WEBHOOK_SECRET" in error for error in errors)
+    assert any("REVENUECAT_SECRET_API_KEY" in error for error in errors)
     assert any("REVENUECAT_PREMIUM_ENTITLEMENT_ID" in error for error in errors)
 
 
@@ -678,6 +679,7 @@ def test_revenuecat_webhook_activates_premium_for_valid_signed_google_play_event
                 "app_user_id": "user-123",
                 "store": "PLAY_STORE",
                 "product_id": "prisma.basic.monthly",
+                "original_transaction_id": "google-purchase-001",
                 "expiration_at_ms": 1_800_000_000_000,
                 "entitlement_ids": ["premium"],
             }
@@ -698,6 +700,9 @@ def test_revenuecat_webhook_activates_premium_for_valid_signed_google_play_event
     assert called["platform"] == "play_store"
     assert called["product_id"] == "prisma.basic.monthly"
     assert called["auto_renews"] is True
+    assert client.fake_db.tables["redeemed_purchases"] == [
+        {"external_id": "google-purchase-001", "platform": "play_store", "user_id": "user-123"}
+    ]
     assert claimed_events == [
         {
             "event_id": "google-play-initial-purchase-001",
@@ -721,7 +726,7 @@ def test_revenuecat_webhook_rejects_invalid_signature(monkeypatch, client):
     assert response.status_code == 401
 
 
-def test_revenuecat_webhook_ignores_duplicate_event(monkeypatch, client):
+def test_revenuecat_webhook_reconciles_premium_before_marking_duplicate(monkeypatch, client):
     secret = "webhook-test-secret"
     monkeypatch.setattr("api.payments.router.settings.revenuecat_webhook_secret", secret)
     monkeypatch.setattr("api.payments.router.settings.revenuecat_premium_entitlement_id", "premium")
@@ -735,6 +740,7 @@ def test_revenuecat_webhook_ignores_duplicate_event(monkeypatch, client):
                 "event_timestamp_ms": 1_800_000_000_000,
                 "type": "RENEWAL",
                 "app_user_id": "user-123",
+                "original_transaction_id": "existing-purchase",
                 "entitlement_ids": ["premium"],
             }
         }
@@ -750,7 +756,31 @@ def test_revenuecat_webhook_ignores_duplicate_event(monkeypatch, client):
 
     assert response.status_code == 200
     assert response.json() == {"status": "duplicate"}
-    assert activated == []
+    assert len(activated) == 1
+
+
+def test_sync_subscription_activates_confirmed_revenuecat_entitlement(monkeypatch, client):
+    async def fake_subscriber(_user_id):
+        return {
+            "entitlements": {
+                "premium": {
+                    "expires_date": "2030-01-01T00:00:00Z",
+                    "product_identifier": "prisma.basic.monthly",
+                    "store": "app_store",
+                    "will_renew": True,
+                }
+            }
+        }
+
+    client.fake_db.tables["user_profiles"][0]["is_premium"] = False
+    monkeypatch.setattr("api.payments.router.settings.revenuecat_secret_api_key", "sk_test")
+    monkeypatch.setattr("api.payments.router._get_revenuecat_subscriber", fake_subscriber)
+
+    response = client.post("/payments/sync", headers={"Authorization": "Bearer token"})
+
+    assert response.status_code == 200
+    assert response.json()["is_premium"] is True
+    assert client.fake_db.tables["user_profiles"][0]["premium_platform"] == "app_store"
 
 
 def _signed_revenuecat_event(
