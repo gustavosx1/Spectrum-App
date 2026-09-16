@@ -697,11 +697,11 @@ def test_revenuecat_webhook_activates_premium_for_valid_signed_google_play_event
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
     assert called["user_id"] == "user-123"
-    assert called["platform"] == "play_store"
+    assert called["platform"] == "android"
     assert called["product_id"] == "prisma.basic.monthly"
     assert called["auto_renews"] is True
     assert client.fake_db.tables["redeemed_purchases"] == [
-        {"external_id": "google-purchase-001", "platform": "play_store", "user_id": "user-123"}
+        {"external_id": "google-purchase-001", "platform": "android", "user_id": "user-123"}
     ]
     assert claimed_events == [
         {
@@ -740,6 +740,7 @@ def test_revenuecat_webhook_reconciles_premium_before_marking_duplicate(monkeypa
                 "event_timestamp_ms": 1_800_000_000_000,
                 "type": "RENEWAL",
                 "app_user_id": "user-123",
+                "store": "APP_STORE",
                 "original_transaction_id": "existing-purchase",
                 "entitlement_ids": ["premium"],
             }
@@ -766,10 +767,14 @@ def test_sync_subscription_activates_confirmed_revenuecat_entitlement(monkeypatc
                 "premium": {
                     "expires_date": "2030-01-01T00:00:00Z",
                     "product_identifier": "prisma.basic.monthly",
-                    "store": "app_store",
-                    "will_renew": True,
                 }
-            }
+            },
+            "subscriptions": {
+                "prisma.basic.monthly": {
+                    "store": "app_store",
+                    "unsubscribe_detected_at": None,
+                }
+            },
         }
 
     client.fake_db.tables["user_profiles"][0]["is_premium"] = False
@@ -780,7 +785,7 @@ def test_sync_subscription_activates_confirmed_revenuecat_entitlement(monkeypatc
 
     assert response.status_code == 200
     assert response.json()["is_premium"] is True
-    assert client.fake_db.tables["user_profiles"][0]["premium_platform"] == "app_store"
+    assert client.fake_db.tables["user_profiles"][0]["premium_platform"] == "ios"
 
 
 def _signed_revenuecat_event(

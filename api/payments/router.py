@@ -118,12 +118,18 @@ async def sync_subscription(request: Request):
         deactivate_premium(user_id)
         return get_subscription(user_id)
 
+    subscriptions = subscriber.get("subscriptions", {})
+    subscription = subscriptions.get(product_id) if isinstance(subscriptions, dict) else None
+    if not isinstance(subscription, dict):
+        raise HTTPException(status_code=503, detail="Resposta inválida da sincronização de assinatura")
+
+    platform = _revenuecat_platform(subscription.get("store"))
     activate_premium(
         user_id=user_id,
-        platform=str(entitlement.get("store") or "revenuecat").lower(),
+        platform=platform,
         product_id=product_id,
         expires_at=expires_at,
-        auto_renews=bool(entitlement.get("will_renew")),
+        auto_renews=not bool(subscription.get("unsubscribe_detected_at")),
     )
     return get_subscription(user_id)
 
@@ -166,10 +172,11 @@ async def payment_webhook(
         return {"status": "ignored"}
 
     if event_type in ("INITIAL_PURCHASE", "RENEWAL", "UNCANCELLATION", "SUBSCRIPTION_EXTENDED"):
+        platform = _revenuecat_platform(event.get("store"))
         external_id = event.get("original_transaction_id") or event.get("transaction_id")
         if external_id and not claim_purchase(
             external_id=str(external_id),
-            platform=str(event.get("store", "")).lower(),
+            platform=platform,
             user_id=app_user_id,
         ):
             logger.warning(
@@ -181,7 +188,7 @@ async def payment_webhook(
         expires_at = _parse_ms(event.get("expiration_at_ms"))
         activate_premium(
             user_id=app_user_id,
-            platform=event.get("store", "").lower(),
+            platform=platform,
             product_id=event.get("product_id", ""),
             expires_at=expires_at,
             auto_renews=True,
@@ -418,6 +425,20 @@ def _parse_revenuecat_date(value: Any) -> Optional[datetime]:
     except ValueError:
         return None
     return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
+
+
+def _revenuecat_platform(store: Any) -> str:
+    """Converte o identificador de loja do RevenueCat ao enum interno do banco."""
+    platform_map = {
+        "app_store": "ios",
+        "mac_app_store": "ios",
+        "play_store": "android",
+        "amazon": "android",
+    }
+    platform = platform_map.get(str(store or "").lower())
+    if platform:
+        return platform
+    raise HTTPException(status_code=422, detail="Loja RevenueCat não suportada")
 
 
 def _verify_revenuecat_signature(body: bytes, signature: Optional[str]) -> bool:
