@@ -99,20 +99,27 @@ async def _process(article: dict) -> None:
     # Aqui só consultamos pra decidir se disparamos a task de cluster.
     topic = (
         db.table("topics")
-        .select("is_hot, article_count")
+        .select("is_hot, article_count, initial_check")
         .eq("id", topic_id)
         .single()
         .execute()
     )
 
-    if (
-        topic
-        and topic.data
-        and topic.data["is_hot"]
-        and topic.data["article_count"] == settings.hot_topic_threshold
-    ):
-        # article_count == threshold (não >) garante que dispara só uma vez
-        logger.info("Tópico %s atingiu threshold — disparando cluster", topic_id)
+    topic_data = topic.data if topic else None
+    if not topic_data or not topic_data.get("is_hot"):
+        return
+
+    should_dispatch = (
+        topic_data.get("article_count") == settings.hot_topic_threshold
+        or bool(topic_data.get("initial_check"))
+    )
+    if should_dispatch:
+        logger.info(
+            "Tópico %s hot (count=%s, initial_check=%s) — disparando cluster",
+            topic_id,
+            topic_data.get("article_count"),
+            topic_data.get("initial_check"),
+        )
         from worker.tasks.cluster import process_hot_topic
 
         process_hot_topic.delay(topic_id)
