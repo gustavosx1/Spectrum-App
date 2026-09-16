@@ -35,6 +35,7 @@ class Settings(BaseSettings):
 
     # RevenueCat (abstrai iOS + Android)
     revenuecat_webhook_secret: str = ""
+    revenuecat_secret_api_key: str = ""
     revenuecat_premium_entitlement_id: str = "premium"
     revenuecat_webhook_tolerance_seconds: int = 300
     enable_legacy_store_receipt_verification: bool = False
@@ -124,6 +125,8 @@ class Settings(BaseSettings):
             errors.append("Configure SUPABASE_SERVICE_ROLE_KEY para provisionamento e exclusão de conta")
         if not self.revenuecat_webhook_secret:
             errors.append("Configure REVENUECAT_WEBHOOK_SECRET para validar eventos de assinatura")
+        if not self.revenuecat_secret_api_key:
+            errors.append("Configure REVENUECAT_SECRET_API_KEY para sincronizar compras confirmadas")
         if not self.revenuecat_premium_entitlement_id.strip():
             errors.append("Configure REVENUECAT_PREMIUM_ENTITLEMENT_ID com o entitlement Premium do RevenueCat")
         if not self.allowed_hosts or any(host in {"*", "localhost", "127.0.0.1", "testserver"} for host in self.allowed_hosts):
