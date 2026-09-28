@@ -242,12 +242,15 @@ async def test_call_gemini_limits_output_and_enables_grounding(monkeypatch):
         model="gemini-2.5-flash-lite",
         max_output_tokens=123,
         use_google_search=True,
-        purpose="test",
+        purpose="fact_check_test",
     )
 
     request = fake_client.calls[0]
     assert request[1].endswith("models/gemini-2.5-flash-lite:generateContent")
     assert request[3]["generationConfig"]["maxOutputTokens"] == 123
+    assert request[3]["generationConfig"]["thinkingConfig"] == {
+        "thinkingBudget": cluster.settings.fact_check_thinking_budget
+    }
     assert "responseMimeType" not in request[3]["generationConfig"]
     assert request[3]["tools"] == [{"google_search": {}}]
     assert result["_grounding_urls"] == []
@@ -289,6 +292,154 @@ async def test_initial_triage_uses_compact_model_and_returns_only_eligibility(mo
     assert captured["kwargs"]["model"] == cluster.settings.gemini_fact_check_triage_model
     assert captured["kwargs"]["max_output_tokens"] == cluster.settings.fact_check_triage_max_output_tokens
     assert "não deve tentar decidir se ele é verdadeiro" in captured["prompt"]
+    assert "Registro de candidatura" in captured["prompt"]
+    assert "candidatos a deputado estadual ou federal" in captured["prompt"]
+
+
+@pytest.mark.asyncio
+async def test_official_verification_prompt_includes_source_catalog(monkeypatch):
+    captured = {}
+
+    async def fake_call(prompt, **kwargs):
+        captured["prompt"] = prompt
+        return {
+            "verdict": "unverifiable",
+            "confidence": 0,
+            "source_url": "",
+            "explanation": "",
+            "_grounding_urls": [],
+        }
+
+    async def no_direct_sources(_claim):
+        return []
+
+    monkeypatch.setattr(cluster, "_call_gemini", fake_call)
+    monkeypatch.setattr(cluster, "find_official_source_evidence", no_direct_sources)
+
+    assert await cluster._verify_official_claim("Candidaturas foram registradas.") is None
+    assert "DivulgaCandContas" in captured["prompt"]
+    assert "tesourotransparente.gov.br" in captured["prompt"]
+
+
+@pytest.mark.asyncio
+async def test_official_verification_accepts_official_google_redirect_destination(monkeypatch):
+    async def fake_call(_prompt, **_kwargs):
+        return {
+            "verdict": "true",
+            "confidence": 0.95,
+            "source_url": "https://www.gov.br/fazenda/dado",
+            "explanation": "Dado oficial publicado.",
+            "_grounding_urls": [
+                "https://vertexaisearch.cloud.google.com/grounding-api-redirect/token"
+            ],
+        }
+
+    async def fake_resolve(_urls):
+        return {"https://www.gov.br/fazenda/dado"}
+
+    async def no_direct_sources(_claim):
+        return []
+
+    monkeypatch.setattr(cluster, "_call_gemini", fake_call)
+    monkeypatch.setattr(cluster, "_resolve_official_grounding_urls", fake_resolve)
+    monkeypatch.setattr(cluster, "find_official_source_evidence", no_direct_sources)
+
+    result = await cluster._verify_official_claim("O dado foi publicado.")
+
+    assert result and result["verdict"] == "true"
+    assert result["evidence"].startswith("Fonte oficial: https://www.gov.br/fazenda/dado.")
+
+
+@pytest.mark.asyncio
+async def test_official_verification_accepts_direct_official_api_evidence(monkeypatch):
+    captured = {}
+
+    async def fake_call(prompt, **_kwargs):
+        captured["prompt"] = prompt
+        return {
+            "verdict": "true",
+            "confidence": 0.95,
+            "source_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/6?formato=json",
+            "explanation": "A série oficial informa 13,75 na observação exibida.",
+            "_grounding_urls": [],
+        }
+
+    async def fake_sources(_claim):
+        return [
+            {
+                "source_name": "Banco Central do Brasil",
+                "source_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/6?formato=json",
+                "excerpt": "Série SGS 432; últimas observações retornadas pela API oficial: 04/11/2026: 13.75.",
+                "kind": "direct_evidence",
+            }
+        ]
+
+    monkeypatch.setattr(cluster, "_call_gemini", fake_call)
+    monkeypatch.setattr(cluster, "find_official_source_evidence", fake_sources)
+
+    result = await cluster._verify_official_claim("A taxa Selic está em 13,75%.")
+
+    assert "EVIDÊNCIA DIRETA: Banco Central do Brasil" in captured["prompt"]
+    assert result and result["verdict"] == "true"
+    assert "api.bcb.gov.br" in result["evidence"]
+
+
+@pytest.mark.asyncio
+async def test_official_verification_rejects_catalog_lead_as_evidence(monkeypatch):
+    async def fake_call(_prompt, **_kwargs):
+        return {
+            "verdict": "true",
+            "confidence": 0.95,
+            "source_url": "https://dadosabertos.tse.jus.br/dataset/candidatos-2024",
+            "explanation": "O catálogo lista o conjunto de dados.",
+            "_grounding_urls": [],
+        }
+
+    async def fake_sources(_claim):
+        return [
+            {
+                "source_name": "TSE Dados Abertos",
+                "source_url": "https://dadosabertos.tse.jus.br/dataset/candidatos-2024",
+                "excerpt": "Candidatos - 2024.",
+                "kind": "discovery_lead",
+            }
+        ]
+
+    monkeypatch.setattr(cluster, "_call_gemini", fake_call)
+    monkeypatch.setattr(cluster, "find_official_source_evidence", fake_sources)
+
+    assert await cluster._verify_official_claim("Uma candidatura foi registrada.") is None
+
+
+@pytest.mark.asyncio
+async def test_direct_official_evidence_works_without_google_grounding(monkeypatch):
+    async def fake_call(_prompt, **kwargs):
+        assert kwargs["use_google_search"] is False
+        return {
+            "verdict": "true",
+            "confidence": 0.95,
+            "source_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/6?formato=json",
+            "explanation": "A observação direta confirma a taxa.",
+            "_grounding_urls": [],
+        }
+
+    async def fake_sources(_claim):
+        return [
+            {
+                "source_name": "Banco Central do Brasil",
+                "source_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/6?formato=json",
+                "excerpt": "Série SGS 432: 04/11/2026: 13.75.",
+                "kind": "direct_evidence",
+            }
+        ]
+
+    monkeypatch.setattr(cluster.settings, "fact_check_enable_official_grounding", False)
+    monkeypatch.setattr(cluster, "_call_gemini", fake_call)
+    monkeypatch.setattr(cluster, "find_official_source_evidence", fake_sources)
+
+    result = await cluster._verify_official_claim("A taxa Selic está em 13,75%.")
+
+    assert result and result["verdict"] == "true"
 
 
 @pytest.mark.asyncio

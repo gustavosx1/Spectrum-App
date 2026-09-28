@@ -16,9 +16,11 @@ class Settings(BaseSettings):
     gemini_fact_check_triage_model: str = "gemini-3.5-flash-lite"
     gemini_fact_check_model: str = "gemini-2.5-flash"
     fact_check_enable_official_grounding: bool = True
+    fact_check_enable_direct_official_sources: bool = True
     fact_check_max_grounded_claims_per_run: int = 1
     fact_check_triage_max_output_tokens: int = 350
-    fact_check_verification_max_output_tokens: int = 250
+    fact_check_verification_max_output_tokens: int = 350
+    fact_check_thinking_budget: int = 0
     fact_check_debounce_seconds: int = 600
 
     supabase_url: str
