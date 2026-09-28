@@ -1,0 +1,433 @@
+{
+  "generated_at": "2026-09-28T19:07:49.952315+00:00",
+  "mode": "read_only_preview",
+  "selection": {
+    "requested_topic_count": 20,
+    "selected_topic_count": 6,
+    "topic_filter": "is_hot = true",
+    "claim_filter": "todos os artigos do tópico estão sem claims persistidas",
+    "article_columns": "id, url, title, lead, content, outlet_id, image_url, published_at",
+    "claims_sent_to_gemini": false
+  },
+  "topics": [
+    {
+      "preview_topic": 1,
+      "topic_id": "0ab29fec-3956-427a-bf0f-6c968d502f8c",
+      "current_canonical_title": "Flávio Bolsonaro e Tarcísio de Freitas erguem imagem de Nossa Senhora em ato político em São Paulo",
+      "article_count": 3,
+      "status": "analyzed",
+      "title": "Flávio Bolsonaro e Tarcísio de Freitas erguem imagem de Nossa Senhora em ato em SP",
+      "summary": "Em 28 de setembro de 2026, o senador Flávio Bolsonaro (PL-RJ), candidato à Presidência, e o governador de São Paulo, Tarcísio de Freitas (Republicanos-SP), levantaram uma imagem de Nossa Senhora Aparecida durante um ato político no Centro da capital paulista. A imagem foi entregue a Flávio por uma participante do evento. O ato ocorreu após uma polêmica envolvendo Flávio Bolsonaro e uma suposta fake news sobre a retirada do título de padroeira do Brasil de Nossa Senhora Aparecida. Os espectros políticos divergem quanto à motivação do ato, com uma matéria indicando que Flávio criticou 'fake news do PT' e outra afirmando que ele tenta se afastar da fake news.",
+      "categories": [
+        "Política"
+      ],
+      "fact_check_status": "unverifiable",
+      "triage": {
+        "eligible": false,
+        "claim": "",
+        "article_ids": [],
+        "reason": "A matéria não contém um fato documental elegível."
+      },
+      "articles": [
+        {
+          "article_id": "bfb1a36b-ea89-437e-97d7-9ddfbf7402d4",
+          "url": "https://www.congressoemfoco.com.br/noticia/122625/flavio-e-tarcisio-erguem-imagem-de-nossa-senhora-em-sp-apos-polemica",
+          "title": "Flávio e Tarcísio erguem imagem de Nossa Senhora em SP após polêmica",
+          "lead": "Candidato à Presidência recebeu a santa de uma participante durante caminhada.",
+          "published_at": "2026-09-28T17:15:11+00:00",
+          "claims": [
+            {
+              "claim": "Verificação oficial: Flávio e Tarcísio erguem imagem de Nossa Senhora em SP após polêmica",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        },
+        {
+          "article_id": "e8a2cd50-3c14-4b14-9a61-54eb18055454",
+          "url": "https://www.poder360.com.br/poder-eleicoes-2026/flavio-levanta-imagem-de-nossa-senhora-e-critica-fake-news-do-pt",
+          "title": "Flávio levanta imagem de Nossa Senhora e critica “fake news do PT”",
+          "lead": "Candidato e Tarcísio seguraram imagem da padroeira durante ato em São Paulo, depois de polêmica sobre suposta retirada do título",
+          "published_at": "2026-09-28T17:52:57+00:00",
+          "claims": [
+            {
+              "claim": "Verificação oficial: Flávio levanta imagem de Nossa Senhora e critica “fake news do PT”",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        },
+        {
+          "article_id": "ea909118-ab43-4d1b-b746-072d5d283d49",
+          "url": "https://oantagonista.com.br/brasil/crusoe-evangelico-flavio-levanta-imagem-de-nossa-senhora-em-ato-eleitoral",
+          "title": "Crusoé: Evangélico, Flávio levanta imagem de Nossa Senhora em ato eleitoral",
+          "lead": "Implicado em uma fake news envolvendo Nossa Senhora Aparecida, o evangélico candidato à Presidência Flávio Bolsonaro (PL) levantou nesta segunda-feira, 28, uma imagem da santa durante um ato político em São Paulo (foto). A imagem foi entregue ao filho de Jair Bolsonaro, que estava acompanhado do governador Tarcísio de Freitas (Republicanos), por uma pessoa que... The post Crusoé: Evangélico, Flávi",
+          "published_at": "2026-09-28T17:55:37+00:00",
+          "claims": [
+            {
+              "claim": "Verificação oficial: Crusoé: Evangélico, Flávio levanta imagem de Nossa Senhora em ato eleitoral",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "preview_topic": 2,
+      "topic_id": "3aa0569e-34ea-4c83-af57-e84c84c8a088",
+      "current_canonical_title": "Lula critica Donald Trump e compara discursos na ONU em 23 de setembro de 2026",
+      "article_count": 3,
+      "status": "analyzed",
+      "title": "Lula compara seu discurso na ONU ao de Trump e critica retórica de ameaça",
+      "summary": "O presidente Luiz Inácio Lula da Silva (PT) comparou seu discurso na Assembleia Geral da ONU, realizado na terça-feira (22), com o de Donald Trump, afirmando que o presidente dos Estados Unidos fala \"como se estivesse ameaçando todo mundo\". Lula declarou que busca \"ganhar dele na narrativa\", e não fazer guerra.",
+      "categories": [
+        "Política",
+        "Mundo"
+      ],
+      "fact_check_status": "unverifiable",
+      "triage": {
+        "eligible": false,
+        "claim": "",
+        "article_ids": [],
+        "reason": "A matéria não contém um fato documental elegível."
+      },
+      "articles": [
+        {
+          "article_id": "af282b1f-4eca-4c9b-8303-0a9bcbc01a3e",
+          "url": "https://g1.globo.com/politica/eleicoes/2026/noticia/2026/09/23/lula-compara-discurso-na-onu-ao-de-trump-e-diz-que-presidente-dos-eua-fala-como-se-estivesse-ameacando-todo-mundo.ghtml",
+          "title": "Lula compara discurso na ONU ao de Trump e diz que presidente dos EUA fala como se estivesse 'ameaçando todo mundo'",
+          "lead": "O presidente Luiz Inácio Lula da Silva (PT) comparou nesta quarta-feira (23) seu discurso na Assembleia Geral da ONU com a de Donald Trump na abertura do evento das Nações Unidas em Nova York e afirmou que o presidente dos Estados Unidos fala como se estivesse \"ameaçando todo mundo\".\n\"O importante do meu discurso na ONU não foi só o meu discurso, foi comparar o meu discurso com o discurso do Trump",
+          "published_at": "2026-09-24T00:47:16+00:00",
+          "claims": [
+            {
+              "claim": "Verificação oficial: Lula compara discurso na ONU ao de Trump e diz que presidente dos EUA fala como se estivesse 'ameaçando todo mundo'",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        },
+        {
+          "article_id": "bc3ba4bd-dece-4508-a22b-17dad4d7a732",
+          "url": "https://www.cnnbrasil.com.br/eleicoes/lula-volta-a-criticar-trump-fala-como-se-estivesse-ameacando",
+          "title": "Lula volta a criticar Trump: “Fala como se estivesse ameaçando”",
+          "lead": "Presidente e candidato à reeleição disse que \"não quer fazer guerra\" com presidente dos EUA, mas que deseja ganhar dele \"na narrativa\"",
+          "published_at": "2026-09-24T01:46:06+00:00",
+          "claims": [
+            {
+              "claim": "Verificação oficial: Lula volta a criticar Trump: “Fala como se estivesse ameaçando”",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        },
+        {
+          "article_id": "a0c3c6ab-4f15-4864-afd6-de6ff797e0e2",
+          "url": "https://www.poder360.com.br/poder-eleicoes-2026/quero-ganhar-de-trump-na-narrativa-e-estamos-ganhando-diz-lula",
+          "title": "Quero ganhar de Trump na narrativa, e estamos ganhando, diz Lula",
+          "lead": "Em tom crítico, petista afirma que o presidente dos Estados Unidos se coloca “como se tivesse ameaçando todo mundo”",
+          "published_at": "2026-09-24T02:08:18+00:00",
+          "claims": [
+            {
+              "claim": "Verificação oficial: Quero ganhar de Trump na narrativa, e estamos ganhando, diz Lula",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "preview_topic": 3,
+      "topic_id": "00d31293-bb05-4ded-a6a9-9ee2620f46f1",
+      "current_canonical_title": "Lula realiza ato de campanha sobre cultura com artistas na Fundição Progresso, Rio",
+      "article_count": 3,
+      "status": "analyzed",
+      "title": "Lula participa de ato de campanha com artistas na Fundição Progresso, Rio de Janeiro",
+      "summary": "O presidente Luiz Inácio Lula da Silva (PT), candidato à reeleição, participou de um ato de campanha com artistas e representantes do setor cultural na Fundição Progresso, na Lapa, Centro do Rio de Janeiro, na noite de 23 de setembro de 2026. O evento, que ocorreu a 11 dias do primeiro turno, teve como objetivo discutir propostas para a cultura. Lula defendeu uma emenda constitucional para instituir a cultura como política de governo e apresentou medidas como a criação de uma plataforma de qualificação e linhas de crédito subsidiado. As matérias divergem quanto ao número exato de artistas presentes e ao nome oficial do evento.",
+      "categories": [
+        "Política",
+        "Economia"
+      ],
+      "fact_check_status": "unverifiable",
+      "triage": {
+        "eligible": false,
+        "claim": "",
+        "article_ids": [],
+        "reason": "A matéria não contém um fato documental elegível."
+      },
+      "articles": [
+        {
+          "article_id": "ea4cd769-74cf-495f-a699-0cf948ce97f7",
+          "url": "https://g1.globo.com/rj/rio-de-janeiro/eleicoes/2026/noticia/2026/09/23/lula-artistas-na-lapa-rio-na-reta-final-da-campanha.ghtml",
+          "title": "Lula se reúne com artistas na Lapa, Rio, na reta final da campanha",
+          "lead": "Lula abre a bandeira do Brasil em evento com artistas no Rio\nRaoni Alves/g1\nO presidente Luiz Inácio Lula da Silva (PT) participa, na noite desta quarta-feira (23), de um ato com artistas e representantes do setor cultural na Fundição Progresso, na Lapa, no Centro do Rio. O evento, parte da campanha à reeleição, ocorre a 11 dias do primeiro turno, marcado para 4 de outubro.\nForam ao evento lideran",
+          "published_at": "2026-09-23T23:16:06+00:00",
+          "claims": [
+            {
+              "claim": "Verificação oficial: Lula se reúne com artistas na Lapa, Rio, na reta final da campanha",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        },
+        {
+          "article_id": "95222104-adfd-4e36-9de0-8d9b26c61e48",
+          "url": "https://www.metropoles.com/brasil/lula-reune-cerca-de-100-artistas-em-ato-de-campanha-sobre-cultura-no-rio",
+          "title": "Lula reúne cerca de 100 artistas em ato de campanha sobre cultura no Rio",
+          "lead": "Nomes como Chico Buarque, Zeca Pagodinho e Daniela Mercury participam de evento na Fundição Progresso às vésperas do 1º turno",
+          "published_at": "2026-09-24T00:30:06+00:00",
+          "claims": [
+            {
+              "claim": "Verificação oficial: Lula reúne cerca de 100 artistas em ato de campanha sobre cultura no Rio",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        },
+        {
+          "article_id": "8b923a9a-5bbe-4331-983a-f13eed6b3efd",
+          "url": "https://g1.globo.com/jornal-nacional/noticia/2026/09/23/presidente-lula-candidato-a-reeleicao-pelo-pt-faz-campanha-no-rio-de-janeiro.ghtml",
+          "title": "Presidente Lula, candidato à reeleição pelo PT, faz campanha no Rio de Janeiro",
+          "lead": "Lula participa de evento sobre cultura no Rio\nO Jornal Nacional mostrou como foi o dia dos candidatos à Presidência da República nesta quarta-feira (23). O presidente Lula, que concorre à reeleição pelo PT, fez campanha no Rio de Janeiro\n📱Favorite o g1 no Google e acompanhe as principais notícias do dia\nLula participou de um ato em defesa da cultura na Fundição Progresso, na Lapa, região central d",
+          "published_at": "2026-09-24T01:55:01+00:00",
+          "claims": [
+            {
+              "claim": "Verificação oficial: Presidente Lula, candidato à reeleição pelo PT, faz campanha no Rio de Janeiro",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "preview_topic": 4,
+      "topic_id": "a260d025-1f37-4085-afc0-5679e0bf62ff",
+      "current_canonical_title": "Resultado do concurso 3787 da Lotofácil é divulgado com prêmio acumulado",
+      "article_count": 4,
+      "status": "analyzed",
+      "title": "Resultado do concurso 3787 da Lotofácil é sorteado em 23/9; prêmio acumula",
+      "summary": "O concurso 3787 da Lotofácil foi sorteado na quarta-feira, 23 de setembro, com as dezenas 03-04-06-08-10-11-12-13-15-17-19-20-22-23-24. Nenhuma aposta acertou as 15 dezenas, fazendo com que o prêmio principal acumulasse para R$ 5 milhões no próximo sorteio. Houve 368 apostas que acertaram 14 dezenas, recebendo R$ 1.086,93 cada. Há uma divergência entre as matérias quanto ao valor do prêmio inicial do concurso 3787, com uma fonte indicando R$ 2 milhões e outras focando no prêmio acumulado de R$ 5 milhões para o próximo sorteio. Uma matéria também apresentou uma data de sorteio divergente no corpo do texto.",
+      "categories": [
+        "Economia"
+      ],
+      "fact_check_status": "unverifiable",
+      "triage": {
+        "eligible": true,
+        "claim": "Realização do sorteio do concurso 3787 da Lotofácil com os números 03, 04, 06, 08, 10, 11, 12, 13, 15, 17, 19, 20, 22, 23 e 24",
+        "article_ids": [
+          "ae68a204-bc82-44b5-bd33-0bf2ec537680",
+          "a9fb5986-ac2c-4d37-8580-ec1e358e55c1",
+          "91ae036c-656c-4ee3-a6f0-2dc3540b06a8",
+          "cc7660fa-d20b-4aeb-b4cf-d97ad6613728"
+        ],
+        "reason": "resultado de loteria oficialmente publicado pela Caixa Econômica Federal"
+      },
+      "articles": [
+        {
+          "article_id": "ae68a204-bc82-44b5-bd33-0bf2ec537680",
+          "url": "https://www.metropoles.com/brasil/confira-resultado-da-lotofacil-3787-sorteada-nesta-quarta-feira-23-9",
+          "title": "Confira resultado da Lotofácil 3787, sorteada nesta quarta-feira (23/9)",
+          "lead": "Além da Lotofácil, a Caixa Econômica Federal sorteou dezenas Lotomania, Quina, Dupla Sena e Super Sete",
+          "published_at": "2026-09-24T00:08:21+00:00",
+          "claims": [
+            {
+              "claim": "Verificação oficial: Confira resultado da Lotofácil 3787, sorteada nesta quarta-feira (23/9)",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        },
+        {
+          "article_id": "a9fb5986-ac2c-4d37-8580-ec1e358e55c1",
+          "url": "https://g1.globo.com/loterias/lotofacil/noticia/2026/09/23/lotofacil-hoje-resultado-do-concurso-3787-e-numeros-sorteados.ghtml",
+          "title": "Lotofácil hoje: resultado do concurso 3787 e números sorteados",
+          "lead": "Volantes da Lotofácil\nMarcelo Brandt/G1\nVeja abaixo os números do sorteio do concurso 3787 da Lotofácil realizado nesta quarta-feira (23):\n3 - 4 - 6 - 8 - 10 - 11 - 12 - 13 - 15 - 17 - 19 - 20 - 22 - 23 - 24\nVeja quantas apostas foram premiadas no concurso 3787:\nNinguém conseguiu os 15 acertos, e a premiação acumulou para R$ 5 milhões;\n14 acertos: 368 apostas ganhadoras, cada uma vai receber R$ 1.",
+          "published_at": "2026-09-24T00:41:19+00:00",
+          "claims": [
+            {
+              "claim": "Verificação oficial: Lotofácil hoje: resultado do concurso 3787 e números sorteados",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        },
+        {
+          "article_id": "91ae036c-656c-4ee3-a6f0-2dc3540b06a8",
+          "url": "https://www.metropoles.com/brasil/lotofacil-3787-acumula-e-premio-vai-a-r-5-milhoes-veja-resultado",
+          "title": "Lotofácil 3787 acumula, e prêmio vai a R$ 5 milhões. Veja resultado",
+          "lead": "Apostas para o próximo sorteio da Lotofácil podem ser feitas até às 20h desta quinta em casas lotéricas, pelo site oficial ou aplicativo",
+          "published_at": "2026-09-24T03:40:44+00:00",
+          "claims": [
+            {
+              "claim": "Verificação oficial: Lotofácil 3787 acumula, e prêmio vai a R$ 5 milhões. Veja resultado",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        },
+        {
+          "article_id": "cc7660fa-d20b-4aeb-b4cf-d97ad6613728",
+          "url": "https://tnonline.uol.com.br/noticias/cotidiano/veja-o-resultado-da-lotofacil-concurso-3787-desta-quarta-feira-23-1148623",
+          "title": "Veja o resultado da Lotofácil concurso 3787 desta quarta-feira (23)",
+          "lead": "Lotofácil concurso 3787 sorteia o prêmio de R$ 2 milhões nesta quarta-feira (23). O sorteio ocorre de segunda a sexta, às 21h, e aos domingos, às 11h (horário de Brasília), e pode ser acompanhado ao...",
+          "published_at": null,
+          "claims": [
+            {
+              "claim": "Verificação oficial: Veja o resultado da Lotofácil concurso 3787 desta quarta-feira (23)",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "preview_topic": 5,
+      "topic_id": "1d733288-396b-4a66-9902-f60dd86d138f",
+      "current_canonical_title": "Conselho de Segurança da ONU discute riscos da IA com líderes de empresas",
+      "article_count": 3,
+      "status": "analyzed",
+      "title": "Conselho de Segurança da ONU discute riscos da IA com líderes de empresas",
+      "summary": "Em 23 de setembro de 2026, o Conselho de Segurança da ONU realizou uma reunião, convocada pela França, para discutir os riscos da Inteligência Artificial. Chefes da OpenAI, Anthropic e Hugging Face participaram, alertando que a IA, se mal gerenciada, pode escapar do controle humano, representar ameaças à segurança global e até mesmo à humanidade. Eles defenderam a necessidade de medidas de segurança e união global para evitar a concentração de poder da tecnologia, e afirmaram que a tecnologia deve ser interrompida caso represente perigo.",
+      "categories": [
+        "Política",
+        "Tecnologia"
+      ],
+      "fact_check_status": "unverifiable",
+      "triage": {
+        "eligible": false,
+        "claim": "",
+        "article_ids": [],
+        "reason": "A matéria não contém um fato documental elegível."
+      },
+      "articles": [
+        {
+          "article_id": "8a3deff6-a72c-4eca-9d90-6cf465e5c14b",
+          "url": "https://g1.globo.com/tecnologia/noticia/2026/09/23/lideres-de-ia-discutem-riscos-da-tecnologia-em-reuniao-do-conselho-de-seguranca-da-onu.ghtml",
+          "title": "Líderes de IA discutem riscos da tecnologia em reunião do Conselho de Segurança da ONU",
+          "lead": "Sam Altman, CEO da OpenAI, em reunião do Conselho de Segurança da Onu, em 23 de setembro de 2026\nReuters/Brendan McDermid\nChefes de OpenAI, da Anthropic e da Hugging Face, três das maiores empresas de inteligência artificial do mundo, participaram de uma reunião do Conselho de Segurança da ONU (Organização das Nações Unidas) nesta quarta-feira (23).\nA reunião foi convocada pela França, que preside",
+          "published_at": "2026-09-23T19:55:39+00:00",
+          "claims": [
+            {
+              "claim": "Verificação oficial: Líderes de IA discutem riscos da tecnologia em reunião do Conselho de Segurança da ONU",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        },
+        {
+          "article_id": "f5cff1ed-c3b8-47b0-ab44-35bb69d9d13a",
+          "url": "https://veja.abril.com.br/tecnologia/o-veredito-de-executivos-da-ia-sobre-seu-perigo-durante-o-conselho-de-seguranca-da-onu",
+          "title": "O veredito de executivos da IA sobre seu perigo durante o Conselho de Segurança da ONU",
+          "lead": "Sam Altman e Dario Amodei, principais nomes da área, afirmaram que a tecnologia deve ser interrompida caso represente perigo",
+          "published_at": "2026-09-23T20:56:39+00:00",
+          "claims": [
+            {
+              "claim": "Verificação oficial: O veredito de executivos da IA sobre seu perigo durante o Conselho de Segurança da ONU",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        },
+        {
+          "article_id": "d719e5fa-743a-4ed7-99e1-e849c6bdc399",
+          "url": "https://g1.globo.com/jornal-nacional/noticia/2026/09/23/conselho-de-seguranca-da-onu-discute-o-futuro-da-inteligencia-artificial-risco-para-a-humanidade.ghtml",
+          "title": "Conselho de Segurança da ONU discute o futuro da inteligência artificial: 'Risco para a humanidade'",
+          "lead": "Na ONU, chefes das maiores empresas de IA alertam para ameaça à segurança global\nO Conselho de Segurança da ONU discutiu nesta quarta-feira (23) o futuro da inteligência artificial. Participaram da reunião três chefes das maiores empresas de IA do mundo: Sam Altman, da OpenAI; Dario Amodei, da Anthropic; e Clément Delangue, da Hugging Face. Eles admitiram que, se não forem bem gerenciadas, as nova",
+          "published_at": "2026-09-24T01:16:26+00:00",
+          "claims": [
+            {
+              "claim": "Verificação oficial: Conselho de Segurança da ONU discute o futuro da inteligência artificial: 'Risco para a humanidade'",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "preview_topic": 6,
+      "topic_id": "914ea9a6-99db-466c-8dbb-4dbac83c0ed4",
+      "current_canonical_title": "Pai é preso em flagrante por arremessar filha de 5 meses em calçada no RJ",
+      "article_count": 3,
+      "status": "analyzed",
+      "title": "Homem é preso em flagrante por arremessar filha de 5 meses em calçada em Duque de Caxias",
+      "summary": "Um homem foi preso em flagrante na última segunda-feira, 21 de setembro de 2026, em Duque de Caxias (RJ), por arremessar sua filha de 5 meses contra uma calçada. O incidente ocorreu no bairro da Taquara, após uma discussão com a mãe da bebê, motivada pelo fim do relacionamento. Segundo a polícia, o homem foi preso por tentativa de vicaricídio, termo que descreve a violência contra um familiar para atingir emocionalmente o parceiro ou ex-parceiro. Após o ato, o suspeito tentou fugir, mas foi contido e agredido por populares.",
+      "categories": [
+        "Política"
+      ],
+      "fact_check_status": "unverifiable",
+      "triage": {
+        "eligible": false,
+        "claim": "",
+        "article_ids": [],
+        "reason": "A matéria não contém um fato documental elegível."
+      },
+      "articles": [
+        {
+          "article_id": "9bbca9ed-fae0-43b9-b009-8fe0f3ccf5de",
+          "url": "https://g1.globo.com/rj/rio-de-janeiro/noticia/2026/09/23/homem-e-preso-duque-de-caxias.ghtml",
+          "title": "Homem é preso em flagrante por arremessar bebê de 5 meses no chão em Duque de Caxias",
+          "lead": "Homem é preso em flagrante por arremessar bebê de 5 meses no chão em Duque de Caxias\nReprodução\nUm homem foi preso em flagrante por tentativa de vicaricídio contra a filha de 5 meses nesta segunda-feira (21) na Taquara, em Duque de Caxias, na Baixada Fluminense (entenda o termo ao fim da reportagem). \nDe acordo com moradores, o pai do bebê não aceitou o fim do relacionamento e, durante uma discuss",
+          "published_at": "2026-09-23T17:35:05+00:00",
+          "claims": [
+            {
+              "claim": "Verificação oficial: Homem é preso em flagrante por arremessar bebê de 5 meses no chão em Duque de Caxias",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        },
+        {
+          "article_id": "c6817921-a15d-47dc-a3ce-d3fb26461d46",
+          "url": "https://veja.abril.com.br/brasil/pai-e-preso-por-jogar-filha-de-5-meses-em-calcada-apos-fim-de-relacionamento",
+          "title": "Pai é preso por jogar filha de 5 meses em calçada após fim de relacionamento",
+          "lead": "Suspeito teria usado a bebê para atingir emocionalmente a mãe",
+          "published_at": "2026-09-23T19:44:58+00:00",
+          "claims": [
+            {
+              "claim": "Verificação oficial: Pai é preso por jogar filha de 5 meses em calçada após fim de relacionamento",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        },
+        {
+          "article_id": "beee4778-1990-4a2c-843d-0af1d60eecff",
+          "url": "https://noticias.uol.com.br/cotidiano/ultimas-noticias/2026/09/23/pai-e-preso-apos-arremessar-bebe-na-calcada-no-rio-de-janeiro.ghtm",
+          "title": "Pai é preso após arremessar bebê na calçada no Rio de Janeiro",
+          "lead": "Uma bebê de cinco meses foi arremessada pelo pai na calçada no bairro da Taquara, em Duque de Caxias (RJ), na última segunda-feira.",
+          "published_at": null,
+          "claims": [
+            {
+              "claim": "Verificação oficial: Pai é preso após arremessar bebê na calçada no Rio de Janeiro",
+              "verdict": "unverifiable",
+              "confidence": 0.0,
+              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

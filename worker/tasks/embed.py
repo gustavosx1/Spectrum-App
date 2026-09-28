@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from datetime import datetime, timedelta, timezone
 
 from worker.celery_app import app
 from worker.config import settings
@@ -99,7 +100,7 @@ async def _process(article: dict) -> None:
     # Aqui só consultamos pra decidir se disparamos a task de cluster.
     topic = (
         db.table("topics")
-        .select("is_hot, article_count, initial_check")
+        .select("is_hot, article_count, initial_check, fact_check_next_at")
         .eq("id", topic_id)
         .single()
         .execute()
@@ -109,17 +110,36 @@ async def _process(article: dict) -> None:
     if not topic_data or not topic_data.get("is_hot"):
         return
 
-    should_dispatch = (
-        topic_data.get("article_count") == settings.hot_topic_threshold
-        or bool(topic_data.get("initial_check"))
-    )
-    if should_dispatch:
+    if topic_data.get("article_count") == settings.hot_topic_threshold:
         logger.info(
-            "Tópico %s hot (count=%s, initial_check=%s) — disparando cluster",
+            "Tópico %s atingiu o threshold — disparando triagem inicial",
             topic_id,
-            topic_data.get("article_count"),
-            topic_data.get("initial_check"),
         )
         from worker.tasks.cluster import process_hot_topic
 
         process_hot_topic.delay(topic_id)
+        return
+
+    if not topic_data.get("initial_check"):
+        return
+
+    next_run_at = (
+        datetime.now(timezone.utc)
+        + timedelta(seconds=settings.fact_check_debounce_seconds)
+    ).isoformat()
+    db.table("topics").update({"fact_check_next_at": next_run_at}).eq(
+        "id", topic_id
+    ).execute()
+
+    logger.info(
+        "Tópico %s recebeu nova matéria — triagem agrupada para %s",
+        topic_id,
+        next_run_at,
+    )
+    from worker.tasks.cluster import process_hot_topic
+
+    process_hot_topic.apply_async(
+        args=[topic_id],
+        kwargs={"expected_run_at": next_run_at},
+        countdown=settings.fact_check_debounce_seconds,
+    )

@@ -188,8 +188,9 @@ async def test_fetch_contents_updates_articles(monkeypatch):
 async def test_run_initial_prompt_builds_expected_prompt(monkeypatch):
     captured = {}
 
-    async def fake_call(prompt):
+    async def fake_call(prompt, **kwargs):
         captured["prompt"] = prompt
+        captured["kwargs"] = kwargs
         return {
             "canonical_title": "Título neutro",
             "summary": "Resumo dos fatos.",
@@ -218,42 +219,7 @@ async def test_run_initial_prompt_builds_expected_prompt(monkeypatch):
     assert "Conteúdo completo" in captured["prompt"]
     assert "Preserve a linha do tempo" in captured["prompt"]
     assert "máx 80 caracteres" in captured["prompt"]
-
-
-@pytest.mark.asyncio
-async def test_run_individual_prompt_includes_existing_claims(monkeypatch):
-    captured = {}
-
-    async def fake_call(prompt):
-        captured["prompt"] = prompt
-        return {"claims": [{"claim": "Afirmacao", "verdict": "true"}]}
-
-    monkeypatch.setattr(cluster, "_call_gemini", fake_call)
-
-    article = {
-        "id": "article-2",
-        "url": "https://example.com/2",
-        "title": "Outro título",
-        "lead": "Lead extra",
-        "content": "Conteúdo atualizado.",
-    }
-    existing_claims = [
-        {"claim": "Reclamação anterior", "verdict": "partial", "evidence": "Explicação breve."}
-    ]
-
-    result = await cluster._run_individual_prompt(article, existing_claims)
-
-    assert result == [
-        {
-            "claim": "Afirmacao",
-            "verdict": "true",
-            "confidence": 0.0,
-            "evidence": None,
-        }
-    ]
-    assert "Reclamação anterior" in captured["prompt"]
-    assert "Outro título" in captured["prompt"]
-    assert "Mudanças posteriores" in captured["prompt"]
+    assert captured["kwargs"]["purpose"] == "editorial_initial"
 
 
 @pytest.mark.asyncio
@@ -264,6 +230,297 @@ async def test_call_gemini_parses_json_and_strips_fenced_blocks(monkeypatch):
     result = await cluster._call_gemini("um prompt qualquer")
 
     assert result == {"foo": "bar"}
+
+
+@pytest.mark.asyncio
+async def test_call_gemini_limits_output_and_enables_grounding(monkeypatch):
+    fake_client = FakeAsyncClient()
+    monkeypatch.setattr(cluster.httpx, "AsyncClient", lambda *args, **kwargs: fake_client)
+
+    result = await cluster._call_gemini(
+        "um prompt qualquer",
+        model="gemini-2.5-flash-lite",
+        max_output_tokens=123,
+        use_google_search=True,
+        purpose="test",
+    )
+
+    request = fake_client.calls[0]
+    assert request[1].endswith("models/gemini-2.5-flash-lite:generateContent")
+    assert request[3]["generationConfig"]["maxOutputTokens"] == 123
+    assert "responseMimeType" not in request[3]["generationConfig"]
+    assert request[3]["tools"] == [{"google_search": {}}]
+    assert result["_grounding_urls"] == []
+
+
+@pytest.mark.asyncio
+async def test_initial_triage_uses_compact_model_and_returns_only_eligibility(monkeypatch):
+    captured = {}
+
+    async def fake_call(prompt, **kwargs):
+        captured["prompt"] = prompt
+        captured["kwargs"] = kwargs
+        return {
+            "canonical_title": "Governo publica medida sobre apostas",
+            "summary": "O governo publicou uma medida sobre apostas.",
+            "categories": ["Política"],
+            "verification": {
+                "eligible": True,
+                "claim": "O governo publicou uma medida sobre apostas.",
+                "article_ids": ["article-1"],
+                "reason": "Ato publicado.",
+            },
+        }
+
+    monkeypatch.setattr(cluster, "_call_gemini", fake_call)
+    articles = [
+        {
+            "id": "article-1",
+            "title": "Governo publica medida",
+            "lead": "Lead curto",
+            "content": "Conteúdo do artigo",
+        }
+    ]
+
+    result = await cluster._run_initial_triage(articles)
+
+    assert result["verification"]["eligible"] is True
+    assert result["verification"]["article_ids"] == ["article-1"]
+    assert captured["kwargs"]["model"] == cluster.settings.gemini_fact_check_triage_model
+    assert captured["kwargs"]["max_output_tokens"] == cluster.settings.fact_check_triage_max_output_tokens
+    assert "não deve tentar decidir se ele é verdadeiro" in captured["prompt"]
+
+
+@pytest.mark.asyncio
+async def test_triage_creates_fallback_without_official_lookup(monkeypatch):
+    articles = [
+        {"id": "article-1", "title": "Lula expressa intenção sobre apostas"},
+        {"id": "article-2", "title": "Outra declaração"},
+    ]
+
+    async def unexpected_lookup(_claim):
+        raise AssertionError("não deve haver busca para matéria não elegível")
+
+    monkeypatch.setattr(cluster, "_verify_official_claim", unexpected_lookup)
+
+    result = await cluster._build_claims_from_triage(
+        articles,
+        {"verification": {"eligible": False}},
+    )
+
+    assert set(result) == {"article-1", "article-2"}
+    assert all(claims[0]["verdict"] == "unverifiable" for claims in result.values())
+    assert all("Não verificável por fontes oficiais" in claims[0]["evidence"] for claims in result.values())
+
+
+@pytest.mark.asyncio
+async def test_triage_shares_one_official_result_only_with_related_articles(monkeypatch):
+    articles = [
+        {"id": "article-1", "title": "Medida publicada"},
+        {"id": "article-2", "title": "Comentário sobre a medida"},
+    ]
+    lookups = []
+
+    async def fake_lookup(claim):
+        lookups.append(claim)
+        return {
+            "claim": claim,
+            "verdict": "true",
+            "confidence": 0.9,
+            "evidence": "Fonte oficial: https://www.gov.br/exemplo.",
+        }
+
+    monkeypatch.setattr(cluster, "_verify_official_claim", fake_lookup)
+
+    result = await cluster._build_claims_from_triage(
+        articles,
+        {
+            "verification": {
+                "eligible": True,
+                "claim": "Uma medida foi publicada.",
+                "article_ids": ["article-1"],
+            }
+        },
+    )
+
+    assert lookups == ["Uma medida foi publicada."]
+    assert result["article-1"][0]["verdict"] == "true"
+    assert result["article-2"][0]["verdict"] == "unverifiable"
+
+
+@pytest.mark.asyncio
+async def test_triage_reuses_only_an_exact_grounded_claim(monkeypatch):
+    articles = [{"id": "article-1", "title": "Medida publicada"}]
+    previous_claims = [
+        {
+            "claim": "O governo publicou a Medida Provisória 123.",
+            "verdict": "true",
+            "confidence": 0.95,
+            "evidence": "Fonte oficial: https://www.gov.br/planalto/mp-123.",
+        }
+    ]
+
+    async def unexpected_lookup(_claim):
+        raise AssertionError("claim oficial idêntica não deve disparar nova busca")
+
+    monkeypatch.setattr(cluster, "_verify_official_claim", unexpected_lookup)
+
+    result = await cluster._build_claims_from_triage(
+        articles,
+        {
+            "verification": {
+                "eligible": True,
+                "claim": "O GOVERNO publicou a medida provisória 123",
+                "article_ids": ["article-1"],
+            }
+        },
+        previous_claims,
+    )
+
+    assert result["article-1"][0]["verdict"] == "true"
+    assert result["article-1"][0]["evidence"] == previous_claims[0]["evidence"]
+
+
+def test_fetch_official_claims_excludes_legacy_or_unverifiable_claims():
+    db = FakeDB(
+        {
+            "claims": [
+                {
+                    "claim": "Ato publicado.",
+                    "verdict": "true",
+                    "confidence": 0.9,
+                    "evidence": "Fonte oficial: https://www.gov.br/ato.",
+                },
+                {
+                    "claim": "Claim legada.",
+                    "verdict": "true",
+                    "confidence": 0.9,
+                    "evidence": "Segundo a reportagem.",
+                },
+                {
+                    "claim": "Sem confirmação.",
+                    "verdict": "unverifiable",
+                    "confidence": 0.0,
+                    "evidence": "Fonte oficial: https://www.gov.br/ato.",
+                },
+            ]
+        }
+    )
+
+    claims = cluster._fetch_official_claims(db, "topic-1")
+
+    assert claims == [db.table_data["claims"][0]]
+
+
+def test_official_verification_requires_a_grounded_public_authority_url():
+    accepted = cluster._normalize_official_verification(
+        {
+            "verdict": "true",
+            "confidence": 0.9,
+            "source_url": "https://www.gov.br/planalto/ato?utm=x",
+            "explanation": "Ato publicado.",
+            "_grounding_urls": ["https://www.gov.br/planalto/ato"],
+        },
+        "Ato foi publicado.",
+    )
+    rejected = cluster._normalize_official_verification(
+        {
+            "verdict": "true",
+            "confidence": 0.9,
+            "source_url": "https://example.com/ato",
+            "_grounding_urls": ["https://example.com/ato"],
+        },
+        "Ato foi publicado.",
+    )
+
+    assert accepted and accepted["verdict"] == "true"
+    assert "https://www.gov.br/planalto/ato" in accepted["evidence"]
+    assert rejected is None
+
+
+@pytest.mark.asyncio
+async def test_process_skips_a_stale_debounced_task(monkeypatch):
+    db = FakeDB(
+        {
+            "topics": [
+                {
+                    "id": "topic-1",
+                    "initial_check": True,
+                    "fact_check_next_at": "2026-09-18T12:10:00+00:00",
+                }
+            ]
+        }
+    )
+    called = []
+
+    async def fake_incremental(_db, topic_id):
+        called.append(topic_id)
+
+    monkeypatch.setattr(cluster, "get_client", lambda: db)
+    monkeypatch.setattr(cluster, "_check_new_articles", fake_incremental)
+
+    await cluster._process("topic-1", "2026-09-18T12:00:00+00:00")
+
+    assert called == []
+
+
+@pytest.mark.asyncio
+async def test_process_skips_gemini_for_a_nonverifiable_topic(monkeypatch):
+    db = FakeDB(
+        {
+            "topics": [
+                {
+                    "id": "topic-1",
+                    "initial_check": True,
+                    "fact_check_status": "unverifiable",
+                }
+            ]
+        }
+    )
+    called = []
+
+    async def fake_mark(_db, topic_id):
+        called.append(topic_id)
+
+    async def unexpected_triage(_db, _topic_id):
+        raise AssertionError("tópico não verificável não deve chamar Gemini")
+
+    monkeypatch.setattr(cluster, "get_client", lambda: db)
+    monkeypatch.setattr(cluster, "_mark_new_articles_unverifiable", fake_mark)
+    monkeypatch.setattr(cluster, "_check_new_articles", unexpected_triage)
+
+    await cluster._process("topic-1")
+
+    assert called == ["topic-1"]
+
+
+@pytest.mark.asyncio
+async def test_mark_new_articles_unverifiable_persists_checked_fallback():
+    article = {
+        "id": "article-1",
+        "url": "https://example.com/article",
+        "title": "Declaração sem registro oficial",
+        "image_url": None,
+    }
+    db = FakeDB(
+        {
+            "topics": [{"id": "topic-1", "image_url": None}],
+            "articles": [article],
+        }
+    )
+
+    await cluster._mark_new_articles_unverifiable(db, "topic-1")
+
+    assert any(
+        call[0] == "upsert"
+        and call[1][0]["verdict"] == "unverifiable"
+        and call[1][0]["article_id"] == "article-1"
+        for call in db.calls
+    )
+    assert any(
+        call[0] == "update" and call[1] == {"checked": True}
+        for call in db.calls
+    )
 
 
 def test_insert_claims_upserts_records(monkeypatch):
@@ -570,16 +827,29 @@ async def test_initial_check_does_not_dispatch_an_immediate_push(monkeypatch):
     async def fake_fetch_contents(_db, _articles):
         return None
 
+    async def fake_run_initial_triage(_articles):
+        return {
+            "verification": {"eligible": False},
+        }
+
     async def fake_run_initial_prompt(_articles):
         return {
-            "canonical_title": "Titulo IA Final",
-            "summary": "Resumo",
-            "articles": [{"article_id": "article-1", "claims": []}],
+            "canonical_title": "Titulo Editorial Original",
+            "summary": "Resumo editorial original",
+            "categories": ["Política"],
+            "articles": [],
         }
 
     monkeypatch.setattr(cluster, "_fetch_contents", fake_fetch_contents)
+    monkeypatch.setattr(cluster, "_run_initial_triage", fake_run_initial_triage)
     monkeypatch.setattr(cluster, "_run_initial_prompt", fake_run_initial_prompt)
 
     await cluster._initial_check(db, "topic-1")
 
     assert not any(call[0] == "table" and call[1] == "device_push_tokens" for call in db.calls)
+    assert any(
+        call[0] == "update"
+        and call[1].get("canonical_title") == "Titulo Editorial Original"
+        and call[1].get("fact_check_status") == "unverifiable"
+        for call in db.calls
+    )

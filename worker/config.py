@@ -13,6 +13,13 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
     gemini_api_key: str
     gemini_model: str = "gemini-2.5-flash"
+    gemini_fact_check_triage_model: str = "gemini-3.5-flash-lite"
+    gemini_fact_check_model: str = "gemini-2.5-flash"
+    fact_check_enable_official_grounding: bool = True
+    fact_check_max_grounded_claims_per_run: int = 1
+    fact_check_triage_max_output_tokens: int = 350
+    fact_check_verification_max_output_tokens: int = 250
+    fact_check_debounce_seconds: int = 600
 
     supabase_url: str
     supabase_key: str

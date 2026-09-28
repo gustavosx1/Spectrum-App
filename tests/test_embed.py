@@ -35,6 +35,10 @@ class FakeQuery:
         self.calls.append(("insert", payload))
         return self
 
+    def update(self, payload):
+        self.calls.append(("update", payload))
+        return self
+
     def execute(self):
         self.calls.append(("execute", (), {}))
         if self._single and isinstance(self.data, list):
@@ -71,8 +75,8 @@ async def test_process_dispatches_cluster_for_new_article_after_initial_check(mo
 
     class DummyTask:
         @staticmethod
-        def delay(topic_id):
-            dispatched.append(topic_id)
+        def apply_async(*, args, kwargs, countdown):
+            dispatched.append((args, kwargs, countdown))
 
     async def fake_generate_embedding(text):
         return [0.1, 0.2]
@@ -93,7 +97,15 @@ async def test_process_dispatches_cluster_for_new_article_after_initial_check(mo
         }
     )
 
-    assert dispatched == ["topic-1"]
+    assert len(dispatched) == 1
+    args, kwargs, countdown = dispatched[0]
+    assert args == ["topic-1"]
+    assert "expected_run_at" in kwargs
+    assert countdown == embed.settings.fact_check_debounce_seconds
+    assert any(
+        call[0] == "update" and "fact_check_next_at" in call[1]
+        for call in db.calls
+    )
 
 
 @pytest.mark.asyncio
