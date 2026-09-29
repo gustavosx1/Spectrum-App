@@ -185,7 +185,15 @@ async def _initial_check(db, topic_id: str) -> None:
         editorial_analysis.get("source_key", ""),
         editorial_analysis.get("source_scope", ""),
     )
-    fact_check_status = official_source["status"]
+    # `fact_check_status` is an internal, legacy workflow marker constrained
+    # in production to `official` or `unverifiable`. The detailed public state
+    # belongs exclusively to `official_source`; writing its values here would
+    # reject the whole topic update at the database boundary.
+    fact_check_status = (
+        "official"
+        if official_source["status"] == "confirmed"
+        else "unverifiable"
+    )
 
     # Persiste canonical_title e summary no tópico
     db.table("topics").update(

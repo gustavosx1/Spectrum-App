@@ -401,7 +401,7 @@ async def test_official_verification_returns_a_fixed_probable_source_when_lookup
         "claim": "A pesquisa foi registrada no TSE sob o código BR-04391/2026.",
         "verdict": "unverifiable",
         "confidence": 0.0,
-        "evidence": "Possível fonte oficial (não confirmada): https://divulgacandcontas.tse.jus.br/divulga/",
+        "evidence": "Possível fonte oficial (não confirmada): https://pesqele-divulgacao.tse.jus.br/app/pesquisa/listar.xhtml",
     }
 
 
@@ -1008,6 +1008,6 @@ async def test_initial_check_does_not_dispatch_an_immediate_push(monkeypatch):
     assert any(
         call[0] == "update"
         and call[1].get("canonical_title") == "Titulo Editorial Original"
-        and call[1].get("fact_check_status") == "unavailable"
+        and call[1].get("fact_check_status") == "unverifiable"
         for call in db.calls
     )
