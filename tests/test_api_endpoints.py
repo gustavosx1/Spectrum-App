@@ -148,7 +148,7 @@ def client(monkeypatch):
                 {"id": "out-2", "name": "Outlet B", "political_score": 90},
             ],
             "claims": [
-                {"id": "claim-1", "article_id": "art-1", "claim": "Claim 1", "verdict": "true", "confidence": 0.9, "evidence": "evidence"}
+                {"id": "claim-1", "article_id": "art-1", "claim": "Claim 1", "verdict": "true", "confidence": 0.9, "evidence": "Fonte oficial: https://www.gov.br/exemplo"}
             ],
             "device_push_tokens": [],
             "redeemed_purchases": [],
@@ -345,6 +345,13 @@ def test_get_topic_endpoint_returns_grouped_articles(client):
     assert body["id"] == "topic-1"
     assert len(body["articles_left"]) == 1
     assert len(body["articles_right"]) == 1
+    assert "claims" not in body["articles_left"][0]
+    assert body["official_source"] == {
+        "status": "unavailable",
+        "label": "Nenhuma fonte oficial aplicável",
+        "sources": [],
+        "scope": "",
+    }
 
 
 def test_topic_detail_rejects_draft_topics(client):
@@ -612,6 +619,7 @@ def test_production_configuration_requires_jwt_and_public_hosts(monkeypatch):
     monkeypatch.setattr(settings, "api_allowed_hosts", "localhost")
     monkeypatch.setattr(settings, "api_cors_origins", "http://localhost:8080")
     monkeypatch.setattr(settings, "revenuecat_webhook_secret", "")
+    monkeypatch.setattr(settings, "revenuecat_secret_api_key", "")
     monkeypatch.setattr(settings, "revenuecat_premium_entitlement_id", "")
 
     errors = settings.production_configuration_errors()

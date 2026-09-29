@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import logging
+import re
 from datetime import datetime, timedelta, timezone
+from urllib.parse import urlparse
 
 from fastapi import APIRouter, HTTPException, Query, Request
 
@@ -9,7 +11,7 @@ from api.models.schemas import (
     ArticleResponse,
     ArticlePreview,
     BlindspotResponse,
-    ClaimResponse,
+    OfficialSourceResponse,
     OutletSummary,
     TopicFreeDetail,
     TopicDetail,
@@ -27,6 +29,8 @@ logger = logging.getLogger(__name__)
 FREE_TOPIC_ARTICLE_PREVIEW_LIMIT_DEFAULT = 2
 FREE_TOPIC_ARTICLE_PREVIEW_LIMIT_MAX = 5
 NEWS_CONTENT_MAX_AGE_DAYS = 90
+OFFICIAL_SOURCE_HOST_SUFFIXES = ("gov.br", "jus.br", "leg.br", "mp.br", "def.br", "mil.br")
+SOURCE_URL_PATTERN = re.compile(r"https?://[^\s<>\]\[\"']+", re.IGNORECASE)
 
 
 def _news_content_cutoff() -> str:
@@ -34,6 +38,38 @@ def _news_content_cutoff() -> str:
     return (
         datetime.now(timezone.utc) - timedelta(days=NEWS_CONTENT_MAX_AGE_DAYS)
     ).isoformat()
+
+
+def _source_urls_from_evidence(evidence: object) -> list[str]:
+    """Expõe apenas URLs oficiais gravadas pelo pipeline de busca ou dados."""
+    if not isinstance(evidence, str):
+        return []
+
+    source_urls: list[str] = []
+    for match in SOURCE_URL_PATTERN.findall(evidence):
+        source_url = match.rstrip(".,;:)")
+        parsed = urlparse(source_url)
+        host = (parsed.hostname or "").lower()
+        if (
+            parsed.scheme in {"http", "https"}
+            and host
+            and any(host == suffix or host.endswith(f".{suffix}") for suffix in OFFICIAL_SOURCE_HOST_SUFFIXES)
+            and source_url not in source_urls
+        ):
+            source_urls.append(source_url)
+    return source_urls
+
+
+def _official_source(raw_source: object) -> OfficialSourceResponse:
+    raw_source = raw_source if isinstance(raw_source, dict) else {}
+    raw_urls = raw_source.get("sources")
+    sources = [url for url in raw_urls if _source_urls_from_evidence(url)] if isinstance(raw_urls, list) else []
+    status = raw_source.get("status")
+    if status not in {"confirmed", "probable", "unavailable"}:
+        status = "unavailable"
+    label = raw_source.get("label") if isinstance(raw_source.get("label"), str) else "Nenhuma fonte oficial aplicável"
+    scope = raw_source.get("scope") if isinstance(raw_source.get("scope"), str) else ""
+    return OfficialSourceResponse(status=status, label=label, sources=sources, scope=scope)
 
 
 # Mapeamento de score político → lean
@@ -92,7 +128,7 @@ def _list_topics(
     query = (
         db.table("topics")
         .select(
-            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at, categories"
+            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at, categories, official_source"
         )
         # A topic is only safe to expose once the hot-topic pipeline has
         # finished producing the editorial fields consumed by the app.
@@ -229,7 +265,7 @@ def list_outlet_topics(
     topics = (
         db.table("topics")
         .select(
-            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at, categories"
+            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at, categories, official_source"
         )
         .in_("id", candidate_topic_ids)
         .eq("is_hot", True)
@@ -369,28 +405,6 @@ def get_topic(topic_id: str, request: Request):
         ).data
         outlets_map = {o["id"]: o for o in outlets}
 
-    # Claims por artigo
-    article_ids = [a["id"] for a in articles_raw]
-    claims_map: dict[str, list] = {a["id"]: [] for a in articles_raw}
-    if article_ids:
-        claims = (
-            db.table("claims")
-            .select("id, article_id, claim, verdict, confidence, evidence")
-            .in_("article_id", article_ids)
-            .execute()
-        ).data
-        for c in claims:
-            if c["article_id"] in claims_map:
-                claims_map[c["article_id"]].append(
-                    ClaimResponse(
-                        id=c["id"],
-                        claim=c["claim"],
-                        verdict=c["verdict"],
-                        confidence=c["confidence"] or 0.0,
-                        evidence=c.get("evidence"),
-                    )
-                )
-
     # Monta ArticleResponse e agrupa por espectro
     grouped: dict[str, list[ArticleResponse]] = {
         "left": [],
@@ -422,7 +436,6 @@ def get_topic(topic_id: str, request: Request):
                 ),
                 political_lean=lean,
                 checked=a["checked"],
-                claims=claims_map[a["id"]],
             )
         )
 
@@ -430,6 +443,7 @@ def get_topic(topic_id: str, request: Request):
 
     return TopicDetail(
         **topic,
+        official_source=_official_source(topic.get("official_source")),
         blindspot=blindspot,
         articles_left=grouped["left"],
         articles_center_left=grouped["center_left"],
@@ -591,28 +605,6 @@ def get_topic(topic_id: str, request: Request):
         ).data
         outlets_map = {o["id"]: o for o in outlets}
 
-    # Claims por artigo
-    article_ids = [a["id"] for a in articles_raw]
-    claims_map: dict[str, list] = {a["id"]: [] for a in articles_raw}
-    if article_ids:
-        claims = (
-            db.table("claims")
-            .select("id, article_id, claim, verdict, confidence, evidence")
-            .in_("article_id", article_ids)
-            .execute()
-        ).data
-        for c in claims:
-            if c["article_id"] in claims_map:
-                claims_map[c["article_id"]].append(
-                    ClaimResponse(
-                        id=c["id"],
-                        claim=c["claim"],
-                        verdict=c["verdict"],
-                        confidence=c["confidence"] or 0.0,
-                        evidence=c.get("evidence"),
-                    )
-                )
-
     # Monta ArticleResponse e agrupa por espectro
     grouped: dict[str, list[ArticleResponse]] = {
         "left": [],
@@ -644,7 +636,6 @@ def get_topic(topic_id: str, request: Request):
                 ),
                 political_lean=lean,
                 checked=a["checked"],
-                claims=claims_map[a["id"]],
             )
         )
 
@@ -652,6 +643,7 @@ def get_topic(topic_id: str, request: Request):
 
     return TopicDetail(
         **topic,
+        official_source=_official_source(topic.get("official_source")),
         blindspot=blindspot,
         articles_left=grouped["left"],
         articles_center_left=grouped["center_left"],

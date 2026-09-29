@@ -93,14 +93,13 @@ def fetch_preview_topics(topic_limit: int, candidate_limit: int) -> list[dict[st
     return selected_topics
 
 
-def _public_article(article: dict[str, Any], claims: list[dict[str, Any]] | None) -> dict[str, Any]:
+def _public_article(article: dict[str, Any]) -> dict[str, Any]:
     return {
         "article_id": article.get("id"),
         "url": article.get("url"),
         "title": article.get("title"),
         "lead": article.get("lead"),
         "published_at": article.get("published_at"),
-        "claims": claims,
     }
 
 
@@ -118,21 +117,17 @@ async def analyze_topics(topics: list[dict[str, Any]]) -> list[dict[str, Any]]:
         }
         try:
             editorial = await cluster._run_initial_prompt(articles)
-            triage = await cluster._run_initial_triage(articles)
-            claims_by_article_id = await cluster._build_claims_from_triage(articles, triage)
+            official_source = await cluster._build_topic_official_source(
+                editorial.get("source_key", ""), editorial.get("source_scope", "")
+            )
             base.update(
                 {
                     "title": editorial["canonical_title"],
                     "summary": editorial["summary"],
                     "categories": editorial.get("categories", []),
-                    "fact_check_status": cluster._fact_check_status_from_claims(
-                        claims_by_article_id
-                    ),
-                    "triage": triage["verification"],
-                    "articles": [
-                        _public_article(article, claims_by_article_id.get(article["id"], []))
-                        for article in articles
-                    ],
+                    "source_key": editorial.get("source_key", ""),
+                    "official_source": official_source,
+                    "articles": [_public_article(article) for article in articles],
                 }
             )
         except Exception as error:  # Continua para permitir revisar os demais tópicos.
@@ -140,7 +135,7 @@ async def analyze_topics(topics: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 {
                     "status": "analysis_error",
                     "error": str(error),
-                    "articles": [_public_article(article, None) for article in articles],
+                    "articles": [_public_article(article) for article in articles],
                 }
             )
         results.append(base)

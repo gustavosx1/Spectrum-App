@@ -1,7 +1,7 @@
 from scripts.preview_fact_check import _public_article, build_preview
 
 
-def test_build_preview_describes_claim_free_initial_check_selection():
+def test_build_preview_describes_initial_check_selection():
     preview = build_preview([], requested_topics=10)
 
     assert preview["mode"] == "read_only_preview"
@@ -10,7 +10,7 @@ def test_build_preview_describes_claim_free_initial_check_selection():
     assert preview["selection"]["claims_sent_to_gemini"] is False
 
 
-def test_public_article_keeps_the_claims_generated_in_memory():
+def test_public_article_excludes_legacy_claims():
     article = {
         "id": "article-1",
         "url": "https://example.com/article",
@@ -18,10 +18,8 @@ def test_public_article_keeps_the_claims_generated_in_memory():
         "lead": "Lead",
         "published_at": "2026-09-28T10:00:00Z",
     }
-    claims = [{"claim": "Fato", "verdict": "unverifiable"}]
-
-    result = _public_article(article, claims)
+    result = _public_article(article)
 
     assert result["article_id"] == "article-1"
-    assert result["claims"] == claims
+    assert "claims" not in result
     assert "topic_id" not in result

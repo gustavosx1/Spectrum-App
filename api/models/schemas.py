@@ -25,12 +25,11 @@ class OutletSummary(BaseModel):
     political_score: float
 
 
-class ClaimResponse(BaseModel):
-    id: str
-    claim: str
-    verdict: str  # 'true' | 'partial' | 'false' | 'unverifiable'
-    confidence: float
-    evidence: Optional[str] = None
+class OfficialSourceResponse(BaseModel):
+    status: str
+    label: str
+    sources: list[str] = Field(default_factory=list)
+    scope: str = ""
 
 
 class ArticleResponse(BaseModel):
@@ -44,7 +43,6 @@ class ArticleResponse(BaseModel):
     outlet: OutletSummary
     political_lean: str
     checked: bool
-    claims: list[ClaimResponse] = Field(default_factory=list)
 
 
 class BlindspotResponse(BaseModel):
@@ -69,6 +67,7 @@ class TopicListItem(BaseModel):
 
 
 class TopicDetail(TopicListItem):
+    official_source: OfficialSourceResponse
     articles_left: list[ArticleResponse] = Field(default_factory=list)
     articles_center_left: list[ArticleResponse] = Field(default_factory=list)
     articles_center: list[ArticleResponse] = Field(default_factory=list)

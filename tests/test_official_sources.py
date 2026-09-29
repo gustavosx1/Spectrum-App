@@ -41,6 +41,28 @@ def test_direct_evidence_urls_excludes_catalog_leads():
     }
 
 
+def test_probable_sources_use_divulgacandcontas_for_candidate_records():
+    sources = official_sources.probable_official_source_urls(
+        "Candidatura de deputada foi registrada no TSE para as eleições de 2026."
+    )
+
+    assert sources == ["https://divulgacandcontas.tse.jus.br/divulga/"]
+
+
+def test_probable_sources_use_pesqele_for_electoral_poll_records():
+    sources = official_sources.probable_official_source_urls(
+        "Pesquisa AtlasIntel registrada no TSE sob o código BR-04391/2026."
+    )
+
+    assert sources == [
+        "https://pesqele-divulgacao.tse.jus.br/app/pesquisa/listar.xhtml"
+    ]
+
+
+def test_probable_sources_fall_back_to_fixed_government_portal():
+    assert official_sources.probable_official_source_urls("Um fato sem assunto catalogado.") == []
+
+
 @pytest.mark.asyncio
 async def test_bcb_connector_returns_bounded_api_observations():
     class Response:

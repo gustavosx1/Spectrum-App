@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-29T12:48:03.835914+00:00",
+  "generated_at": "2026-09-29T17:03:43.263273+00:00",
   "mode": "read_only_preview",
   "selection": {
     "requested_topic_count": 20,
@@ -12,21 +12,595 @@
   "topics": [
     {
       "preview_topic": 1,
+      "topic_id": "d68c2181-c59a-4b54-ac86-9f921d75f319",
+      "current_canonical_title": "Governo de MG anuncia R$ 32 milhões a clubes após proibição de bets",
+      "article_count": 3,
+      "status": "analyzed",
+      "title": "Governo de Minas Gerais destina R$ 32 milhões a clubes após proibição de bets",
+      "summary": "O governo de Minas Gerais anunciou um patrocínio de R$ 32 milhões para América-MG, Atlético-MG e Cruzeiro, utilizando recursos das estatais Cemig, Codemge e Codemig. A medida, divulgada pelo governador Mateus Simões, visa compensar a perda de receitas dos clubes após a publicação de uma Medida Provisória federal que proibiu o funcionamento e a publicidade de casas de apostas esportivas no país.",
+      "categories": [
+        "Política",
+        "Economia",
+        "Esportes"
+      ],
+      "source_key": "",
+      "official_source": {
+        "status": "unavailable",
+        "label": "Nenhuma fonte oficial aplicável",
+        "sources": [],
+        "scope": ""
+      },
+      "articles": [
+        {
+          "article_id": "470c22f1-dd12-4220-bb05-9fb0389989e8",
+          "url": "https://www.cnnbrasil.com.br/esportes/futebol/governo-de-mg-vai-patrocinar-clubes-apos-proibicao-de-bets",
+          "title": "Governo de MG vai patrocinar clubes após proibição de bets",
+          "lead": "Acordo de R$ 32 milhões com América, Atlético-MG e Cruzeiro é anunciado pelo governador Mateus Simões na Cidade Administrativa, em BH",
+          "published_at": "2026-09-29T15:55:00+00:00"
+        },
+        {
+          "article_id": "46ac51fa-a5b2-4aa9-be04-43367b6909c9",
+          "url": "https://www.metropoles.com/minas-gerais/governo-de-mg-anuncia-r-32-milhoes-a-clubes-apos-proibicao-de-bets",
+          "title": "Governo de MG anuncia R$ 32 milhões a clubes após proibição de bets",
+          "lead": "Atlético e Cruzeiro receberão R$ 15 milhões cada; outros R$ 2 milhões serão destinados ao América após impacto causado pelo fim das bets",
+          "published_at": "2026-09-29T15:57:23+00:00"
+        },
+        {
+          "article_id": "2be3892b-aa0a-483c-b7ce-ce50a1843e29",
+          "url": "https://g1.globo.com/mg/minas-gerais/noticia/2026/09/29/governo-de-minas-codemge-e-cemig-vao-destinar-r-32-milhoes-para-times-mineiros-que-vao-perder-patrocinio-de-bets.ghtml",
+          "title": "Governo de Minas, Codemge e Cemig vão destinar R$ 32 milhões para times mineiros que vão perder patrocínio de bets",
+          "lead": "Mateus Simões, Renato Salvador, Pedro Lourenço, Marcus Salum, Luísa Cardoso Barreto e Marco Aurélio Martins. \nTV Globo\nO Governo do Estado de Minas Gerais informou, nesta terça-feira (29), que, junto com a Codemig e a Cemig, vai fornecer um auxílio de R$ 32 milhões para América, Atlético e Cruzeiro, clubes que vão perder o patrocínio máster das casas de apostas. O anúncio foi feito durante uma reu",
+          "published_at": "2026-09-29T16:22:58+00:00"
+        }
+      ]
+    },
+    {
+      "preview_topic": 2,
+      "topic_id": "6f237fae-97cb-49b3-8edc-abb4d26c93b6",
+      "current_canonical_title": "Caso Master: Fachin defende transparência sobre precatórios em meio a apurações",
+      "article_count": 4,
+      "status": "analyzed",
+      "title": "Fachin defende transparência e novas regras para precatórios após cobranças",
+      "summary": "O presidente do STF e do CNJ, Edson Fachin, defendeu maior transparência, segurança e rastreabilidade no mercado de precatórios. A manifestação ocorre em meio a investigações de fraudes ligadas ao Banco Master na Operação Compliance Zero. Fachin anunciou novas regras em parceria com o Banco Central e um portal de rastreamento, além de responder a um ofício do ministro Gilmar Mendes que cobrava fiscalização rigorosa nos tribunais regionais.",
+      "categories": [
+        "Política",
+        "Economia"
+      ],
+      "source_key": "ofício de Gilmar Mendes a Edson Fachin sobre precatórios",
+      "official_source": {
+        "status": "unavailable",
+        "label": "Não foi possível localizar uma fonte oficial",
+        "sources": [],
+        "scope": "cobrança de fiscalização e pente-fino em precatórios nos tribunais regionais"
+      },
+      "articles": [
+        {
+          "article_id": "c7ae4819-c8d3-4730-bd03-95367cfdd1f6",
+          "url": "https://g1.globo.com/politica/noticia/2026/09/29/caso-master-fachin-defende-transparencia-sobre-precatorios-em-meio-a-apuracoes.ghtml",
+          "title": "Caso Master: Fachin defende transparência sobre precatórios em meio a apurações",
+          "lead": "O presidente do Supremo Tribunal Federal (STF) e do Conselho Nacional de Justiça (CNJ), Edson Fachin, falou nesta terça-feira (29) sobre a necessidade de se conferir segurança transparência e rastreabilidade aos precatórios.\nOs precatórios ligados ao Banco Master estão entre as frentes de investigação ligados às fraudes apuradas na Operação Compliance Zero. \n“Queremos conferir e o objetivo é muito",
+          "published_at": "2026-09-29T13:51:58+00:00"
+        },
+        {
+          "article_id": "c2d3a30e-570e-4cb9-b7f9-8fb1c4bc3518",
+          "url": "https://www.metropoles.com/colunas/manoela-alcantara/fachin-venda-precatorios",
+          "title": "Em meio ao Caso Master, Fachin defende transparência em precatórios",
+          "lead": "Presidente do CNJ diz que portal está em construção e prepara, com o Banco Central, regras para a venda de créditos de precatórios",
+          "published_at": "2026-09-29T14:23:53+00:00"
+        },
+        {
+          "article_id": "933192d6-48bb-41d4-b5f0-337dffc8c3ae",
+          "url": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/fachin-defende-seguranca-e-transparencia-na-liberacao-de-precatorios",
+          "title": "Fachin defende segurança e transparência na liberação de precatórios",
+          "lead": "O presidente do Conselho Nacional de Justiça (CNJ) e do Supremo Tribunal Federal (STF), ministro Edson Fachin, defendeu nesta terça-feira (29) mais transparência no mercado secundário de precatórios. “O objetivo é muito simples, direto e importante: segurança, transparência e, ainda mais importante, rastreabilidade a um mercado que movimenta direitos”, afirmou Fachin em sessão do CNJ. Notícias rel",
+          "published_at": "2026-09-29T15:54:00+00:00"
+        },
+        {
+          "article_id": "05794acc-8d47-4412-9067-36f08e294ccc",
+          "url": "https://www.cnnbrasil.com.br/politica/fachin-responde-a-gilmar-e-fala-em-apuracao-rigorosa-sobre-precatorios",
+          "title": "Fachin responde a Gilmar e fala em “apuração rigorosa” sobre precatórios",
+          "lead": "Após suspeitas em fraudes ligadas ao Banco Master, presidente do STF diz que proposta para fazer um \"pente-fino\" nos precatórios dos tribunais regionais foi enviada à Corregedoria",
+          "published_at": "2026-09-29T15:59:21+00:00"
+        }
+      ]
+    },
+    {
+      "preview_topic": 3,
+      "topic_id": "e632c912-0b41-4ab3-875d-6fc4f41c6d42",
+      "current_canonical_title": "Ex-sócio teria mostrado fotos de Flávio Bolsonaro com prostitutas à esposa do senador, diz site",
+      "article_count": 7,
+      "status": "analyzed",
+      "title": "Reportagem expõe mensagens de ex-sócio com acusações contra Flávio Bolsonaro",
+      "summary": "Reportagem do site PlatôBR revelou mensagens de Alexandre Santini, ex-sócio do senador Flávio Bolsonaro. As conversas expõem supostos encontros do parlamentar com garotas de programa, pressão familiar após o compartilhamento de fotos com a esposa do senador e acusações de lobby durante o governo de Jair Bolsonaro. Em mensagens enviadas ao ex-sócio, o senador teria admitido escolhas erradas e recorrido a termos religiosos.",
+      "categories": [
+        "Política"
+      ],
+      "source_key": "",
+      "official_source": {
+        "status": "unavailable",
+        "label": "Nenhuma fonte oficial aplicável",
+        "sources": [],
+        "scope": ""
+      },
+      "articles": [
+        {
+          "article_id": "89c10840-9afd-4839-8652-52391cc94021",
+          "url": "https://revistaforum.com.br/politica/ex-socio-flavio-orgias-prostitutas-lobby",
+          "title": "Ex-sócio de Flávio Bolsonaro revela supostas orgias com prostitutas e lobby no governo do pai",
+          "lead": "O senador Flávio Bolsonaro (PL) estaria sendo alvo de pressão de seu ex-sócio Alexandre Ferreira Dias Santini, segundo reportagem publicada nesta terça-feira (29) pelo PlatôBR, assinada pelo jornalista Rodrigo Rangel. Santini, que foi sócio do senador na Bolsotini Chocolates e Café Ltda., franquia da Kopenhagen investigada no caso das rachadinhas, teria reunido mensagens de texto, […]",
+          "published_at": "2026-09-29T12:24:27+00:00"
+        },
+        {
+          "article_id": "ca1e90f2-dc5f-41bf-847c-bc1c83b1a121",
+          "url": "https://revistaforum.com.br/politica/ex-socio-flavio-bolsonaro-prostitutas-fotos",
+          "title": "Ex-sócio revela suposta preferência de Flávio Bolsonaro sobre prostitutas: “Me manda as fotos, tem que ser novidade”",
+          "lead": "Reportagem de Rodrigo Rangel, no site PlatôBr nesta terça-feira (29), revela uma série de mensagens de Alexandre Ferreira Dias Santini, ex-sócio de Flávio Bolsonaro na franquia de chocolates Bolsotini Chocolates e Café, que expõe relações do senador com prostitutas e a atuação como lobista no ex-governo do pai, Jair Bolsonaro, em uma rede que revela […]",
+          "published_at": "2026-09-29T12:26:47+00:00"
+        },
+        {
+          "article_id": "2583ce1c-9b15-4228-86d3-b7258d539e3f",
+          "url": "https://revistaforum.com.br/politica/ex-socio-flavio-bolsonaro-fotos-prostitutas",
+          "title": "Ex-sócio teria mostrado fotos de Flávio Bolsonaro com prostitutas à esposa do senador, diz site",
+          "lead": "Flávio Bolsonaro admitiu ter feito “escolhas erradas” e afirmou que não voltaria a errar com a própria família em uma mensagem enviada ao ex-sócio Alexandre Ferreira Dias Santini. A conversa ocorreu depois que Santini procurou Fernanda Bolsonaro, esposa do senador, e mostrou a ela relatos, mensagens e fotografias relacionados a festas privadas com garotas de […]",
+          "published_at": "2026-09-29T12:35:36+00:00"
+        },
+        {
+          "article_id": "988f668b-ea1b-476c-8f3a-a0193a2808e4",
+          "url": "https://revistaforum.com.br/politica/flavio-bolsonaro-orgia-hotel-de-luxo-epoca-de-eleicao",
+          "title": "Ex-sócio de Flávio Bolsonaro revela suposta orgia com 4 garotas em hotel de luxo: “nessa época de eleição tá f*”",
+          "lead": "Reportagem de Rodrigo Rangel, no site PlatôBr nesta terça-feira (29), revela uma série de mensagens de Alexandre Ferreira Dias Santini, ex-sócio de Flávio Bolsonaro na franquia de chocolates Bolsotini Chocolates e Café, que expõe relações do senador com prostitutas e a atuação como lobista no ex-governo do pai, Jair Bolsonaro, em uma rede que revela […]",
+          "published_at": "2026-09-29T13:14:51+00:00"
+        },
+        {
+          "article_id": "915882d8-c16b-4f0f-b99f-734da80a2a40",
+          "url": "https://revistaforum.com.br/politica/flavio-bolsonaro-traicao-esposa",
+          "title": "Flávio Bolsonaro usou ‘Deus’ em mensagem a ex-sócio após suposta traição à esposa: “Me dar tiro nas costas”",
+          "lead": "O senador Flávio Bolsonaro (PL) teria recorrido a referências religiosas ao tentar encerrar a crise com o ex-sócio Alexandre Ferreira Dias Santini após a revelação de supostos encontros privados com garotas de programa, segundo reportagem publicada nesta terça-feira (29) pelo PlatôBR, assinada pelo jornalista Rodrigo Rangel. Em uma mensagem enviada por WhatsApp ao antigo amigo, […]",
+          "published_at": "2026-09-29T13:47:31+00:00"
+        },
+        {
+          "article_id": "ea635e96-8566-4663-b471-2a2b834f1a0a",
+          "url": "https://revistaforum.com.br/blogs/blog-do-rovai/relacao-flavio-bolsonaro-ex-socio-rolex-prostitutas-e-milicias",
+          "title": "Os bastidores da relação de Flávio Bolsonaro com seu ex-sócio: Rolex, prostitutas e milícias",
+          "lead": "Uma reportagem publicada pelo site PlatôBR traz novas denúncias envolvendo a relação de Flávio Bolsonaro com seu ex-sócio Alexandre Santini, com quem manteve uma sociedade em uma “lojinha” de chocolates. O material menciona um Rolex de R$ 305 mil, recibos de R$ 90 mil de uma academia na mansão financiada pelo BRB e despesas relacionadas […]",
+          "published_at": "2026-09-29T15:07:18+00:00"
+        },
+        {
+          "article_id": "cebf6f84-7255-486e-b85f-e54fae3106b8",
+          "url": "https://revistaforum.com.br/politica/flavio-bolsonaro-fotos-putas",
+          "title": "Ex-sócio teria fotos “impublicáveis” de Flávio Bolsonaro com prostitutas",
+          "lead": "Alexandre Ferreira Dias Santini, ex-sócio e antigo amigo de Flávio Bolsonaro, teria guardado fotografias “impublicáveis” do candidato do PL à presidência da República em encontros com prostitutas. O material foi acumulado durante os anos em que Santini circulou ao lado de Flávio e chegou a organizar festas privadas para o grupo. As imagens são citadas […]",
+          "published_at": "2026-09-29T15:35:15+00:00"
+        }
+      ]
+    },
+    {
+      "preview_topic": 4,
+      "topic_id": "d7039faa-42c2-4179-ada2-01cdc97740ad",
+      "current_canonical_title": "Seleção faz primeiro tempo pífio, mas tem lampejo de bom futebol na segunda etapa e vence a Austrália por 4 a 2",
+      "article_count": 4,
+      "status": "analyzed",
+      "title": "Seleção Brasileira vence Austrália por 4 a 2 em amistoso na era Ancelotti",
+      "summary": "A Seleção Brasileira de futebol venceu a Austrália por 4 a 2 em amistoso realizado em Brisbane, marcando a primeira vitória sob o comando de Carlo Ancelotti após um empate no jogo anterior. Os gols brasileiros foram marcados por Vanderson, Raphinha, Bruno Guimarães e Vini Jr. Os analistas divergem quanto ao desempenho da equipe, com críticas ao primeiro tempo, classificado como sofrível por alguns, e elogios à evolução tática por outros.",
+      "categories": [
+        "Esportes"
+      ],
+      "source_key": "",
+      "official_source": {
+        "status": "unavailable",
+        "label": "Nenhuma fonte oficial aplicável",
+        "sources": [],
+        "scope": ""
+      },
+      "articles": [
+        {
+          "article_id": "1d3d4bcc-fe41-4ca6-93eb-3064fa2aff48",
+          "url": "https://www.cnnbrasil.com.br/esportes/futebol/futebol-internacional/com-segundo-tempo-efetivo-selecao-brasileira-vence-australia-em-amistoso",
+          "title": "Com segundo tempo efetivo, Seleção Brasileira vence Austrália em amistoso",
+          "lead": "Após empate decepcionante, time de Carlo Ancelotti bateu Socceroos por 4 a 2",
+          "published_at": "2026-09-29T12:07:18+00:00"
+        },
+        {
+          "article_id": "3f7afbee-1a9f-4508-a2e2-4774a8e8453c",
+          "url": "https://veja.abril.com.br/esporte/brasil-leva-virada-se-recupera-e-goleia-australia-em-primeira-vitoria-pos-copa",
+          "title": "Brasil leva virada, se recupera e goleia Austrália em primeira vitória pós-Copa",
+          "lead": "Com esquema tático diferente, equipe de Ancelotti encontrou mais soluções para chegar ao ataque",
+          "published_at": "2026-09-29T12:12:14+00:00"
+        },
+        {
+          "article_id": "77d226e9-a3c1-4847-9b47-16fce95f17d0",
+          "url": "https://jovempan.com.br/colunistas/thiago-uberreich/selecao-faz-primeiro-tempo-pifio-mas-tem-lampejo-de-bom-futebol-na-segunda-etapa-e-vence-a-australia-por-4-a-2",
+          "title": "Seleção faz primeiro tempo pífio, mas tem lampejo de bom futebol na segunda etapa e vence a Austrália por 4 a 2",
+          "lead": "Em partida com duas viradas, em Brisbane, a equipe de Ancelotti se recuperou com bom toque de bola",
+          "published_at": "2026-09-29T12:36:09+00:00"
+        },
+        {
+          "article_id": "98260085-6c64-474e-a302-d031e935089e",
+          "url": "https://revistaforum.com.br/blogs/brasil-vence-a-australia",
+          "title": "Brasil joga como Brasil e vence a Austrália. Quem diria, Ancelotti!",
+          "lead": "Sim, é a Austrália, apenas a 25ª no ranking da Fifa, sim, temos de levar em conta a fragilidade do adversário, mas precisa ser muito turrão para não perceber que o Brasil mostrou evolução  no segundo jogo entre ambos. No primeiro, um horrível 1 x 1. Agora, uma alentadora vitória por 4 x 2. A […]",
+          "published_at": "2026-09-29T13:28:31+00:00"
+        }
+      ]
+    },
+    {
+      "preview_topic": 5,
+      "topic_id": "2c318b80-ed8d-440e-8cdf-d212d3421db0",
+      "current_canonical_title": "Desemprego no Brasil atinge 5,8 milhões em agosto, aponta IBGE",
+      "article_count": 5,
+      "status": "analysis_error",
+      "error": "Gemini retornou JSON inválido",
+      "articles": [
+        {
+          "article_id": "d66c82bd-11fd-498a-9c24-80cc02e67b11",
+          "url": "https://g1.globo.com/economia/noticia/2026/09/29/desemprego-pnad-agosto.ghtml",
+          "title": "Desemprego fica em 5,3% no trimestre até agosto e população ocupada bate recorde de 103,5 milhões de pessoas",
+          "lead": "Desemprego fica em 5,3% no trimestre até agosto\nA taxa de desemprego ficou em 5,3% no trimestre encerrado em agosto deste ano. Os dados são da Pesquisa Nacional por Amostra de Domicílios (PNAD) Contínua, divulgada nesta terça-feira (29) pelo Instituto Brasileiro de Geografia e Estatística (IBGE). \nO número representa uma queda de 0,3 ponto percentual (p.p.) em comparação aos três meses encerrados ",
+          "published_at": "2026-09-29T12:00:33+00:00"
+        },
+        {
+          "article_id": "ad01b7ad-1ff8-4a92-8e3b-a465ebc561b7",
+          "url": "https://www.poder360.com.br/poder-economia/desemprego-cai-para-53-no-trimestre-encerrado-em-agosto-diz-ibge",
+          "title": "Desemprego cai para 5,3% no trimestre encerrado em agosto, diz IBGE",
+          "lead": "Representa queda de 0,3 ponto percentual em relação ao mesmo período de 2025, quando foi de 5,6%",
+          "published_at": "2026-09-29T12:03:44+00:00"
+        },
+        {
+          "article_id": "fe5a912a-0c41-4259-a0ef-6cb1d105350d",
+          "url": "https://veja.abril.com.br/economia/taxa-de-desemprego-se-mantem-em-53-no-trimestre-encerrado-em-agosto",
+          "title": "Taxa de desemprego se mantém em 5,3% no trimestre encerrado em agosto",
+          "lead": "Resultado repete o trimestre móvel encerrado em julho, enquanto a população ocupada bate recorde e soma 103,5 milhões de pessoas",
+          "published_at": "2026-09-29T12:14:33+00:00"
+        },
+        {
+          "article_id": "cbd7509f-120c-414e-bca2-754e82da7da3",
+          "url": "https://www.terra.com.br/economia/desemprego-ate-agosto-fica-em-53-aponta-ibge,9a19b05a514fa6c23e33466e4ccb9726kbrclijl.html",
+          "title": "Desemprego até agosto fica em 5,3%, aponta IBGE",
+          "lead": "(function(){function e(){window.addEventListener(`message`,function(e){if(e.data[`datawrapper- ...",
+          "published_at": "2026-09-29T12:26:36+00:00"
+        },
+        {
+          "article_id": "d8704802-5647-4578-9370-32571328e023",
+          "url": "https://revistaoeste.com/economia/desemprego-no-brasil-atinge-58-milhoes-em-agosto-aponta-ibge",
+          "title": "Desemprego no Brasil atinge 5,8 milhões em agosto, aponta IBGE",
+          "lead": "O índice oficial de desemprego no país se manteve estável no trimestre móvel entre junho e agosto deste ano, de acordo com dados divulgados nesta terça-feira, 29, pelo Instituto Brasileiro de Geografia e Estatística (IBGE) . Segundo a nova rodada da Pesquisa Nacional por Amostra de Domicílios (Pnad) Contínua, a taxa de desocupação seguiu em 5,3% no período, mesmo porcentual do mês anterior, atingi",
+          "published_at": "2026-09-29T12:40:21+00:00"
+        }
+      ]
+    },
+    {
+      "preview_topic": 6,
+      "topic_id": "81f968dc-f2a9-486f-8a6c-cc3454d4a4ad",
+      "current_canonical_title": "Candidatos a deputado federal pelo PSD no RJ; veja quem são e os números",
+      "article_count": 10,
+      "status": "analyzed",
+      "title": "Rio de Janeiro tem 781 candidatos a deputado federal nas eleições de 2026",
+      "summary": "O estado do Rio de Janeiro tem 781 candidatos disputando 46 vagas na Câmara dos Deputados nas eleições de 2026, segundo dados do Tribunal Superior Eleitoral. A cobertura reúne candidaturas ao cargo de deputado federal pelos partidos PL, PT, União Brasil, Republicanos e PSD no RJ, informando os concorrentes e seus respectivos números de urna para o primeiro turno do pleito.",
+      "categories": [
+        "Política"
+      ],
+      "source_key": "registro de candidaturas TSE 2026",
+      "official_source": {
+        "status": "probable",
+        "label": "Possível fonte oficial",
+        "sources": [
+          "https://pesqele-divulgacao.tse.jus.br/app/pesquisa/listar.xhtml"
+        ],
+        "scope": "total de candidatos e vagas para deputado federal no Rio de Janeiro"
+      },
+      "articles": [
+        {
+          "article_id": "ba423561-ae2f-4c1f-bb1e-90d5f90a8b62",
+          "url": "https://g1.globo.com/rj/rio-de-janeiro/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-pl-no-rj-veja-quem-sao-e-os-numeros.ghtml",
+          "title": "Candidatos a deputado federal pelo PL no RJ; veja quem são e os números",
+          "lead": "O Rio de Janeiro (RJ) tem 781 candidatos disputando 46 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo Partido Liberal (PL) no RJ.\nO 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página Quem São os Candi",
+          "published_at": "2026-09-29T12:36:09+00:00"
+        },
+        {
+          "article_id": "56642188-4845-4a97-9834-1f05720b101e",
+          "url": "https://g1.globo.com/rj/rio-de-janeiro/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-pt-no-rj-veja-quem-sao-e-os-numeros.ghtml",
+          "title": "Candidatos a deputado federal pelo PT no RJ; veja quem são e os números",
+          "lead": "Rio de Janeiro (RJ) tem 781 candidatos disputando 46 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo Partido dos Trabalhadores (PT) no RJ.\nSAIBA MAIS: O 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa pági",
+          "published_at": "2026-09-29T12:40:15+00:00"
+        },
+        {
+          "article_id": "eb041a6a-97b7-40ff-a640-84f6ba34854c",
+          "url": "https://g1.globo.com/rj/rio-de-janeiro/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-uniao-brasil-no-rj-veja-quem-sao-e-os-numeros.ghtml",
+          "title": "Candidatos a deputado federal pelo União Brasil no RJ; veja quem são e os números",
+          "lead": "O Rio de Janeiro (RJ) tem 781 candidatos disputando 46 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo União Brasil no RJ.\nO 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página Quem São os Candidatos, p",
+          "published_at": "2026-09-29T12:41:33+00:00"
+        },
+        {
+          "article_id": "39888e47-f126-4540-b9c8-fdc8dfdf5795",
+          "url": "https://g1.globo.com/rj/rio-de-janeiro/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-republicanos-no-rj-veja-quem-sao-e-os-numeros.ghtml",
+          "title": "Candidatos a deputado federal pelo Republicanos no RJ; veja quem são e os números",
+          "lead": "O Rio de Janeiro (RJ) tem 781 candidatos disputando 46 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo Republicanos no RJ.\nO 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página Quem São os Candidatos, p",
+          "published_at": "2026-09-29T12:45:06+00:00"
+        },
+        {
+          "article_id": "c2106186-93b9-4091-b24a-a73929496f2b",
+          "url": "https://g1.globo.com/rj/rio-de-janeiro/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-psd-no-rj-veja-quem-sao-e-os-numeros.ghtml",
+          "title": "Candidatos a deputado federal pelo PSD no RJ; veja quem são e os números",
+          "lead": "Rio de Janeiro (RJ) tem 781 candidatos disputando 46 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo Partido dos Trabalhadores (PT) no RJ.\nSAIBA MAIS: O 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa pági",
+          "published_at": "2026-09-29T12:48:24+00:00"
+        },
+        {
+          "article_id": "4077f325-d093-48c3-9923-0fbb2a5d7340",
+          "url": "https://g1.globo.com/rj/rio-de-janeiro/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-mobiliza-no-rj-veja-quem-sao-e-os-numeros.ghtml",
+          "title": "Candidatos a deputado federal pelo Mobiliza no RJ; veja quem são e os números",
+          "lead": "Rio de Janeiro (RJ) tem 781 candidatos disputando 46 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo Mobiliza (MOB) no RJ.\nSAIBA MAIS: O 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página Quem São os C",
+          "published_at": "2026-09-29T13:34:34+00:00"
+        },
+        {
+          "article_id": "2cd1403e-9eb4-499e-81a0-1c80591db613",
+          "url": "https://g1.globo.com/rj/rio-de-janeiro/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-up-no-rj-veja-quem-sao-e-os-numeros.ghtml",
+          "title": "Candidatos a deputado federal pelo UP no RJ; veja quem são e os números",
+          "lead": "O Rio de Janeiro (RJ) tem 781 candidatos disputando 46 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo UP no RJ.\nO 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página Quem São os Candidatos, publicada p",
+          "published_at": "2026-09-29T13:35:36+00:00"
+        },
+        {
+          "article_id": "698e2937-c30a-432f-b0c0-8193286c70c3",
+          "url": "https://g1.globo.com/rj/rio-de-janeiro/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-pcdob-no-rj-veja-quem-sao-e-os-numeros.ghtml",
+          "title": "Candidatos a deputado federal pelo PCdoB no RJ; veja quem são e os números",
+          "lead": "O Rio de Janeiro (RJ) tem 781 candidatos disputando 46 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo PCdoB no RJ.\nO 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página Quem São os Candidatos, publicad",
+          "published_at": "2026-09-29T13:37:44+00:00"
+        },
+        {
+          "article_id": "b45d1ba3-3c5e-47a6-9b53-5b2c5bb3918c",
+          "url": "https://g1.globo.com/rj/rio-de-janeiro/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-pstu-no-rj-veja-quem-sao-e-os-numeros.ghtml",
+          "title": "Candidatos a deputado federal pelo PSTU no RJ; veja quem são e os números",
+          "lead": "O Rio de Janeiro (RJ) tem 781 candidatos disputando 46 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo PSTU no RJ.\nO 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página Quem São os Candidatos, publicada",
+          "published_at": "2026-09-29T13:39:55+00:00"
+        },
+        {
+          "article_id": "98c083c4-fa30-4c6b-ad31-6afbb461ec71",
+          "url": "https://g1.globo.com/rj/rio-de-janeiro/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-estadual-pelo-psol-no-rj-veja-quem-sao-e-os-numeros.ghtml",
+          "title": "Candidatos a deputado estadual pelo PSOL no RJ; veja quem são e os números",
+          "lead": "Rio de Janeiro (RJ) tem 1.167 candidatos disputando 70 vagas na Assembleia Legislativa, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado estadual pelo PSOL no RJ.\n\nO 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado estadual.\nNa página Quem São os Candidatos, publi",
+          "published_at": "2026-09-29T13:53:07+00:00"
+        }
+      ]
+    },
+    {
+      "preview_topic": 7,
+      "topic_id": "d8963664-d00c-4aa9-a04e-4b06ea9ebbb9",
+      "current_canonical_title": "Governo da Espanha aprova medidas para crise habitacional após protestos",
+      "article_count": 5,
+      "status": "analyzed",
+      "title": "Governo da Espanha propõe medidas contra crise habitacional após protestos",
+      "summary": "O governo da Espanha anunciou propostas para conter a crise habitacional após protestos intensificados pelo despejo de uma idosa de 87 anos. As medidas, que serão enviadas ao Parlamento em dois projetos de lei, incluem a suspensão de despejos até 2030, a renovação automática de contratos de aluguel e restrições à compra de imóveis por fundos especulativos. A coalizão governista de esquerda precisará de apoio para aprovar os textos.",
+      "categories": [
+        "Política",
+        "Economia"
+      ],
+      "source_key": "",
+      "official_source": {
+        "status": "unavailable",
+        "label": "Nenhuma fonte oficial aplicável",
+        "sources": [],
+        "scope": ""
+      },
+      "articles": [
+        {
+          "article_id": "f51b4174-cc48-46b2-97bf-281db68e5ff3",
+          "url": "https://www.cnnbrasil.com.br/internacional/governo-da-espanha-aprova-medidas-para-crise-habitacional-apos-protestos",
+          "title": "Governo da Espanha aprova medidas para crise habitacional após protestos",
+          "lead": "Novas medidas incluem extensão de contratos de aluguel e maior controle sobre locações de curta duração; espanhóis foram às ruas após despejo de idosa de 87 anos",
+          "published_at": "2026-09-29T11:24:28+00:00"
+        },
+        {
+          "article_id": "afd12230-cea6-48c7-879c-bcccab21e30e",
+          "url": "https://veja.abril.com.br/mundo/apos-protestos-espanha-anuncia-medidas-para-combater-crise-habitacional",
+          "title": "Após protestos, Espanha anuncia medidas para combater crise habitacional",
+          "lead": "Manifestações ganharam força após caso de senhora de 87 anos despejada da casa onde vivia há sete décadas",
+          "published_at": "2026-09-29T12:57:16+00:00"
+        },
+        {
+          "article_id": "bb21b1f5-4bb0-46a7-934c-e05eb7956f1e",
+          "url": "https://www.cnnbrasil.com.br/internacional/despejo-idosa-espanha-crise-habitacional-protestos",
+          "title": "Como despejo de idosa virou símbolo da crise habitacional na Espanha",
+          "lead": "Milhares de manifestantes em Madri e outras províncias exigem maior proteção a inquilinos e fim das retiradas forçadas; após pressão popular, aposentada conseguiu acordo e vai conseguir voltar para casa",
+          "published_at": "2026-09-29T13:18:03+00:00"
+        },
+        {
+          "article_id": "6e3c7476-8c14-41ad-91c1-9b2cfec5525f",
+          "url": "https://www.cnnbrasil.com.br/internacional/espanha-propoe-proibicao-de-despejos-em-meio-a-protestos-por-habitacao",
+          "title": "Espanha propõe proibição de despejos em meio a protestos por habitação",
+          "lead": "Medida também prevê renovação automática de contratos até 2028 e veto a fundos imobiliários especulativos; propostas ainda serão votadas pelo Parlamento espanhól",
+          "published_at": "2026-09-29T14:17:29+00:00"
+        },
+        {
+          "article_id": "d5c05415-752c-4a9d-a7fc-397d4b73dcbe",
+          "url": "https://noticias.uol.com.br/ultimas-noticias/afp/2026/09/29/sob-pressao-de-protestos-espanha-anuncia-medidas-para-combater-a-crise-habitacional.htm",
+          "title": "Sob pressão de protestos, Espanha anuncia medidas para combater a crise habitacional",
+          "lead": "O governo espanhol anunciou, nesta terça-feira (29), a paralisação dos despejos até 2030 e a renovação automática de contratos de aluguel, em um esforço para conter a crise habitacional que desencadeou um movimento de protesto social.",
+          "published_at": null
+        }
+      ]
+    },
+    {
+      "preview_topic": 8,
+      "topic_id": "636bb1fb-b3fd-4f40-8730-13ef13c44340",
+      "current_canonical_title": "Real Time: Celina Leão tem 53% no 2º turno ao governo do DF; Grass, 33%",
+      "article_count": 5,
+      "status": "analyzed",
+      "title": "Pesquisa Real Time Big Data indica liderança de Celina Leão no DF",
+      "summary": "Pesquisa Real Time Big Data divulgada em 29 de setembro de 2026 aponta Celina Leão (PP) com 47% das intenções de voto para o governo do Distrito Federal, seguida por Leandro Grass (PT) com 26%. Em eventual segundo turno, Celina lidera com 53% contra 33% de Grass. A gestão da atual governadora é aprovada por 56% e desaprovada por 40%. No cenário presidencial no DF, Flávio registra 48% contra 40% de Lula no segundo turno.",
+      "categories": [
+        "Política"
+      ],
+      "source_key": "pesquisa eleitoral DF Real Time Big Data 2026",
+      "official_source": {
+        "status": "probable",
+        "label": "Possível fonte oficial",
+        "sources": [
+          "https://pesqele-divulgacao.tse.jus.br/app/pesquisa/listar.xhtml"
+        ],
+        "scope": "registro de pesquisa de opinião pública no Tribunal Superior Eleitoral"
+      },
+      "articles": [
+        {
+          "article_id": "6e4f1daa-e907-4b1b-be56-fd7f6161953e",
+          "url": "https://www.cnnbrasil.com.br/eleicoes/real-time-celina-leao-tem-53-no-2o-turno-ao-governo-do-df-grass-33",
+          "title": "Real Time: Celina Leão tem 53% no 2º turno ao governo do DF; Grass, 33%",
+          "lead": "Foram ouvidos 1.600 eleitores entre os dias 24 e 28 de setembro; margem de erro é de 2 pontos percentuais, para mais ou para menos",
+          "published_at": "2026-09-29T11:28:34+00:00"
+        },
+        {
+          "article_id": "1f2ef4c7-8cb4-4c4e-845e-4137dec4963e",
+          "url": "https://www.cnnbrasil.com.br/politica/real-time-governo-de-celina-leao-e-aprovado-por-56-40-desaprovam",
+          "title": "Real Time: Governo de Celina Leão é aprovado por 56%; 40% desaprovam",
+          "lead": "Foram ouvidos 1.600 brasilienses entre os dias 24 e 28 de setembro; margem de erro é de dois pontos percentuais, para mais ou para menos",
+          "published_at": "2026-09-29T12:03:08+00:00"
+        },
+        {
+          "article_id": "298ba46e-1cd8-438e-9bc6-f733936c3c4b",
+          "url": "https://www.poder360.com.br/poder-eleicoes-2026/celina-leao-tem-47-contra-26-de-leandro-grass-no-df-diz-pesquisa",
+          "title": "Celina Leão tem 47% contra 26% de Leandro Grass no DF, diz pesquisa",
+          "lead": "Pesquisa Real Time Big Data indica que, considerando apenas os votos válidos, a governadora venceria a disputa já no 1º turno",
+          "published_at": "2026-09-29T12:16:39+00:00"
+        },
+        {
+          "article_id": "80200163-e871-41c7-86c6-7fc9d001fa94",
+          "url": "https://www.cnnbrasil.com.br/eleicoes/real-time-no-df-flavio-tem-48-no-2o-turno-lula-40",
+          "title": "Real Time: No DF, Flávio tem 48% no 2º turno; Lula, 40%",
+          "lead": "Foram entrevistados 1.600 brasilienses entre os dias 24 e 28 de setembro; margem de erro é de dois pontos percentuais, para mais ou para menos",
+          "published_at": "2026-09-29T13:09:48+00:00"
+        },
+        {
+          "article_id": "d38cbfeb-2f1b-4216-950a-7fcc75b9b220",
+          "url": "https://www.brasildefato.com.br/2026/09/29/realtime-big-data-no-df-aponta-celina-leao-com-47-e-leandro-grass-com-26-na-disputa-pelo-governo",
+          "title": "RealTime Big Data no DF aponta Celina Leão com 47% e Leandro Grass com 26% na disputa pelo governo",
+          "lead": "Pesquisa RealTime Big Data divulgada nesta terça-feira (29) mostra Celina Leão (PP) com 47% das intenções de voto para o governo do Distrito Federal. Leandro Grass (PT) aparece com 26%, Paula Belmonte (PSDB), com 10%, Ricardo Cappelli (PSB), com 4%, e Kiko Caputo (Novo), com 1%. Elisson (Agir), Professor Robson (PSTU), Professora Samara Mineiro (UP), […] Fonte",
+          "published_at": "2026-09-29T13:38:41+00:00"
+        }
+      ]
+    },
+    {
+      "preview_topic": 9,
+      "topic_id": "a8c4faff-23d1-4611-bfda-d518420fb7eb",
+      "current_canonical_title": "“Entre nós resolvemos depois”: Hugo Motta e Vorcaro tratam de “sociedade” em negócio de R$ 45 milhões",
+      "article_count": 3,
+      "status": "analyzed",
+      "title": "Mensagens obtidas pela PF revelam diálogos de Hugo Motta com Daniel Vorcaro",
+      "summary": "Mensagens extraídas pela Polícia Federal do celular de Daniel Vorcaro, dono do Banco Master, revelam proximidade e tratativas de negócios com o presidente da Câmara, Hugo Motta. Os diálogos envolvem um empreendimento imobiliário na Paraíba registrado em nome da cunhada de Motta, que recebeu R$ 22 milhões do banco. As conversas mencionam termos como 'sociedade' e 'amigo'. Motta afirmou que mantém diálogos com diversos setores e negou irregularidades.",
+      "categories": [
+        "Política",
+        "Economia"
+      ],
+      "source_key": "",
+      "official_source": {
+        "status": "unavailable",
+        "label": "Nenhuma fonte oficial aplicável",
+        "sources": [],
+        "scope": ""
+      },
+      "articles": [
+        {
+          "article_id": "b1f56f7b-3825-453d-9dd6-cc4169c4cb39",
+          "url": "https://revistaoeste.com/politica/vorcaro-e-hugo-motta-trocaram-elogios-e-convites-para-encontros",
+          "title": "Vorcaro e Hugo Motta trocaram elogios e convites para encontros",
+          "lead": "Mensagens extraídas pela Polícia Federal (PF) do celular de Daniel Vorcaro, dono do Banco Master, mostram uma relação de proximidade com o presidente da Câmara dos Deputados , Hugo Motta (Republicanos-PB), marcada por troca de elogios, pedidos de ingressos para o Carnaval e convites para encontros. As conversas se somam a outros diálogos entre Motta e Vorcaro relacionados a assuntos empresariais. ",
+          "published_at": "2026-09-29T11:04:05+00:00"
+        },
+        {
+          "article_id": "f95616dc-c591-44d2-9480-cd6b53f3e42b",
+          "url": "https://revistaforum.com.br/politica/hugo-motta-e-vorcaro-sociedade",
+          "title": "“Entre nós resolvemos depois”: Hugo Motta e Vorcaro tratam de “sociedade” em negócio de R$ 45 milhões",
+          "lead": "Hugo Motta e Vorcaro aparecem lado a lado em uma negociação que movimentou dezenas de milhões de reais na Paraíba. No papel, o negócio estava em nome da cunhada do deputado. Nas mensagens extraídas pela Polícia Federal do celular de Daniel Vorcaro e divulgadas pela imprensa, no entanto, é o próprio Hugo Motta quem trata […]",
+          "published_at": "2026-09-29T11:31:16+00:00"
+        },
+        {
+          "article_id": "b376d2bd-4c99-4f56-a8e4-1a758ad94bbf",
+          "url": "https://oantagonista.com.br/brasil/apos-meu-amor-de-alcolumbre-motta-chama-vorcaro-de-amigo-1",
+          "title": "Após “meu amor” de Alcolumbre, Motta chama Vorcaro de “amigo”",
+          "lead": "O presidente da Câmara, Hugo Motta (Republicanos-PB), aparece em mensagens extraídas pela Polícia Federal do celular de Daniel Vorcaro, ex-dono do Banco Master, tratando de um negócio imobiliário envolvendo uma empresa de sua cunhada. Em uma das conversas, Motta chama Vorcaro de “amigo” e relata que estava reunido com pessoas envolvidas na negociação de uma... The post Após “meu amor” de Alcolumbr",
+          "published_at": "2026-09-29T12:06:37+00:00"
+        }
+      ]
+    },
+    {
+      "preview_topic": 10,
+      "topic_id": "32cbc47c-519c-46ca-8878-20f5676c41de",
+      "current_canonical_title": "Tarcísio se mantém com 53% no 1º turno, aponta Realtime",
+      "article_count": 6,
+      "status": "analyzed",
+      "title": "Pesquisas indicam liderança de Tarcísio de Freitas ao governo de São Paulo",
+      "summary": "Pesquisas eleitorais divulgadas em 29 de setembro de 2026 indicam a liderança de Tarcísio de Freitas (Republicanos) na disputa pelo governo de São Paulo. No levantamento Real Time Big Data, o atual governador registra 53% das intenções de voto, contra 39% de Fernando Haddad (PT), além de 64% de aprovação à sua gestão. Já na pesquisa AtlasIntel/Estadão, Tarcísio aparece com 53,3% e Haddad com 40,1%, apontando chance de vitória no primeiro turno.",
+      "categories": [
+        "Política"
+      ],
+      "source_key": "pesquisa Real Time Big Data SP setembro 2026",
+      "official_source": {
+        "status": "probable",
+        "label": "Possível fonte oficial",
+        "sources": [
+          "https://pesqele-divulgacao.tse.jus.br/app/pesquisa/listar.xhtml"
+        ],
+        "scope": "registro de pesquisa eleitoral no Tribunal Superior Eleitoral"
+      },
+      "articles": [
+        {
+          "article_id": "8e152839-99b3-47e1-a169-5204824f35e5",
+          "url": "https://www.cnnbrasil.com.br/politica/real-time-governo-tarcisio-e-aprovado-por-64-desaprovacao-e-de-35",
+          "title": "Real Time: Governo Tarcísio é aprovado por 64%; desaprovação é de 35%",
+          "lead": "Foram ouvidos 2.000 eleitores de São Paulo entre os dias 24 e 28 de setembro; margem de erro é de dois pontos percentuais, para mais ou para menos",
+          "published_at": "2026-09-29T11:02:40+00:00"
+        },
+        {
+          "article_id": "1519a7c6-acc1-4131-90a6-7db89b055ef7",
+          "url": "https://oantagonista.com.br/brasil/tarcisio-se-mantem-com-53-no-1o-turno-aponta-realtime",
+          "title": "Tarcísio se mantém com 53% no 1º turno, aponta Realtime",
+          "lead": "Pesquisa Realtime Big Data, divulgada nesta terça-feira, 29, aponta Tarcísio de Freitas (Republicanos) com 53% das intenções de voto em primeiro turno na disputa ao governo de São Paulo, mesmo percentual registrado no levantamento anterior. Fernando Haddad (PT), por sua vez, passou de 38% para 39% em uma semana, oscilação registrada dentro da margem de... The post Tarcísio se mantém com 53% no 1º ",
+          "published_at": "2026-09-29T11:32:24+00:00"
+        },
+        {
+          "article_id": "981566a7-fa6d-41b0-b38f-a1c0ad97a346",
+          "url": "https://jovempan.com.br/politica/atlas-tarcisio-tem-533-e-haddad-401-na-disputa-pelo-governo-de-sp",
+          "title": "Atlas: Tarcísio tem 53,3% e Haddad, 40,1% na disputa pelo governo de SP",
+          "lead": "Nos votos válidos, governador aparece com 55,9%; em eventual segundo turno, placar é de 54,9% a 42,1%",
+          "published_at": "2026-09-29T12:00:00+00:00"
+        },
+        {
+          "article_id": "4f5b37d3-0fea-477d-9912-72a748c5f5ee",
+          "url": "https://revistaoeste.com/politica/a-5-dias-da-eleicao-real-time-indica-vitoria-de-tarcisio-no-1-turno-em-sp",
+          "title": "A 5 dias da eleição, Real Time indica vitória de Tarcísio no 1° turno em SP",
+          "lead": "A apenas cinco dias do primeiro turno das eleições gerais no país, o governador de São Paulo, Tarcísio de Freitas (Republicanos), deve vencer o pleito já no primeiro turno, de acordo com pesquisa do Real Time Big Data divulgada nesta terça-feira, 29. Segundo o levantamento, Tarcísio aparece com 53% das intenções de voto no cenário de primeiro turno, ante 39% do candidato do PT, Fernando Haddad . E",
+          "published_at": "2026-09-29T12:09:15+00:00"
+        },
+        {
+          "article_id": "a2eb5991-15ab-4ef7-9584-553b22ea214f",
+          "url": "https://www.brasildefato.com.br/2026/09/29/tarcisio-tem-533-e-haddad-401-no-1o-turno-para-governo-de-sp-aponta-atlasestadao-veja-intencao-de-votos-por-regiao",
+          "title": "Tarcísio tem 53,3% e Haddad 40,1% no 1º turno para governo de SP, aponta Atlas/Estadão; veja intenção de votos por região",
+          "lead": "O governador Tarcísio de Freitas (Republicanos) aparece com 53,3% das intenções de voto para o governo de São Paulo no primeiro turno, segundo pesquisa Atlas/Estadão divulgada nesta terça-feira (29). Fernando Haddad (PT) tem 40,1%. Vivian Mendes (UP) registra 1,3%, Carlos Machado (PCB), 0,4%, e Vera Lúcia (PSTU), 0,1%. Izadora Dias (PCO) não pontuou. Outros 3,1% […] Fonte",
+          "published_at": "2026-09-29T12:13:22+00:00"
+        },
+        {
+          "article_id": "5c4c662b-7249-41b8-9e1b-93cc9a977c81",
+          "url": "https://www.brasildefato.com.br/2026/09/29/real-time-tarcisio-lidera-para-governo-de-sp-disputa-para-o-senado-tem-empate-tecnico",
+          "title": "Real Time: Tarcísio lidera para governo de SP; disputa para o Senado tem empate técnico",
+          "lead": "O governador Tarcísio de Freitas (Republicanos) aparece com 53% das intenções de voto para o governo de São Paulo no primeiro turno, contra 39% de Fernando Haddad (PT), segundo pesquisa Real Time Big Data divulgada nesta terça-feira (29). Os demais candidatos somam 1%, enquanto brancos e nulos representam 4%. Outros 3% não souberam ou não […] Fonte",
+          "published_at": "2026-09-29T13:21:59+00:00"
+        }
+      ]
+    },
+    {
+      "preview_topic": 11,
       "topic_id": "a7094a81-eb2e-407d-ad27-449af1741e89",
       "current_canonical_title": "Raphinha sente desconforto na coxa e é substituído em amistoso da Seleção",
       "article_count": 3,
       "status": "analyzed",
-      "title": "Raphinha empata de pênalti e sai lesionado em amistoso contra Austrália",
-      "summary": "No amistoso entre Brasil e Austrália, o atacante Raphinha marcou de pênalti o gol de empate por 2 a 2 no fim do primeiro tempo. No intervalo, o jogador foi substituído por Endrick após sentir um desconforto na coxa direita. Vanderson também marcou para o Brasil, enquanto Alessandro Circati e Connor Metcalfe fizeram os gols da Austrália.",
+      "title": "Raphinha empata amistoso contra a Austrália e sai lesionado no intervalo",
+      "summary": "No amistoso entre Brasil e Austrália em Brisbane, o atacante Raphinha, atuando como capitão, marcou de pênalti o gol que empatou a partida em 2 a 2 no fim do primeiro tempo. Vanderson também marcou para a Seleção Brasileira, enquanto Circati e Metcalfe fizeram os gols australianos. No intervalo, Raphinha foi substituído por Endrick após sentir um desconforto na coxa direita. A gravidade da lesão não foi confirmada.",
       "categories": [
         "Esportes"
       ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": false,
-        "claim": "",
-        "article_ids": [],
-        "reason": "A matéria não contém um fato documental elegível."
+      "source_key": "",
+      "official_source": {
+        "status": "unavailable",
+        "label": "Nenhuma fonte oficial aplicável",
+        "sources": [],
+        "scope": ""
       },
       "articles": [
         {
@@ -34,53 +608,80 @@
           "url": "https://www.cnnbrasil.com.br/esportes/futebol/selecao-brasileira/raphinha-de-penalti-empata-para-o-brasil-contra-a-australia",
           "title": "Raphinha, de pênalti, empata para o Brasil contra a Austrália",
           "lead": "Camisa 10 converteu penalidade no fim da primeira etapa",
-          "published_at": "2026-09-29T11:06:46+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Raphinha, de pênalti, empata para o Brasil contra a Austrália",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T11:06:46+00:00"
         },
         {
           "article_id": "11b71660-6b58-41e7-94df-93cdbd4611c3",
           "url": "https://www.metropoles.com/esportes/raphinha-sente-desconforto-na-coxa-e-e-substituido-no-intervalo",
           "title": "Raphinha sente desconforto na coxa e é substituído no intervalo",
           "lead": "Raphinha fez gol de pênalti em amistoso contra a Austrália e encerra sequência de dois amistosos com um gol e uma assistência",
-          "published_at": "2026-09-29T11:25:45+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Raphinha sente desconforto na coxa e é substituído no intervalo",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T11:25:45+00:00"
         },
         {
           "article_id": "28851bf3-5e30-49c4-a876-98084103e727",
           "url": "https://www.cnnbrasil.com.br/esportes/futebol/selecao-brasileira/raphinha-sente-desconforto-na-coxa-e-e-substituido-em-amistoso-da-selecao",
           "title": "Raphinha sente desconforto na coxa e é substituído em amistoso da Seleção",
           "lead": "Atacante marcou de pênalti contra a Austrália antes de dar lugar a Endrick no Suncorp Stadium",
-          "published_at": "2026-09-29T11:35:46+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Raphinha sente desconforto na coxa e é substituído em amistoso da Seleção",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T11:35:46+00:00"
         }
       ]
     },
     {
-      "preview_topic": 2,
+      "preview_topic": 12,
+      "topic_id": "6c681002-cacb-4425-b3c6-4c880eee67a9",
+      "current_canonical_title": "Dino determina urgência em análise de denúncia eleitoral contra Bia Kicis",
+      "article_count": 4,
+      "status": "analyzed",
+      "title": "Flávio Dino envia ao TRE-DF denúncia contra Bia Kicis por propaganda irregular",
+      "summary": "O ministro Flávio Dino, do STF, determinou o envio urgente ao TRE-DF de uma denúncia do PSOL contra a deputada federal Bia Kicis por suposta propaganda eleitoral irregular. O partido alega que uma emenda parlamentar de R$ 250 mil destinada ao Instituto Viver-Brasil foi utilizada para promover a candidatura da deputada ao Senado por meio de outdoors da empresa 'Bia Brasil', caracterizando propaganda disfarçada.",
+      "categories": [
+        "Política"
+      ],
+      "source_key": "ADPF 854",
+      "official_source": {
+        "status": "probable",
+        "label": "Possível fonte oficial",
+        "sources": [
+          "https://portal.stf.jus.br/"
+        ],
+        "scope": "decisão monocrática de envio de denúncia ao TRE-DF"
+      },
+      "articles": [
+        {
+          "article_id": "a6e36a97-cc28-4ab9-a364-0a80780b93fc",
+          "url": "https://jovempan.com.br/politica/dino-envia-ao-tre-df-denuncia-contra-bia-kicis-por-suposta-propaganda-eleitoral-irregular",
+          "title": "Dino envia ao TRE-DF denúncia contra Bia Kicis por suposta propaganda eleitoral irregular",
+          "lead": "PSOL aponta possível promoção eleitoral em campanha da empresa “Bia Brasil”, ligada à fundadora de instituto beneficiado por emenda de R$ 250 mil da deputada",
+          "published_at": "2026-09-29T11:04:52+00:00"
+        },
+        {
+          "article_id": "731fe2be-b580-46ce-bbaa-3318f80a667a",
+          "url": "https://www.metropoles.com/colunas/manoela-alcantara/dino-determina-urgencia-em-analise-de-denuncia-eleitoral-contra-bia-kicis",
+          "title": "Dino determina urgência em análise de denúncia eleitoral contra Bia Kicis",
+          "lead": "Ministro Flávio Dino, do STF, solicitou manifestação do TRE-DF e da PRE-DF sobre propaganda eleitoral ilícita relacionada a Bia Kicis",
+          "published_at": "2026-09-29T11:39:25+00:00"
+        },
+        {
+          "article_id": "75e669ec-21e8-4ba8-a98c-7c60f6e70c4a",
+          "url": "https://oantagonista.com.br/brasil/dino-envia-ao-tre-df-denuncia-do-psol-contra-bia-kicis",
+          "title": "Dino envia ao TRE-DF denúncia do PSOL contra Bia Kicis",
+          "lead": "O ministro Flávio Dino, do Supremo Tribunal Federal (STF), encaminhou ao TRE-DF uma denúncia apresentada pelo PSOL contra a deputada Bia Kicis (PL-DF), candidata ao Senado. A legenda questiona uma campanha publicitária da empresa “Bia Brasil” e aponta possível uso dos anúncios para promover eleitoralmente a parlamentar. O partido chama atenção para peças espalhadas por... The post Dino envia ao TR",
+          "published_at": "2026-09-29T12:58:43+00:00"
+        },
+        {
+          "article_id": "4bbd47ad-44df-4572-bf1a-1a7956f5c03f",
+          "url": "https://revistaoeste.com/politica/dino-cobra-urgencia-do-tre-df-contra-bia-kicis-por-suposta-propaganda-ilicita",
+          "title": "Dino cobra urgência do TRE-DF contra Bia Kicis por suposta propaganda ilícita",
+          "lead": "O ministro Flávio Dino, do Supremo Tribunal Federal (STF) , determinou que a Justiça Eleitoral do Distrito Federal analise com urgência uma denúncia contra a deputada federal Bia Kicis (PL). O partido PSol acusa a candidata ao Senado de usar uma emenda parlamentar de R$ 250 mil para bancar propaganda eleitoral disfarçada em outdoors da capital. + Entenda o que é Política em Oeste O magistrado mand",
+          "published_at": "2026-09-29T13:18:35+00:00"
+        }
+      ]
+    },
+    {
+      "preview_topic": 13,
       "topic_id": "efcf9cd1-f12a-4725-b882-5e56cfd8d0ba",
       "current_canonical_title": "Candidatos a deputado federal pelo Rede em SP; veja quem são e os números",
-      "article_count": 8,
+      "article_count": 15,
       "status": "analysis_error",
       "error": "Gemini retornou JSON inválido",
       "articles": [
@@ -89,88 +690,184 @@
           "url": "https://g1.globo.com/sp/sao-paulo/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-republicanos-em-sp-veja-quem-sao-e-os-numeros.ghtml",
           "title": "Candidatos a deputado federal pelo Republicanos em SP; veja quem são e os números",
           "lead": "São Paulo (SP) tem 1.100 candidatos disputando 70 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo Republicanos em SP.\nO 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página Quem São os Candidatos, public",
-          "published_at": "2026-09-29T11:22:08+00:00",
-          "claims": null
+          "published_at": "2026-09-29T11:22:08+00:00"
         },
         {
           "article_id": "5ed57c34-a65b-4433-a903-d2a8aadf1d49",
           "url": "https://g1.globo.com/sp/sao-paulo/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-pp-em-sp-veja-quem-sao-e-os-numeros.ghtml",
           "title": "Candidatos a deputado federal pelo PP em SP; veja quem são e os números",
           "lead": "São Paulo (SP) tem 1.100 candidatos disputando 70 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo PP em SP.\nO 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página Quem São os Candidatos, publicada pelo g",
-          "published_at": "2026-09-29T11:31:33+00:00",
-          "claims": null
+          "published_at": "2026-09-29T11:31:33+00:00"
         },
         {
           "article_id": "e25f4b6c-97d5-407a-a9aa-de1b53653902",
           "url": "https://g1.globo.com/sp/sao-paulo/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-psd-em-sp-veja-quem-sao-e-os-numeros.ghtml",
           "title": "Candidatos a deputado federal pelo PSD em SP; veja quem são e os números",
           "lead": "São Paulo (SP) tem 1.100 candidatos disputando 70 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo Partido Social Democrático (PSD) em SP.\nSAIBA MAIS: O 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa págin",
-          "published_at": "2026-09-29T11:33:09+00:00",
-          "claims": null
+          "published_at": "2026-09-29T11:33:09+00:00"
         },
         {
           "article_id": "8fa69a2b-3126-44e0-aeb4-2b4b8a90185d",
           "url": "https://g1.globo.com/sp/sao-paulo/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-mdb-em-sp-veja-quem-sao-e-os-numeros.ghtml",
           "title": "Candidatos a deputado federal pelo MDB em SP; veja quem são e os números",
           "lead": "São Paulo (SP) tem 1.100 candidatos disputando 70 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo MDB em SP.\nO 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página Quem São os Candidatos, publicada pelo ",
-          "published_at": "2026-09-29T11:36:03+00:00",
-          "claims": null
+          "published_at": "2026-09-29T11:36:03+00:00"
         },
         {
           "article_id": "d37118a4-2129-4a17-8131-78f150ef0f6b",
           "url": "https://g1.globo.com/sp/sao-paulo/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-psb-em-sp-veja-quem-sao-e-os-numeros.ghtml",
           "title": "Candidatos a deputado federal pelo PSB em SP; veja quem são e os números",
           "lead": "São Paulo (SP) tem 1.100 candidatos disputando 70 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo PSB em SP.\nO 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página Quem São os Candidatos, publicada pelo ",
-          "published_at": "2026-09-29T11:43:54+00:00",
-          "claims": null
+          "published_at": "2026-09-29T11:43:54+00:00"
         },
         {
           "article_id": "b6748112-727e-44c5-b5a4-bca3e701f95e",
           "url": "https://g1.globo.com/sp/sao-paulo/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-psol-em-sp-veja-quem-sao-e-os-numeros.ghtml",
           "title": "Candidatos a deputado federal pelo PSOL em SP; veja quem são e os números",
           "lead": "São Paulo (SP) tem 1.100 candidatos disputando 70 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo Partido Socialismo e Liberdade (PSOL) em SP.\nSAIBA MAIS: O 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa ",
-          "published_at": "2026-09-29T11:44:55+00:00",
-          "claims": null
+          "published_at": "2026-09-29T11:44:55+00:00"
         },
         {
           "article_id": "829dd365-3f97-427f-9c23-13609451c2d7",
           "url": "https://g1.globo.com/sp/sao-paulo/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-pdt-em-sp-veja-quem-sao-e-os-numeros.ghtml",
           "title": "Candidatos a deputado federal pelo PDT em SP; veja quem são e os números",
           "lead": "São Paulo (SP) tem 1.100 candidatos disputando 70 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo PDT em SP.\nO 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página Quem São os Candidatos, publicada pelo ",
-          "published_at": "2026-09-29T11:46:57+00:00",
-          "claims": null
+          "published_at": "2026-09-29T11:46:57+00:00"
         },
         {
           "article_id": "43902654-541c-442b-9ba3-c8c99e212ae0",
           "url": "https://g1.globo.com/sp/sao-paulo/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-rede-em-sp-veja-quem-sao-e-os-numeros.ghtml",
           "title": "Candidatos a deputado federal pelo Rede em SP; veja quem são e os números",
           "lead": "São Paulo (SP) tem 1.100 candidatos disputando 70 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo Rede em SP.\nO 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página Quem São os Candidatos, publicada pelo",
-          "published_at": "2026-09-29T11:50:24+00:00",
-          "claims": null
+          "published_at": "2026-09-29T11:50:24+00:00"
+        },
+        {
+          "article_id": "d7837974-b5c1-46db-9840-7c7683314f39",
+          "url": "https://g1.globo.com/sp/sao-paulo/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-cidadania-em-sp-veja-quem-sao-e-os-numeros.ghtml",
+          "title": "Candidatos a deputado federal pelo Cidadania em SP; veja quem são e os números",
+          "lead": "São Paulo (SP) tem 1.100 candidatos disputando 70 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo Cidadania em SP.\nO 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página Quem São os Candidatos, publicada",
+          "published_at": "2026-09-29T12:24:02+00:00"
+        },
+        {
+          "article_id": "de267312-6594-40df-9f40-36da93845e9e",
+          "url": "https://g1.globo.com/sp/sao-paulo/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-prd-em-sp-veja-quem-sao-e-os-numeros.ghtml",
+          "title": "Candidatos a deputado federal pelo PRD em SP; veja quem são e os números",
+          "lead": "São Paulo (SP) tem 1.100 candidatos disputando 70 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo Partido Renovação Democrática (PRD) em SP.\nSAIBA MAIS: O 1º turno da eleição de 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa",
+          "published_at": "2026-09-29T12:30:44+00:00"
+        },
+        {
+          "article_id": "e47e883f-2112-4822-97a0-51d865b68de1",
+          "url": "https://g1.globo.com/sp/sao-paulo/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-agir-em-sp-veja-quem-sao-e-os-numeros.ghtml",
+          "title": "Candidatos a deputado federal pelo Agir em SP; veja quem são e os números",
+          "lead": "São Paulo (SP) tem 1.100 candidatos disputando 70 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo Agir em SP.\nO 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página Quem São os Candidatos, publicada pelo",
+          "published_at": "2026-09-29T12:32:10+00:00"
+        },
+        {
+          "article_id": "18508b48-7609-4464-9661-6b4efffa3ffd",
+          "url": "https://g1.globo.com/sp/sao-paulo/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-dc-em-sp-veja-quem-sao-e-os-numeros.ghtml",
+          "title": "Candidatos a deputado federal pelo DC em SP; veja quem são e os números",
+          "lead": "São Paulo (SP) tem 1.100 candidatos disputando 70 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo Democracia Cristã em SP.\nO 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página Quem São os Candidatos, p",
+          "published_at": "2026-09-29T12:37:38+00:00"
+        },
+        {
+          "article_id": "2ba256b9-efa9-40f8-aeed-42925d7c688f",
+          "url": "https://g1.globo.com/sp/sao-paulo/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-up-em-sp-veja-quem-sao-e-os-numeros.ghtml",
+          "title": "Candidatos a deputado federal pelo UP em SP; veja quem são e os números",
+          "lead": "São Paulo (SP) tem 1.100 candidatos disputando 70 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo Unidade Popular (UP)  em SP.\nO 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página Quem São os Candidato",
+          "published_at": "2026-09-29T12:42:04+00:00"
+        },
+        {
+          "article_id": "88f34ae2-f77b-4c80-8eb8-5a69023dbb17",
+          "url": "https://g1.globo.com/sp/sao-paulo/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-democrata-em-sp-veja-quem-sao-e-os-numeros.ghtml",
+          "title": "Candidatos a deputado federal pelo Democrata em SP; veja quem são e os números",
+          "lead": "São Paulo (SP) tem 1.100 candidatos disputando 70 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo Democrata em SP.\nSAIBA MAIS: O 1º turno da eleição de 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página \"Quem São os Candi",
+          "published_at": "2026-09-29T12:42:36+00:00"
+        },
+        {
+          "article_id": "ae701688-6838-447f-a4e1-91d7050e8cfd",
+          "url": "https://g1.globo.com/sp/sao-paulo/eleicoes/2026/noticia/2026/09/29/candidatos-a-deputado-federal-pelo-pco-em-sp-veja-quem-sao-e-os-numeros.ghtml",
+          "title": "Candidatos a deputado federal pelo PCO em SP; veja quem são e os números",
+          "lead": "São Paulo (SP) tem 1.100 candidatos disputando 70 vagas na Câmara dos Deputados, segundo dados do Tribunal Superior Eleitoral (TSE). Veja abaixo a lista com os nomes e os números de urna dos candidatos a deputado federal pelo Partido da Causa Operária (PCO)  em SP.\nO 1º turno da eleição 2026 no Brasil será realizado em 4 de outubro. Entenda aqui o que faz um deputado federal. \nNa página Quem São o",
+          "published_at": "2026-09-29T12:45:27+00:00"
         }
       ]
     },
     {
-      "preview_topic": 3,
+      "preview_topic": 14,
+      "topic_id": "655a1c3c-8a45-4f28-bf7a-2284cd6ccea8",
+      "current_canonical_title": "Gilmar Mendes pede que STJ investigue magistrados e advogados em casos de precatórios",
+      "article_count": 7,
+      "status": "analysis_error",
+      "error": "Gemini retornou JSON inválido",
+      "articles": [
+        {
+          "article_id": "ad7b4263-5274-4737-80ab-deb9dd29eab4",
+          "url": "https://g1.globo.com/politica/blog/andreia-sadi/post/2026/09/29/gilmar-precatorios-stf-stj.ghtml",
+          "title": "Gilmar cobra de Fachin e Salomão reação a irregularidades em precatórios e cita Master",
+          "lead": "O ministro Gilmar Mendes encaminhou aos presidentes do STF, Edson Fachin, e do STJ, Luis Felipe Salomão, uma cobrança por medidas contra irregularidades na expedição de precatórios. Nos documentos, datados de segunda-feira (28), Gilmar cita o caso Banco Master e propõe uma fiscalização em todos os tribunais regionais federais, além de investigações sobre magistrados e advogados envolvidos.\n🔎 Preca",
+          "published_at": "2026-09-29T11:49:12+00:00"
+        },
+        {
+          "article_id": "bb4d587d-1d3b-4a06-9450-cf7893849496",
+          "url": "https://www.cnnbrasil.com.br/politica/gilmar-cobra-presidentes-do-stf-e-do-stj-por-acao-conjunta-em-precatorios",
+          "title": "Gilmar cobra presidentes do STF e do STJ por ação conjunta em precatórios",
+          "lead": "Ministro afirmou que as investigações do Banco Master revelaram um modelo de negócios \"parasitário\" e defendeu um pente-fino em tribunais federais para identificação de irregularidades",
+          "published_at": "2026-09-29T12:29:28+00:00"
+        },
+        {
+          "article_id": "cf0e1267-6af5-421b-8a51-e01c6dfa207d",
+          "url": "https://www.poder360.com.br/poder-justica/gilmar-cobra-stf-e-stj-por-acoes-contra-irregularidades-em-precatorios",
+          "title": "Gilmar cobra STF e STJ por ações contra irregularidades em precatórios",
+          "lead": "Os documentos foram enviados aos presidentes Edson Fachin e Luis Felipe Salomão; citam o caso Master e propõem fiscalização",
+          "published_at": "2026-09-29T12:40:14+00:00"
+        },
+        {
+          "article_id": "c879a1c6-9035-455f-8171-03a6e7e1d41b",
+          "url": "https://www.metropoles.com/colunas/manoela-alcantara/gilmar-pede-a-fachin-e-salomao-pente-fino-em-precatorios-e-cita-master",
+          "title": "Gilmar pede a presidentes do STF e do STJ pente-fino em precatórios",
+          "lead": "Decano cita Caso Master e propõe fiscalização extraordinária em todos os TRFs, com atenção especial ao TRF-1",
+          "published_at": "2026-09-29T12:50:56+00:00"
+        },
+        {
+          "article_id": "6f2d67a9-2272-40f8-967b-25168fb712d8",
+          "url": "https://jovempan.com.br/politica/gilmar-mendes-supremo-tribunal-federal-precatorios",
+          "title": "Gilmar Mendes pede ao STF investigação sobre irregularidades em precatórios",
+          "lead": "Ministro da Corte defende operação de fiscalização nos TRFs após CNJ mandar cancelar 16 precatórios e devolver R$ 4,7 bilhões à União",
+          "published_at": "2026-09-29T12:58:58+00:00"
+        },
+        {
+          "article_id": "d27960b0-69b9-4ec0-9eb4-bcf8893a4211",
+          "url": "https://www.metropoles.com/colunas/manoela-alcantara/apos-cobranca-de-gilmar-presidentes-do-cnj-e-stj-agem-sobre-precatorios",
+          "title": "Após cobrança de Gilmar, presidentes do CNJ e STJ agem sobre precatórios",
+          "lead": "Após ofícios de Gilmar Mendes, Fachin vai propor fiscalização em tribunais federais, enquanto Salomão discute medidas com a AGU",
+          "published_at": "2026-09-29T15:31:48+00:00"
+        },
+        {
+          "article_id": "add8460a-d10d-404c-91da-387c7e3c6d66",
+          "url": "https://redir.folha.com.br/redir/online/colunas/monicabergamo/rss091/*https://www1.folha.uol.com.br/colunas/monicabergamo/2026/09/gilmar-mendes-pede-que-stj-investigue-magistrados-e-advogados-em-casos-de-precatorios.shtml",
+          "title": "Gilmar Mendes pede que STJ investigue magistrados e advogados em casos de precatórios",
+          "lead": "ministro do STF (Supremo Tribunal Federal) Gilmar Mendes pediu ao presidente do STJ (Superior Tribunal de Justiça), Luis Felipe Salomão, uma inspeção extraordinária nos tribunais regionais federais ...",
+          "published_at": null
+        }
+      ]
+    },
+    {
+      "preview_topic": 15,
       "topic_id": "3bb613f7-da42-4d29-b327-0ce2d9ccf3a1",
       "current_canonical_title": "Palver: Lula e Flávio empatam com 44% das intenções de voto no 1º turno",
       "article_count": 4,
       "status": "analyzed",
       "title": "Pesquisas Palver e Gerp apontam empate técnico entre Lula e Flávio Bolsonaro",
-      "summary": "Pesquisas eleitorais divulgadas em 29 de setembro de 2026 mostram um cenário de equilíbrio entre Luiz Inácio Lula da Silva e Flávio Bolsonaro. No levantamento Palver, os candidatos empatam com 44% no primeiro turno e registram empate técnico no segundo turno (Flávio com 47% e Lula com 45%). A rejeição de Lula é de 51% e a de Flávio é de 48%. A pesquisa Gerp também aponta empate técnico no primeiro turno, com Flávio registrando 42% e Lula 40%.",
+      "summary": "Pesquisas eleitorais divulgadas em 29 de setembro de 2026 mostram cenário de equilíbrio entre Luiz Inácio Lula da Silva (PT) e Flávio Bolsonaro (PL). No levantamento Palver, os candidatos empatam com 44% no primeiro turno e registram empate técnico no segundo turno (47% a 45% para Flávio). A rejeição de Lula é de 51% e a de Flávio, 48%. Já a pesquisa Gerp aponta Flávio com 42% e Lula com 40% das intenções de voto no primeiro turno.",
       "categories": [
         "Política"
       ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": true,
-        "claim": "Luiz Inácio Lula da Silva é candidato à reeleição pelo PT e Flávio Bolsonaro é senador e candidato à Presidência pelo PL.",
-        "article_ids": [
-          "b4140bcd-ada0-4f46-a9e9-ae1787766638",
-          "dd7ec396-3db9-466c-947c-4d83c3e7cbc1",
-          "3776c73c-fa41-41d7-8422-c11f6753ccae"
-        ],
-        "reason": "Registro de candidatura e filiação partidária no TSE."
+      "source_key": "",
+      "official_source": {
+        "status": "unavailable",
+        "label": "Nenhuma fonte oficial aplicável",
+        "sources": [],
+        "scope": ""
       },
       "articles": [
         {
@@ -178,84 +875,48 @@
           "url": "https://www.cnnbrasil.com.br/eleicoes/palver-flavio-tem-47-das-intencoes-de-voto-no-2o-turno-lula-45",
           "title": "Palver: Flávio tem 47% das intenções de voto no 2º turno; Lula, 45%",
           "lead": "Pesquisa ouviu 5 mil entrevistados em todo o território nacional; margem de erro é de 2,4 pontos percentuais",
-          "published_at": "2026-09-29T10:01:05+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Palver: Flávio tem 47% das intenções de voto no 2º turno; Lula, 45%",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T10:01:05+00:00"
         },
         {
           "article_id": "dd7ec396-3db9-466c-947c-4d83c3e7cbc1",
           "url": "https://www.cnnbrasil.com.br/eleicoes/palver-lula-e-rejeitado-por-51-dos-eleitores-flavio-por-48",
           "title": "Palver: Lula é rejeitado por 51% dos eleitores; Flávio, por 48%",
           "lead": "Levantamento ouviu 5 mil pessoas em todo o país; margem de erro é de 2,4 pontos percentuais",
-          "published_at": "2026-09-29T10:02:07+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Palver: Lula é rejeitado por 51% dos eleitores; Flávio, por 48%",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T10:02:07+00:00"
         },
         {
           "article_id": "3776c73c-fa41-41d7-8422-c11f6753ccae",
           "url": "https://www.cnnbrasil.com.br/eleicoes/palver-lula-e-flavio-empatam-com-44-das-intencoes-de-voto-no-1o-turno",
           "title": "Palver: Lula e Flávio empatam com 44% das intenções de voto no 1º turno",
           "lead": "Pesquisa ouviu 5 mil entrevistados em todo o território nacional; margem de erro é de 2,4 pontos percentuais",
-          "published_at": "2026-09-29T10:02:34+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Palver: Lula e Flávio empatam com 44% das intenções de voto no 1º turno",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T10:02:34+00:00"
         },
         {
           "article_id": "8122f7ee-513f-4dd3-a8b5-01a034865242",
           "url": "https://www.cnnbrasil.com.br/eleicoes/gerp-flavio-tem-42-das-intencoes-de-voto-no-1o-turno-lula-40",
           "title": "Gerp: Flávio tem 42% das intenções de voto no 1º turno; Lula, 40%",
           "lead": "Pesquisa ouviu 2.400 pessoas por telefone, em todo o território nacional, entre 24 e 28 de setembro; margem de erro é de 2 pontos percentuais",
-          "published_at": "2026-09-29T11:02:35+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Gerp: Flávio tem 42% das intenções de voto no 1º turno; Lula, 40%",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T11:02:35+00:00"
         }
       ]
     },
     {
-      "preview_topic": 4,
+      "preview_topic": 16,
       "topic_id": "50bb675e-3605-43d4-a423-9e8446b24c44",
       "current_canonical_title": "Real Time Big Data: Derrite, Prado e Tebet lideram disputa por Senado em SP",
-      "article_count": 3,
+      "article_count": 5,
       "status": "analyzed",
       "title": "Derrite, Prado e Tebet lideram disputa pelo Senado em SP, aponta pesquisa",
-      "summary": "A pesquisa Real Time Big Data para o Senado em São Paulo aponta Guilherme Derrite (PP) com 22%, André do Prado (PL) com 20% e Simone Tebet (PSB) com 18%, configurando empate técnico dentro da margem de erro de dois pontos percentuais. Marina Silva (Rede) aparece com 15%. Os veículos diferem na ênfase editorial: a Revista Oeste destaca os apoios políticos de Tarcísio de Freitas, Lula e Haddad, enquanto a CNN Brasil foca no empate técnico na liderança.",
+      "summary": "Pesquisa Real Time Big Data para o Senado em SP (24 a 28 de setembro, margem de 2 p.p.) aponta Guilherme Derrite com 22%, André do Prado com 20%, Simone Tebet com 18% e Marina Silva com 15%, configurando empate técnico entre os três primeiros. Os espectros políticos diferem quanto ao destaque editorial: veículos de direita enfatizam a liderança dos aliados de Tarcísio de Freitas, enquanto outros focam no cenário de empate técnico.",
       "categories": [
         "Política"
       ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": true,
-        "claim": "Guilherme Derrite (PP), André do Prado (PL), Simone Tebet (PSB), Marina Silva (Rede), Ricardo Salles (Novo), Geraldo Rufino (Podemos), Soninha Francine (Cidadania), Guto Schiavetto (Missão), Petter Maahs (PCB), William Teixeira (Agir) e Maíra são candidatos ao Senado por São Paulo.",
-        "article_ids": [
-          "28c6ab65-1862-432b-a5ca-5a1adf0a639e",
-          "8a94cc24-965a-4221-98f7-562c3db1e256",
-          "05b94a2e-348d-45dd-9ed5-e1263bb31c6f"
-        ],
-        "reason": "Registro de candidatura no Tribunal Superior Eleitoral (TSE)"
+      "source_key": "",
+      "official_source": {
+        "status": "unavailable",
+        "label": "Nenhuma fonte oficial aplicável",
+        "sources": [],
+        "scope": ""
       },
       "articles": [
         {
@@ -263,67 +924,57 @@
           "url": "https://www.metropoles.com/sao-paulo/real-time-big-data-derrite-prado-e-tebet-lideram-disputa-por-senado-em-sp",
           "title": "Real Time Big Data: Derrite, Prado e Tebet lideram disputa por Senado em SP",
           "lead": "Pesquisa Real Time Big Data sobre a disputa pelas duas vagas ao Senado foi divulgada nesta terça-feira (29/9)",
-          "published_at": "2026-09-29T10:05:02+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Real Time Big Data: Derrite, Prado e Tebet lideram disputa por Senado em SP",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T10:05:02+00:00"
         },
         {
           "article_id": "8a94cc24-965a-4221-98f7-562c3db1e256",
           "url": "https://www.cnnbrasil.com.br/eleicoes/real-time-senado-sp-derrite-tem-22-prado-20-tebet-18-e-marina-15",
           "title": "Real Time Senado SP: Derrite tem 22%; Prado, 20%; Tebet, 18% e Marina, 15%",
           "lead": "Foram ouvidos 2.000 eleitores de São Paulo entre os dias 24 e 28 de setembro; margem de erro é de dois pontos percentuais, para mais ou para menos",
-          "published_at": "2026-09-29T11:36:49+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Real Time Senado SP: Derrite tem 22%; Prado, 20%; Tebet, 18% e Marina, 15%",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T11:36:49+00:00"
         },
         {
           "article_id": "05b94a2e-348d-45dd-9ed5-e1263bb31c6f",
           "url": "https://revistaoeste.com/politica/real-time-derrite-e-andre-do-prado-lideram-corrida-pelo-senado-em-sp",
           "title": "Real Time: Derrite e André do Prado lideram corrida pelo Senado em SP",
           "lead": "A cinco dias do primeiro turno das eleições gerais no país, os dois candidatos apoiados pelo governador Tarcísio de Freitas (Republicanos) estão numericamente à frente na corrida pelas duas vagas em disputa ao Senado pelo Estado de São Paulo , de acordo com pesquisa do Real Time Big Data divulgada nesta terça-feira, 29. Segundo o levantamento, o ex-secretário estadual de Segurança Pública Guilherm",
-          "published_at": "2026-09-29T11:39:08+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Real Time: Derrite e André do Prado lideram corrida pelo Senado em SP",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T11:39:08+00:00"
+        },
+        {
+          "article_id": "80fa22fe-e641-44f0-aca1-a32afe6b96d3",
+          "url": "https://www.poder360.com.br/poder-eleicoes-2026/derrite-andre-tebet-e-marina-lideram-disputa-pelo-senado-em-sp",
+          "title": "Derrite, André, Tebet e Marina lideram disputa pelo Senado em SP",
+          "lead": "Pesquisa Real Time Big Data mostra que candidatos têm, respectivamente, 22%, 20%, 18% e 15%; margem de erro é de 2 p.p.",
+          "published_at": "2026-09-29T12:09:06+00:00"
+        },
+        {
+          "article_id": "58da8a1d-da57-48a3-9134-d38e37fa9319",
+          "url": "https://oantagonista.com.br/brasil/crusoe-direita-assume-lideranca-na-corrida-ao-senado-em-sp-indica-realtime",
+          "title": "Crusoé: Direita assume liderança na corrida ao Senado em SP, indica Realtime",
+          "lead": "Os candidatos da direita Guilherme Derrite (PP) e André do Prado (PL) assumiram a liderança na corrida ao Senado por São Paulo antes da retirada da candidatura de Ricardo Salles (Novo), indica pesquisa Realtime Big Data divulgada nesta terça-feira, 29. Derrite lidera o levantamento com 22% das intenções de voto. André do Prado, o candidato... The post Crusoé: Direita assume liderança na corrida ao",
+          "published_at": "2026-09-29T12:10:45+00:00"
         }
       ]
     },
     {
-      "preview_topic": 5,
+      "preview_topic": 17,
       "topic_id": "f10b3fab-cbc5-4b1c-ac35-f3c87c538570",
       "current_canonical_title": "Vantagem de Lula sobre Flávio no 1º turno é de 3 pontos, indica AtlasIntel",
-      "article_count": 5,
+      "article_count": 6,
       "status": "analyzed",
       "title": "Pesquisa AtlasIntel indica Lula com 45,3% e Flávio Bolsonaro com 42,2%",
-      "summary": "A pesquisa AtlasIntel/Bloomberg divulgada em 29 de setembro de 2026 aponta Lula com 45,3% e Flávio Bolsonaro com 42,2% das intenções de voto no primeiro turno, com margem de erro de um ponto percentual. Os espectros políticos diferem quanto ao foco da narrativa: veículos progressistas destacam a proximidade de Lula de vencer no primeiro turno, enquanto veículos conservadores e liberais enfatizam a vantagem estreita e o empate técnico no segundo turno.",
+      "summary": "A pesquisa AtlasIntel/Bloomberg para a eleição presidencial de 2026, divulgada em 29 de setembro, aponta Luiz Inácio Lula da Silva com 45,3% das intenções de voto no primeiro turno, seguido por Flávio Bolsonaro com 42,2%. Renan Santos tem 5,2%. A margem de erro é de um ponto percentual. Os espectros políticos diferem quanto ao foco da cobertura, variando entre a proximidade de vitória de Lula no primeiro turno e o acirramento da disputa.",
       "categories": [
         "Política"
       ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": true,
-        "claim": "A pesquisa AtlasIntel/Bloomberg está registrada no Tribunal Superior Eleitoral (TSE) sob o código BR-04391/2026.",
-        "article_ids": [
-          "b56a1a8f-cd8c-4aa7-bd3e-a7fe87355118"
+      "source_key": "BR-04391/2026",
+      "official_source": {
+        "status": "probable",
+        "label": "Possível fonte oficial",
+        "sources": [
+          "https://pesqele-divulgacao.tse.jus.br/app/pesquisa/listar.xhtml"
         ],
-        "reason": "Registro de pesquisa eleitoral no TSE"
+        "scope": "registro de pesquisa eleitoral no Tribunal Superior Eleitoral"
       },
       "articles": [
         {
@@ -331,97 +982,64 @@
           "url": "https://jovempan.com.br/politica/atlas-bloomberg-lula-tem-453-e-flavio-bolsonaro-422-no-1o-turno",
           "title": "Atlas/Bloomberg: Lula tem 45,3% e Flávio Bolsonaro, 42,2% no 1º turno",
           "lead": "Renan Santos aparece em terceiro, com 5,2%; levantamento tem margem de erro de um ponto percentual",
-          "published_at": "2026-09-29T10:30:00+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Atlas/Bloomberg: Lula tem 45,3% e Flávio Bolsonaro, 42,2% no 1º turno",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T10:30:00+00:00"
         },
         {
           "article_id": "ce982df3-c371-49d4-bc66-f6cdc171107d",
           "url": "https://revistaforum.com.br/politica/lula-4-pontos-1-turno-atlas",
           "title": "Lula está a menos de 4 pontos de vencer no 1º turno, aponta AtlasIntel",
           "lead": "A nova pesquisa AtlasIntel/Bloomberg sobre a disputa presidencial de 2026, divulgada nesta terça-feira (29), aponta uma disputa acirrada entre Luiz Inácio Lula da Silva (PT) e Flávio Bolsonaro (PL), mas também indica que o presidente está a menos de quatro pontos percentuais de alcançar a marca necessária para vencer a eleição já no primeiro turno. […]",
-          "published_at": "2026-09-29T10:30:11+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Lula está a menos de 4 pontos de vencer no 1º turno, aponta AtlasIntel",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T10:30:11+00:00"
         },
         {
           "article_id": "b56a1a8f-cd8c-4aa7-bd3e-a7fe87355118",
           "url": "https://www.metropoles.com/brasil/lula-tem-453-em-primeiro-turno-e-flavio-422-diz-atlasintel",
           "title": "Lula tem 45,3% em primeiro turno, e Flávio Bolsonaro, 42,2%, diz AtlasIntel",
           "lead": "Margem de erro é de um ponto percentual. Tanto Lula quanto Flávio registraram queda em relação à última pesquisa, feita em 22 de setembro",
-          "published_at": "2026-09-29T10:30:28+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Lula tem 45,3% em primeiro turno, e Flávio Bolsonaro, 42,2%, diz AtlasIntel",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T10:30:28+00:00"
         },
         {
           "article_id": "8cb6b209-3c1d-4d55-9b25-55b7cd834948",
           "url": "https://veja.abril.com.br/politica/lula-x-flavio-bolsonaro-nova-atlasintel-mostra-como-seria-eleicao-se-votacao-fosse-hoje",
           "title": "A nova pesquisa AtlasIntel sobre a disputa Lula x Flávio Bolsonaro a cinco dias da eleição",
           "lead": "Com polarização cristalizada, candidatos estão tecnicamente empatados no segundo turno, com vantagem numérica de apenas 0,1 ponto para um deles",
-          "published_at": "2026-09-29T10:30:29+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: A nova pesquisa AtlasIntel sobre a disputa Lula x Flávio Bolsonaro a cinco dias da eleição",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T10:30:29+00:00"
         },
         {
           "article_id": "154f62a9-b3a9-4d83-8e15-37479ddda97c",
           "url": "https://oantagonista.com.br/brasil/vantagem-de-lula-sobre-flavio-no-1o-turno-e-de-3-pontos-indica-atlasintel",
           "title": "Vantagem de Lula sobre Flávio no 1º turno é de 3 pontos, indica AtlasIntel",
           "lead": "Pesquisa AtlasIntel/Bloomberg, divulgada nesta terça-feira, 29, indica uma vantagem de apenas 3,1 pontos de Lula (PT), candidato à reeleição, sobre Flávio Bolsonaro (PL), principal candidato da oposição no primeiro turno. O petista tem 45,3% das intenções de voto, enquanto o filho de Jair Bolsonaro tem 42,2%. Renan Santos (Missão) aparece em terceiro lugar, com 5,2%,... The post Vantagem de Lula s",
-          "published_at": "2026-09-29T10:30:46+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Vantagem de Lula sobre Flávio no 1º turno é de 3 pontos, indica AtlasIntel",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T10:30:46+00:00"
+        },
+        {
+          "article_id": "78b4b21d-106f-4eba-a094-1e3d3e646ee5",
+          "url": "https://veja.abril.com.br/politica/os-motivos-que-emperram-o-crescimento-de-lula-e-flavio-nas-ultimas-pesquisas-da-reta-final",
+          "title": "Os motivos que emperram o crescimento de Lula e Flávio nas últimas pesquisas da reta final",
+          "lead": "Levantamento da AtlasIntel mostra o presidente à frente por 3,1 pontos no primeiro turno e empate técnico no segundo",
+          "published_at": "2026-09-29T16:40:21+00:00"
         }
       ]
     },
     {
-      "preview_topic": 6,
+      "preview_topic": 18,
       "topic_id": "90ef5b8a-98df-4d0d-b29e-abf3cb4b1bd8",
       "current_canonical_title": "Atlas: Flávio tem 47,7% das intenções de voto no 2º turno; Lula, 47,6%",
-      "article_count": 4,
+      "article_count": 5,
       "status": "analyzed",
-      "title": "AtlasIntel aponta empate entre Flávio Bolsonaro e Lula no segundo turno",
-      "summary": "Pesquisa AtlasIntel/Bloomberg divulgada em 29 de setembro de 2026 mostra Flávio Bolsonaro com 47,7% e Lula com 47,6% das intenções de voto no segundo turno, configurando empate técnico dentro da margem de erro de um ponto percentual. Os veículos divergem ligeiramente quanto ao percentual de brancos, nulos e indecisos, citado como 4,6% por uma fonte e 4,8% por outra.",
+      "title": "Pesquisa AtlasIntel aponta empate técnico entre Flávio Bolsonaro e Lula",
+      "summary": "Pesquisa AtlasIntel/Bloomberg para a eleição presidencial de 2026, realizada de 23 a 28 de setembro, aponta empate técnico em um eventual segundo turno entre Flávio Bolsonaro (PL), com 47,7% das intenções de voto, e o presidente Lula (PT), com 47,6%. A margem de erro é de um ponto percentual. Nos votos válidos, ambos registram 50%. No primeiro turno, o petista registra 45,3% e o senador, 42,2%.",
       "categories": [
         "Política"
       ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": true,
-        "claim": "A pesquisa AtlasIntel / Bloomberg está registrada no Tribunal Superior Eleitoral (TSE) sob o código BR-04391/2026.",
-        "article_ids": [
-          "9809abf5-e21b-4be8-83ae-6b8add662393"
+      "source_key": "BR-04391/2026",
+      "official_source": {
+        "status": "probable",
+        "label": "Possível fonte oficial",
+        "sources": [
+          "https://pesqele-divulgacao.tse.jus.br/app/pesquisa/listar.xhtml"
         ],
-        "reason": "Registro de pesquisa eleitoral no TSE"
+        "scope": "registro de pesquisa eleitoral no Tribunal Superior Eleitoral"
       },
       "articles": [
         {
@@ -429,83 +1047,57 @@
           "url": "https://jovempan.com.br/politica/atlas-bloomberg-flavio-tem-477-e-lula-476-no-2o-turno",
           "title": "Atlas/Bloomberg: Flávio tem 47,7% e Lula, 47,6% no 2º turno",
           "lead": "Candidatos estão empatados dentro da margem de erro; nos votos válidos, levantamento mostra 50% para cada",
-          "published_at": "2026-09-29T10:30:00+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Atlas/Bloomberg: Flávio tem 47,7% e Lula, 47,6% no 2º turno",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T10:30:00+00:00"
         },
         {
           "article_id": "9809abf5-e21b-4be8-83ae-6b8add662393",
           "url": "https://www.metropoles.com/brasil/atlasintel-flavio-bolsonaro-tem-477-e-lula-476-em-segundo-turno",
           "title": "AtlasIntel: Flávio Bolsonaro tem 47,7% em segundo turno, e Lula soma 47,6%",
           "lead": "Cenário se mantém acirrado desde o início de setembro. Na última semana, Lula tinha 47,7%, e Flávio somava 47,4%",
-          "published_at": "2026-09-29T10:30:03+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: AtlasIntel: Flávio Bolsonaro tem 47,7% em segundo turno, e Lula soma 47,6%",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T10:30:03+00:00"
         },
         {
           "article_id": "f532bea8-9544-4450-bfb5-7a4c59cc1747",
           "url": "https://www.poder360.com.br/poder-eleicoes-2026/flavio-tem-477-e-lula-476-no-2o-turno-diz-atlasintel",
           "title": "Flávio tem 47,7% e Lula, 47,6% no 2º turno, diz AtlasIntel",
           "lead": "Levantamento feito de 23 a 28 de setembro mostra candidatos empatados; no 1º turno, petista registra 45,3% e senador 42,2%",
-          "published_at": "2026-09-29T10:30:27+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Flávio tem 47,7% e Lula, 47,6% no 2º turno, diz AtlasIntel",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T10:30:27+00:00"
         },
         {
           "article_id": "5337adf9-8344-4e0f-98e5-ff4b2a31bc81",
           "url": "https://www.cnnbrasil.com.br/eleicoes/atlas-flavio-tem-477-das-intencoes-de-voto-no-2o-turno-lula-476",
           "title": "Atlas: Flávio tem 47,7% das intenções de voto no 2º turno; Lula, 47,6%",
           "lead": "Candidatos do PL e do PT estão tecnicamente empatados pesquisa ouviu 5.005 pessoas entre 23 e 28 de setembro, com margem de erro de 1 ponto percentual",
-          "published_at": "2026-09-29T10:31:37+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Atlas: Flávio tem 47,7% das intenções de voto no 2º turno; Lula, 47,6%",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T10:31:37+00:00"
+        },
+        {
+          "article_id": "9d611a2a-5c51-48e6-91f5-945ba7ec0a9b",
+          "url": "https://revistaoeste.com/politica/atlasintel-flavio-tem-477-das-intencoes-de-voto-contra-476-de-lula",
+          "title": "AtlasIntel: Flávio tem 47,7% das intenções de voto, contra 47,6% de Lula",
+          "lead": "O presidente Luiz Inácio Lula da Silva e o senador Flávio Bolsonaro (PL-RJ) aparecem tecnicamente empatados em um eventual segundo turno da eleição presidencial , segundo pesquisa AtlasIntel divulgada nesta terça-feira, 29. Flávio registra 47,7% das intenções de voto, enquanto Lula tem 47,6%. Brancos, nulos e eleitores que não souberam responder somam 4,8%. A diferença de 0,1 ponto porcentual entr",
+          "published_at": "2026-09-29T12:00:15+00:00"
         }
       ]
     },
     {
-      "preview_topic": 7,
+      "preview_topic": 19,
       "topic_id": "9c1c2e07-0bc1-45ba-af65-2f1acdd03d23",
       "current_canonical_title": "Rodrigo Pacheco é nomeado ministro do TCU",
       "article_count": 3,
       "status": "analyzed",
-      "title": "Nomeação de Rodrigo Pacheco ao TCU é publicada no Diário Oficial da União",
-      "summary": "Rodrigo Pacheco (PSB-MG) foi nomeado ministro do Tribunal de Contas da União (TCU) na vaga de Bruno Dantas, com publicação no Diário Oficial em 29 de setembro de 2026 e posse marcada para o dia seguinte. A indicação foi aprovada no Congresso com 63 votos a favor e 4 contra no Senado, e 404 a favor e 61 contra na Câmara. Os veículos divergem ligeiramente sobre a autoria da indicação, com o Metrópoles apontando indicação do Senado e a CNN Brasil citando indicação do presidente Lula.",
+      "title": "Rodrigo Pacheco é nomeado ministro do Tribunal de Contas da União",
+      "summary": "O senador Rodrigo Pacheco (PSB-MG) foi nomeado ministro do Tribunal de Contas da União (TCU), conforme publicação no Diário Oficial da União de 29 de setembro de 2026. Ele assume a vaga de Bruno Dantas, com posse marcada para 30 de setembro. A indicação foi aprovada pelo Congresso, com 63 votos favoráveis no Senado e 404 na Câmara. Com a saída de Pacheco, o suplente Renzo Braz (PP-MG) assume a cadeira no Senado.",
       "categories": [
         "Política"
       ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": true,
-        "claim": "Rodrigo Pacheco foi nomeado ministro do Tribunal de Contas da União (TCU) e sua nomeação foi publicada no Diário Oficial da União (DOU) em 29 de setembro de 2026.",
-        "article_ids": [
-          "fae36803-5e70-46e6-bbc3-1143cf47455b",
-          "a6629093-c8b1-45a7-9d82-4b3c232d71de"
+      "source_key": "Diário Oficial da União de 29 de setembro de 2026 nomeação Rodrigo Pacheco",
+      "official_source": {
+        "status": "probable",
+        "label": "Possível fonte oficial",
+        "sources": [
+          "https://portal.stf.jus.br/"
         ],
-        "reason": "Publicação de ato de nomeação em Diário Oficial da União."
+        "scope": "publicação oficial do decreto de nomeação de Rodrigo Pacheco como ministro do TCU"
       },
       "articles": [
         {
@@ -513,1107 +1105,86 @@
           "url": "https://www.metropoles.com/brasil/rodrigo-pacheco-tem-nomeacao-como-ministro-do-tcu-publicada-no-dou",
           "title": "Rodrigo Pacheco tem nomeação como ministro do TCU publicada no DOU",
           "lead": "A posse do mais novo integrante da Corte de Contas, composta por nove ministros, está marcada para esta quarta-feira",
-          "published_at": "2026-09-29T10:09:36+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Rodrigo Pacheco tem nomeação como ministro do TCU publicada no DOU",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T10:09:36+00:00"
         },
         {
           "article_id": "f90993b8-3141-44bc-9aea-b931a397970c",
           "url": "https://www.cnnbrasil.com.br/politica/rodrigo-pacheco-e-nomeado-ministro-do-tcu",
           "title": "Rodrigo Pacheco é nomeado ministro do TCU",
           "lead": "Indicação do presidente Lula da Silva foi amplamente aprovada no Congresso; senador assumirá vaga deixada pelo ex-ministro Bruno Dantas",
-          "published_at": "2026-09-29T10:32:25+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Rodrigo Pacheco é nomeado ministro do TCU",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T10:32:25+00:00"
         },
         {
           "article_id": "a6629093-c8b1-45a7-9d82-4b3c232d71de",
           "url": "https://revistaoeste.com/politica/rodrigo-pacheco-e-oficialmente-nomeado-como-ministro-no-tcu",
           "title": "Rodrigo Pacheco é oficialmente nomeado como ministro no TCU",
           "lead": "O Diário Oficial da União publicou a nomeação do senador Rodrigo Pacheco (PSB-MG) para o cargo de ministro do Tribunal de Contas da União (TCU) nesta terça-feira, 29. O parlamentar assume a cadeira deixada por Bruno Dantas. A cerimônia de posse do novo integrante da Corte ocorre nesta quarta-feira, 30, às 11 horas. + Entenda o que é Política em Oeste O Congresso Nacional aprovou a indicação do par",
-          "published_at": "2026-09-29T11:10:36+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Rodrigo Pacheco é oficialmente nomeado como ministro no TCU",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "preview_topic": 8,
-      "topic_id": "7321a5c7-b75e-48a1-a883-96cdfddcaaf9",
-      "current_canonical_title": "Atlas/Bloomberg: 53,6% desaprovam governo Lula; 45,2% aprovam",
-      "article_count": 4,
-      "status": "analyzed",
-      "title": "Pesquisa AtlasIntel: Lula tem 53,6% de desaprovação e 45,2% de aprovação",
-      "summary": "A pesquisa AtlasIntel/Bloomberg, realizada entre 23 e 28 de setembro de 2026, aponta que o presidente Lula tem 53,6% de desaprovação e 45,2% de aprovação. A gestão é avaliada como ruim ou péssima por 50,8% dos entrevistados, enquanto 40,2% a consideram ótima ou boa. No cenário eleitoral para o primeiro turno, Lula lidera com 45,3% das intenções de voto, seguido por Flávio Bolsonaro com 42,2%.",
-      "categories": [
-        "Política"
-      ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": false,
-        "claim": "",
-        "article_ids": [],
-        "reason": "A matéria não contém um fato documental elegível."
-      },
-      "articles": [
-        {
-          "article_id": "d455aff2-d63d-4768-b0b1-c693fab5680e",
-          "url": "https://jovempan.com.br/politica/atlas-bloomberg-536-desaprovam-lula-aprovacao-fica-em-452",
-          "title": "Atlas/Bloomberg: 53,6% desaprovam Lula; aprovação fica em 45,2%",
-          "lead": "Avaliação ruim ou péssima do governo chega a 50,8%, enquanto 40,2% consideram gestão ótima ou boa",
-          "published_at": "2026-09-29T10:30:00+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Atlas/Bloomberg: 53,6% desaprovam Lula; aprovação fica em 45,2%",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "cdb76ba0-c166-432d-b9b8-9e5a66568c08",
-          "url": "https://www.cnnbrasil.com.br/eleicoes/atlas-lula-tem-453-das-intencoes-de-voto-no-1o-turno-flavio-422",
-          "title": "Atlas: Lula tem 45,3% das intenções de voto no 1º turno; Flávio, 42,2%",
-          "lead": "Pesquisa ouviu 5.005 pessoas em todo o território nacional entre 23 e 28 de setembro; margem de erro de 1 ponto percentual",
-          "published_at": "2026-09-29T10:32:29+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Atlas: Lula tem 45,3% das intenções de voto no 1º turno; Flávio, 42,2%",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "903e6867-ca7c-4c3a-a817-d0519a437f2b",
-          "url": "https://www.cnnbrasil.com.br/eleicoes/atlas-bloomberg-536-desaprovam-governo-lula-452-aprovam",
-          "title": "Atlas/Bloomberg: 53,6% desaprovam governo Lula; 45,2% aprovam",
-          "lead": "Pesquisa ouviu 5.005 pessoas em todo o território nacional entre 23 e 28 de setembro; margem de erro de 1 ponto percentual",
-          "published_at": "2026-09-29T10:33:39+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Atlas/Bloomberg: 53,6% desaprovam governo Lula; 45,2% aprovam",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "5e446084-39d5-4bcf-9226-ff7728281b8e",
-          "url": "https://noticias.uol.com.br/ultimas-noticias/agencia-estado/2026/09/29/atlasbloomberg-lula-e-desaprovado-por-536-dos-eleitores-e-aprovado-por-452.htm",
-          "title": "Atlas/Bloomberg: Lula é desaprovado por 53,6% dos eleitores e aprovado por 45,2%",
-          "lead": "Pesquisa Atlas/Bloomberg divulgada nesta terça-feira, 29, aponta que o desempenho do presidente Luiz Inácio Lula da Silva (PT) no cargo é desaprovado por 53,6% dos entrevistados. O petista é aprovado por 45,2%, enquanto 1,2% não soube responder.",
-          "published_at": null,
-          "claims": [
-            {
-              "claim": "Verificação oficial: Atlas/Bloomberg: Lula é desaprovado por 53,6% dos eleitores e aprovado por 45,2%",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "preview_topic": 9,
-      "topic_id": "b53c39ec-1b2b-4825-bf3b-a8f25205466a",
-      "current_canonical_title": "Secretário da Prefeitura de João Pessoa é afastado em operação da PF que investiga apoio eleitoral de facção, na PB",
-      "article_count": 3,
-      "status": "analyzed",
-      "title": "PF investiga apoio eleitoral de facção na PB e afasta secretário de João Pessoa",
-      "summary": "A Polícia Federal deflagrou a Operação Zona de Influência na Paraíba para investigar uma suposta negociação de apoio político-eleitoral entre agentes públicos e uma facção criminosa. Durante a ação, foram apreendidos R$ 220 mil e cumpridos mandados de busca e apreensão expedidos pelo TRE-PB. O deputado estadual Caio Roberto (MDB) e o secretário do Procon de João Pessoa, Júnior Pires, foram alvos da operação, resultando no afastamento judicial do secretário.",
-      "categories": [
-        "Política"
-      ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": true,
-        "claim": "O Tribunal Regional Eleitoral da Paraíba (TRE-PB) expediu sete mandados de busca e apreensão.",
-        "article_ids": [
-          "bfc50d27-e51c-446a-9eee-d1f84ea1f761"
-        ],
-        "reason": "decisão judicial"
-      },
-      "articles": [
-        {
-          "article_id": "bfc50d27-e51c-446a-9eee-d1f84ea1f761",
-          "url": "https://g1.globo.com/pb/paraiba/noticia/2026/09/29/operacao-pf-apura-negociacao-apoio-eleitoral-faccao-pb.ghtml",
-          "title": "Operação da PF apura negociação de apoio eleitoral com facção na PB e apreende R$ 220 mil",
-          "lead": "Operação da PF apura negociação de apoio eleitoral com facção e apreende R$ 220 mil, na PB\nA Polícia Federal deflagrou, nesta terça-feira (29), uma operação para investigar uma suposta negociação de apoio político-eleitoral entre agentes políticos e integrantes de uma facção criminosa com atuação em comunidades da Paraíba. Durante as ações, foram apreendidos R$ 220 mil.\n✅ Clique aqui para seguir o",
-          "published_at": "2026-09-29T10:06:54+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Operação da PF apura negociação de apoio eleitoral com facção na PB e apreende R$ 220 mil",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "f6d68bc6-ab4d-4639-bb48-30dda243f3b4",
-          "url": "https://www.metropoles.com/colunas/mirelle-pinheiro/pf-acha-r-220-mil-em-operacao-que-mira-acordo-entre-candidatos-e-faccao",
-          "title": "PF acha R$ 220 mil em operação que mira acordo entre deputado e facção",
-          "lead": "A Operação Zona de Influência foi deflagrada em João Pessoa (PB) nesta terça-feira (29/9). Um secretário municipal foi afastado do cargo",
-          "published_at": "2026-09-29T10:17:11+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: PF acha R$ 220 mil em operação que mira acordo entre deputado e facção",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "27a8d497-c6f7-40d4-b303-03f4fa956c37",
-          "url": "https://g1.globo.com/pb/paraiba/noticia/2026/09/29/secretario-da-prefeitura-de-joao-pessoa-e-afastado-em-operacao-da-pf-que-investiga-apoio-eleitoral-de-faccao-na-pb.ghtml",
-          "title": "Secretário da Prefeitura de João Pessoa é afastado em operação da PF que investiga apoio eleitoral de facção, na PB",
-          "lead": "Operação da PF apura negociação de apoio eleitoral com facção e apreende R$ 220 mil, na PB\nO secretário-chefe do Programa de Proteção e Defesa do Consumidor (Procon) de João Pessoa, Júnior Pires, foi afastado do cargo por determinação da Justiça Eleitoral durante a Operação Zona de Influência, deflagrada pela Polícia Federal nesta terça-feira (29). A informação foi confirmada pelo Núcleo de Políti",
-          "published_at": "2026-09-29T10:39:12+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Secretário da Prefeitura de João Pessoa é afastado em operação da PF que investiga apoio eleitoral de facção, na PB",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "preview_topic": 10,
-      "topic_id": "428de375-93d8-4699-b1dc-637f5eeec506",
-      "current_canonical_title": "Gerp: Lula é rejeitado por 50%; Flávio por 42%",
-      "article_count": 6,
-      "status": "analyzed",
-      "title": "Pesquisa Gerp aponta Flávio Bolsonaro à frente de Lula em eventual 2º turno",
-      "summary": "Pesquisa do instituto Gerp divulgada em 29 de setembro de 2026 mostra Flávio Bolsonaro com 50% das intenções de voto contra 43% de Lula em um eventual segundo turno, indicando vantagem estatística para o senador. No primeiro turno, há empate técnico com Flávio registrando 42% e Lula 40%. Lula lidera a rejeição com 50%, enquanto Flávio tem 42%. Não há divergências editoriais significativas entre os veículos analisados.",
-      "categories": [
-        "Política"
-      ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": true,
-        "claim": "Flávio Bolsonaro é senador pelo PL-RJ e Luiz Inácio Lula da Silva é presidente pelo PT.",
-        "article_ids": [
-          "4e684219-1431-4894-a5d8-f165acfcb001",
-          "c4768deb-f5c4-4c63-881d-6b63c33ddc4f",
-          "47c3216a-dc99-4cde-9f22-c1fa39aa9681",
-          "641726c0-766b-4b11-a884-d306d62b1c23"
-        ],
-        "reason": "Registro de cargo eletivo e filiação partidária no TSE."
-      },
-      "articles": [
-        {
-          "article_id": "4e684219-1431-4894-a5d8-f165acfcb001",
-          "url": "https://jovempan.com.br/politica/flavio-bolsonaro-venceria-lula-em-eventual-2o-turno-diz-gerp",
-          "title": "Flávio Bolsonaro venceria Lula em eventual 2º turno, diz Gerp",
-          "lead": "Pesquisa mostrou que o senador soma 50% contra 43% do chefe do Executivo",
-          "published_at": "2026-09-29T11:00:00+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Flávio Bolsonaro venceria Lula em eventual 2º turno, diz Gerp",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "c4768deb-f5c4-4c63-881d-6b63c33ddc4f",
-          "url": "https://jovempan.com.br/politica/gerp-flavio-bolsonaro-tem-42-lula-40-no-primeiro-turno",
-          "title": "Gerp: Flávio Bolsonaro tem 42%; Lula, 40% no primeiro turno",
-          "lead": "Pesquisa mostrou empate técnico entre o senador e o chefe do Executivo na primeira volta do pleito presidencial",
-          "published_at": "2026-09-29T11:00:00+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Gerp: Flávio Bolsonaro tem 42%; Lula, 40% no primeiro turno",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "ed90ed53-d65f-434d-82d6-8eaa54121a30",
-          "url": "https://jovempan.com.br/politica/gerp-lula-e-rejeitado-por-50-flavio-por-42",
-          "title": "Gerp: Lula é rejeitado por 50%; Flávio por 42%",
-          "lead": "Pesquisa mostrou que o chefe do Executivo e o senador são os presidenciáveis que apresentam maior resistência entre os brasileiros",
-          "published_at": "2026-09-29T11:00:00+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Gerp: Lula é rejeitado por 50%; Flávio por 42%",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "77724bb0-ac36-4f7f-914b-e694fe8efa95",
-          "url": "https://www.poder360.com.br/poder-eleicoes-2026/flavio-tem-50-contra-43-de-lula-no-2o-turno-diz-gerp-2",
-          "title": "Flávio tem 50% contra 43% de Lula no 2º turno, diz Gerp",
-          "lead": "Gerp ouviu 2.400 eleitores brasileiros de 24 a 28 de setembro; a margem de erro é de 2 pontos percentuais",
-          "published_at": "2026-09-29T11:00:03+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Flávio tem 50% contra 43% de Lula no 2º turno, diz Gerp",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "47c3216a-dc99-4cde-9f22-c1fa39aa9681",
-          "url": "https://www.cnnbrasil.com.br/eleicoes/gerp-flavio-tem-50-das-intencoes-de-voto-no-2o-turno-lula-43",
-          "title": "Gerp: Flávio tem 50% das intenções de voto no 2º turno; Lula, 43%",
-          "lead": "Pesquisa ouviu 2.400 pessoas por telefone, em todo o território nacional, entre 24 e 28 de setembro; margem de erro é de 2 pontos percentuais",
-          "published_at": "2026-09-29T11:01:58+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Gerp: Flávio tem 50% das intenções de voto no 2º turno; Lula, 43%",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "641726c0-766b-4b11-a884-d306d62b1c23",
-          "url": "https://www.cnnbrasil.com.br/eleicoes/rejeicao-de-lula-vai-a-50-flavio-bolsonaro-atinge-42",
-          "title": "Gerp: Lula é rejeitado por 50% dos eleitores; Flávio, por 42%",
-          "lead": "Levantamento do instituto Gerp ouviu 2.400 eleitores por telefone em todo o território nacional com margem de erro de dois pontos",
-          "published_at": "2026-09-29T11:03:36+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Gerp: Lula é rejeitado por 50% dos eleitores; Flávio, por 42%",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "preview_topic": 11,
-      "topic_id": "42b5f679-48e5-487c-93a8-f01fca625702",
-      "current_canonical_title": "PF apreende no RJ fuzis de grupo suspeito de fraudar registros para CACs",
-      "article_count": 3,
-      "status": "analyzed",
-      "title": "PF apreende fuzis em Niterói em ação contra fraudes em registros de CACs",
-      "summary": "A Polícia Federal apreendeu quatro fuzis calibre 7,62 mm em Niterói (RJ) com uma transportadora que prestava serviços a um grupo investigado por fraudar registros de armas para CACs. A ação ocorreu no âmbito da Operação Polaridade. As fontes divergem ligeiramente sobre os dados da primeira fase da operação, mencionando 20 mandados de prisão ou 11 pessoas presas.",
-      "categories": [
-        "Política"
-      ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": true,
-        "claim": "A Polícia Federal apreendeu quatro fuzis calibre 7,62 mm em Niterói (RJ) em 28 de setembro, no âmbito da Operação Polaridade.",
-        "article_ids": [
-          "81e41ab2-91b3-41eb-9123-ffba9c15ad96",
-          "364486bf-35f2-4aae-95a8-b48d5e1de477",
-          "5d58a01e-edac-4eb5-8a56-d45b0947a920"
-        ],
-        "reason": "registro de operação policial"
-      },
-      "articles": [
-        {
-          "article_id": "81e41ab2-91b3-41eb-9123-ffba9c15ad96",
-          "url": "https://www.metropoles.com/colunas/mirelle-pinheiro/pf-apreende-no-rj-fuzis-de-grupo-suspeito-de-fraudar-registros-para-cacs",
-          "title": "PF apreende no RJ fuzis de grupo suspeito de fraudar registros para CACs",
-          "lead": "Armas foram localizadas em Niterói e estavam em posse de uma transportadora que atuava em favor do grupo investigado pela PF",
-          "published_at": "2026-09-29T09:40:08+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: PF apreende no RJ fuzis de grupo suspeito de fraudar registros para CACs",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "364486bf-35f2-4aae-95a8-b48d5e1de477",
-          "url": "https://g1.globo.com/rj/rio-de-janeiro/noticia/2026/09/29/pf-apreende-fuzis-com-transportadora-no-rio.ghtml",
-          "title": "PF apreende fuzis com transportadora durante operação contra fraudes na compra e registro de armas",
-          "lead": "PF apreende fuzis com transportadora durante operação contra fraudes na compra e registro de armas\nA Polícia Federal apreendeu, nesta segunda-feira (28), quatro fuzis calibre 7,62 mm em uma transportadora que prestava serviços para o grupo investigado na Operação Polaridade, que apura suspeitas de fraudes em processos de compra e registro de armas por caçadores, atiradores e colecionadores (CACs).",
-          "published_at": "2026-09-29T10:24:30+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: PF apreende fuzis com transportadora durante operação contra fraudes na compra e registro de armas",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "5d58a01e-edac-4eb5-8a56-d45b0947a920",
-          "url": "https://www.cnnbrasil.com.br/nacional/sudeste/rj/rj-pf-apreende-fuzis-durante-operacao-contra-fraudes-no-registro-de-armas",
-          "title": "RJ: PF apreende fuzis durante operação contra fraudes no registro de armas",
-          "lead": "Apreensões ocorreram no âmbito da Operação Polaridade, que apura fraudes em processos de aquisição e registro de armas de fogo para CACs",
-          "published_at": "2026-09-29T11:36:27+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: RJ: PF apreende fuzis durante operação contra fraudes no registro de armas",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "preview_topic": 12,
-      "topic_id": "39476d46-9b34-4845-b52e-9f3670d8451f",
-      "current_canonical_title": "ONU alerta que cortes na ajuda internacional ameaçam assistência a mais de 8 milhões de refugiados",
-      "article_count": 3,
-      "status": "analyzed",
-      "title": "Acnur alerta que falta de verba ameaça assistência a 8,3 milhões de refugiados",
-      "summary": "O Alto Comissariado das Nações Unidas para os Refugiados (Acnur) alertou que cortes no financiamento e um crescente déficit orçamentário ameaçam deixar cerca de 8,3 milhões de refugiados e pessoas deslocadas sem assistência ainda em 2026. A agência destacou o risco de colapso nos sistemas de proteção e pediu apoio urgente de doadores.",
-      "categories": [
-        "Política",
-        "Mundo"
-      ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": false,
-        "claim": "",
-        "article_ids": [],
-        "reason": "A matéria não contém um fato documental elegível."
-      },
-      "articles": [
-        {
-          "article_id": "e95e4a0c-ef7e-42eb-8ead-156acd6f9a6b",
-          "url": "https://www1.folha.uol.com.br/mundo/2026/09/falta-de-recursos-em-agencia-da-onu-pode-deixar-83-milhoes-de-refugiados-sem-assistencia.shtml",
-          "title": "Falta de recursos em agência da ONU pode deixar 8,3 milhões de refugiados sem assistência",
-          "lead": null,
-          "published_at": null,
-          "claims": [
-            {
-              "claim": "Verificação oficial: Falta de recursos em agência da ONU pode deixar 8,3 milhões de refugiados sem assistência",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "7d42c20d-50e9-4dbd-a704-6c63fe7bafb2",
-          "url": "https://noticias.uol.com.br/ultimas-noticias/afp/2026/09/29/cortes-ameacam-suspender-ajuda-a-mais-de-8-milhoes-de-refugiados-alerta-onu.htm",
-          "title": "Cortes ameaçam suspender ajuda a mais de 8 milhões de refugiados, alerta ONU",
-          "lead": "Os cortes orçamentários ameaçam deixar quase 8,3 milhões de refugiados e deslocados sem ajuda, alertou nesta terça-feira (29) a ONU, que pediu aos doadores \"um apoio urgente e imediato\".",
-          "published_at": null,
-          "claims": [
-            {
-              "claim": "Verificação oficial: Cortes ameaçam suspender ajuda a mais de 8 milhões de refugiados, alerta ONU",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "3a9aa4b7-b265-4dcf-9428-1efa3ecefbe2",
-          "url": "https://noticias.uol.com.br/ultimas-noticias/rfi/2026/09/29/onu-alerta-que-cortes-na-ajuda-internacional-ameacam-assistencia-a-mais-de-8-milhoes-de-refugiados.htm",
-          "title": "ONU alerta que cortes na ajuda internacional ameaçam assistência a mais de 8 milhões de refugiados",
-          "lead": "Os cortes no financiamento da ajuda humanitária estão levando as organizações de apoio a refugiados ao limite de sua capacidade e podem deixar cerca de 8,3 milhões de pessoas sem assistência ainda este ano, alertou nesta terça-feira (29) o Alto Comissariado das Nações Unidas para Refugiados (Acnur).",
-          "published_at": null,
-          "claims": [
-            {
-              "claim": "Verificação oficial: ONU alerta que cortes na ajuda internacional ameaçam assistência a mais de 8 milhões de refugiados",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "preview_topic": 13,
-      "topic_id": "a3ad4bba-7b75-4db8-9df8-5644d138b5e9",
-      "current_canonical_title": "Confira os falecimentos desta terça-feira (29) em Arapongas",
-      "article_count": 3,
-      "status": "analyzed",
-      "title": "TNOnline divulga falecimentos em Apucarana, Ivaiporã e Arapongas",
-      "summary": "O portal TNOnline divulgou os registros de falecimentos e sepultamentos ocorridos em Apucarana, Ivaiporã, Arapongas e regiões próximas para a terça-feira, 29 de setembro de 2026. As informações foram obtidas junto a autarquias municipais, funerárias locais e familiares das vítimas.",
-      "categories": [
-        "Mundo"
-      ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": true,
-        "claim": "Izabel Maria Tomasim de Sousa, 71 anos, faleceu em 28/09/2026 e foi sepultada em 29/09/2026 no Cemitério Cristo Rei, Apucarana - PR.",
-        "article_ids": [
-          "1fafd983-1115-407b-98c5-f538f6466d90"
-        ],
-        "reason": "registro de óbito em cartório de registro civil"
-      },
-      "articles": [
-        {
-          "article_id": "1fafd983-1115-407b-98c5-f538f6466d90",
-          "url": "https://tnonline.uol.com.br/noticias/apucarana/confira-os-falecimentos-desta-terca-feira-29-em-apucarana-e-regiao-1150178",
-          "title": "Confira os falecimentos desta terça-feira (29) em Apucarana e região",
-          "lead": "TNOnline divulga diariamente os falecimentos registrados em Apucarana e região, conforme informações publicadas pela Autarquia Municipal de Serviços Funerários de Apucarana (Aserfa). A lista reúne n...",
-          "published_at": null,
-          "claims": [
-            {
-              "claim": "Verificação oficial: Confira os falecimentos desta terça-feira (29) em Apucarana e região",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "a927862f-3514-4493-9589-466b73e13d67",
-          "url": "https://tnonline.uol.com.br/noticias/vale-do-ivai/confira-os-falecimentos-de-ivaipora-e-regiao-desta-terca-feira-29-1150181",
-          "title": "Confira os falecimentos de Ivaiporã e região desta terça-feira (29)",
-          "lead": "N Online divulga diariamente os falecimentos registrados em Ivaiporã e municípios da região, conforme as informações são repassadas à redação por familiares e funerárias. A relação reúne dados básico...",
-          "published_at": null,
-          "claims": [
-            {
-              "claim": "Verificação oficial: Confira os falecimentos de Ivaiporã e região desta terça-feira (29)",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "9acd4deb-e849-4ca9-892e-6e93a6865bc4",
-          "url": "https://tnonline.uol.com.br/noticias/arapongas/confira-os-falecimentos-desta-terca-feira-29-em-arapongas-1150182",
-          "title": "Confira os falecimentos desta terça-feira (29) em Arapongas",
-          "lead": "TNOnline divulga diariamente os falecimentos registrados em Arapongas, conforme informações publicadas pelo Grupo Angelus e Aliança Unipax. A lista reúne nome, data do falecimento e dados de velório...",
-          "published_at": null,
-          "claims": [
-            {
-              "claim": "Verificação oficial: Confira os falecimentos desta terça-feira (29) em Arapongas",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "preview_topic": 14,
-      "topic_id": "b94456f7-abe2-4298-9cb2-f9d0b6721ca7",
-      "current_canonical_title": "Candidatos a deputado estadual São Paulo (SP) 2026: veja lista com nomes e números para votar",
-      "article_count": 5,
-      "status": "analyzed",
-      "title": "UOL divulga listas de candidatos a deputados para as eleições de 2026",
-      "summary": "O portal UOL publicou listas de candidatos a deputado estadual e federal para as eleições de outubro de 2026 nos estados de Minas Gerais, São Paulo, Paraná e Rio de Janeiro. Os dados foram extraídos automaticamente em 28 de setembro de 2026. Não há divergências políticas identificadas nas matérias, que apresentam caráter informativo e de utilidade pública.",
-      "categories": [
-        "Política"
-      ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": true,
-        "claim": "Existem listas de candidatos a deputado estadual e federal para as eleições de 2026 nos estados de Minas Gerais (MG), São Paulo (SP), Paraná (PR) e Rio de Janeiro (RJ).",
-        "article_ids": [
-          "51a14f53-5cc1-4fdc-8bd2-bd8a931d08ae",
-          "78ea2431-4718-4218-b509-92a285e3e826",
-          "c69cfe83-616e-4981-aa3e-aa0e9b2b08f8",
-          "1a774966-4537-48f1-996b-f45ced3047b0",
-          "ec90eb6f-949f-4962-8c51-07980ac7efc5"
-        ],
-        "reason": "Registro de candidaturas no Tribunal Superior Eleitoral (TSE)"
-      },
-      "articles": [
-        {
-          "article_id": "51a14f53-5cc1-4fdc-8bd2-bd8a931d08ae",
-          "url": "https://noticias.uol.com.br/eleicoes/2026/09/29/candidatos-a-deputado-estadual-minas-gerais-mg-2026-veja-lista-com-nomes-e-numeros-para-votar.ghtm",
-          "title": "Candidatos a deputado estadual Minas Gerais (MG) 2026: veja lista com nomes e números para votar",
-          "lead": "Os eleitores de Minas Gerais vão escolher no próximo domingo (4) seus representantes na Assembleia Legislativa nas eleições de 2026. Veja a lista de candidatos a deputado estadual no estado, com nomes e números para votar. Os dados foram extraídos automaticamente em 28/09/2026, às 05h31.",
-          "published_at": null,
-          "claims": [
-            {
-              "claim": "Verificação oficial: Candidatos a deputado estadual Minas Gerais (MG) 2026: veja lista com nomes e números para votar",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "78ea2431-4718-4218-b509-92a285e3e826",
-          "url": "https://noticias.uol.com.br/eleicoes/2026/09/29/candidatos-a-deputado-federal-sao-paulo-sp-2026-veja-lista-com-nomes-e-numeros-para-votar.ghtm",
-          "title": "Candidatos a deputado federal São Paulo (SP) 2026: veja lista com nomes e números para votar",
-          "lead": "Os eleitores de São Paulo vão às urnas no próximo domingo (4) para escolher quem representará o estado na Câmara dos Deputados a partir de 2027. Veja abaixo a lista de candidatos ao cargo, com nomes e números para votar. Os dados foram extraídos automaticamente em 28/09/2026, às 05h33.",
-          "published_at": null,
-          "claims": [
-            {
-              "claim": "Verificação oficial: Candidatos a deputado federal São Paulo (SP) 2026: veja lista com nomes e números para votar",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "c69cfe83-616e-4981-aa3e-aa0e9b2b08f8",
-          "url": "https://noticias.uol.com.br/eleicoes/2026/09/29/candidatos-a-deputado-estadual-sao-paulo-sp-2026-veja-lista-com-nomes-e-numeros-para-votar.ghtm",
-          "title": "Candidatos a deputado estadual São Paulo (SP) 2026: veja lista com nomes e números para votar",
-          "lead": "Os eleitores de São Paulo vão às urnas no domingo (4) para escolher seus representantes na Assembleia Legislativa nas eleições de 2026. Veja a lista de candidatos ao cargo no estado, com nomes e números para votar. Os dados foram extraídos automaticamente em 28/09/2026, às 05h33.",
-          "published_at": null,
-          "claims": [
-            {
-              "claim": "Verificação oficial: Candidatos a deputado estadual São Paulo (SP) 2026: veja lista com nomes e números para votar",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "1a774966-4537-48f1-996b-f45ced3047b0",
-          "url": "https://noticias.uol.com.br/eleicoes/2026/09/29/candidatos-a-deputado-federal-parana-pr-2026-veja-lista-com-nomes-e-numeros-para-votar.ghtm",
-          "title": "Candidatos a deputado federal Paraná (PR) 2026: veja lista com nomes e números para votar",
-          "lead": "Os eleitores do Paraná vão escolher no próximo domingo (4) quem representará o estado na Câmara dos Deputados a partir de 2027. Veja a lista de candidatos ao cargo pelo estado, com nomes e números para votar. Os dados foram extraídos automaticamente em 28/09/2026, às 05h32.",
-          "published_at": null,
-          "claims": [
-            {
-              "claim": "Verificação oficial: Candidatos a deputado federal Paraná (PR) 2026: veja lista com nomes e números para votar",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "ec90eb6f-949f-4962-8c51-07980ac7efc5",
-          "url": "https://noticias.uol.com.br/eleicoes/2026/09/29/candidatos-a-deputado-estadual-rio-de-janeiro-rj-2026-veja-lista-com-nomes-e-numeros-para-votar.ghtm",
-          "title": "Candidatos a deputado estadual Rio de Janeiro (RJ) 2026: veja lista com nomes e números para votar",
-          "lead": "Os eleitores do Rio de Janeiro vão escolher no domingo (4) seus representantes na Assembleia Legislativa nas eleições de 2026. Veja a lista de candidatos a deputado estadual no estado, com nomes e números para votar. Os dados foram extraídos automaticamente em 28/09/2026, às 05h32.",
-          "published_at": null,
-          "claims": [
-            {
-              "claim": "Verificação oficial: Candidatos a deputado estadual Rio de Janeiro (RJ) 2026: veja lista com nomes e números para votar",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "preview_topic": 15,
-      "topic_id": "094d0e11-07dd-4d96-8216-81ca8feebc3f",
-      "current_canonical_title": "Eleitores só podem ser presos em três situações a partir desta terça",
-      "article_count": 3,
-      "status": "analyzed",
-      "title": "Regra que limita prisão de eleitores entra em vigor antes do primeiro turno",
-      "summary": "A partir de terça-feira, 29 de setembro, entra em vigor a restrição à prisão de eleitores, válida até 6 de outubro (48 horas após o primeiro turno). Durante esse período, prisões só são permitidas em flagrante delito, por sentença condenatória por crime inafiançável ou por desrespeito a salvo-conduto.",
-      "categories": [
-        "Política"
-      ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": true,
-        "claim": "A partir de 29 de setembro, eleitores não podem ser presos ou detidos, salvo em flagrante delito, por sentença criminal condenatória por crime inafiançável ou por desrespeito a salvo-conduto, conforme previsto no Código Eleitoral.",
-        "article_ids": [
-          "f2da99c3-43ed-4e0e-9bc4-614f08157e20",
-          "6f7d87e3-dd6f-487d-a23e-f9b45e6895ea",
-          "ef08fa34-16b9-4819-96bd-ee09e1c6e6b3"
-        ],
-        "reason": "legislação (Código Eleitoral) e calendário eleitoral oficial"
-      },
-      "articles": [
-        {
-          "article_id": "f2da99c3-43ed-4e0e-9bc4-614f08157e20",
-          "url": "https://www.metropoles.com/brasil/veja-o-que-o-calendario-eleitoral-preve-para-esta-3a-a-5-dias-do-1o-turno",
-          "title": "Veja o que o calendário eleitoral prevê para esta 3ª, a 5 dias do 1º turno",
-          "lead": "A cinco dias do 1º turno, eleitor passa a ter proteção contra prisão ou detenção, salvo exceções previstas no Código Eleitoral",
-          "published_at": "2026-09-29T06:00:36+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Veja o que o calendário eleitoral prevê para esta 3ª, a 5 dias do 1º turno",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "6f7d87e3-dd6f-487d-a23e-f9b45e6895ea",
-          "url": "https://www.metropoles.com/colunas/manoela-alcantara/eleitores-so-podem-ser-presos-em-tres-situacoes-a-partir-desta-terca",
-          "title": "Eleitores só podem ser presos em três situações a partir desta terça",
-          "lead": "Restrição começa cinco dias antes do primeiro turno e vale até 6 de outubro. Flagrante é uma das exceções previstas no Código Eleitoral",
-          "published_at": "2026-09-29T06:38:05+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Eleitores só podem ser presos em três situações a partir desta terça",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "ef08fa34-16b9-4819-96bd-ee09e1c6e6b3",
-          "url": "https://www.terra.com.br/noticias/restricao-a-prisao-de-eleitores-comeca-nesta-terca-feira-entenda-quem-pode-ir-para-cadeia,a8bbefadee158c14409020d924850d515oez97sd.html",
-          "title": "Restrição à prisão de eleitores começa nesta terça-feira; entenda quem pode ir para cadeia",
-          "lead": "O Tribunal Superior Eleitoral inicia às 17h desta terça-feira, 29, o período que restringe a ...",
-          "published_at": "2026-09-29T10:12:10+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Restrição à prisão de eleitores começa nesta terça-feira; entenda quem pode ir para cadeia",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "preview_topic": 16,
-      "topic_id": "722fc9f5-d00b-4789-921c-366ed82006e3",
-      "current_canonical_title": "Lula diz que mulheres aprendem a “tomar toque” desde pequenas",
-      "article_count": 3,
-      "status": "analyzed",
-      "title": "Lula afirma em Belém que mulheres aprendem a 'tomar toque' desde pequenas",
-      "summary": "Durante comício em Belém (PA) em 28 de setembro de 2026, o presidente Lula afirmou que as mulheres aprendem a 'tomar toque' desde pequenas, contrastando com a resistência dos homens em realizar exames de próstata. O presidente destacou a realização da primeira cirurgia robótica de próstata no Pará e relembrou a morte de sua mãe por câncer uterino.",
-      "categories": [
-        "Política"
-      ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": false,
-        "claim": "",
-        "article_ids": [],
-        "reason": "A matéria não contém um fato documental elegível."
-      },
-      "articles": [
-        {
-          "article_id": "0c3efbf7-7b58-4a98-a985-9961d45e55bf",
-          "url": "https://www.poder360.com.br/poder-eleicoes-2026/lula-diz-que-mulheres-aprendem-a-tomar-toque-desde-pequenas",
-          "title": "Lula diz que mulheres aprendem a “tomar toque” desde pequenas",
-          "lead": "Em Belém, presidente lembrou morte da mãe, vítima de câncer uterino, e criticou homens por não fazerem exame de próstata",
-          "published_at": "2026-09-29T06:52:52+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Lula diz que mulheres aprendem a “tomar toque” desde pequenas",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "e1710734-2c98-4f55-84ec-fca6af1a9e50",
-          "url": "https://oantagonista.com.br/brasil/mulheres-aprendem-a-tomar-toque-desde-pequenas-diz-lula",
-          "title": "“Mulheres aprendem a tomar toque desde pequenas”, diz Lula",
-          "lead": "O presidente Lula (PT) afirmou na segunda-feira, 28, que mulheres aprendem a “tomar toque” desde pequenas. “Nós, hoje, fizemos a 1ª operação robótica de próstata aqui no Estado do Pará e no norte do país. A 1ª operação robótica. E por que que isso é importante? Porque o homem é covarde. O homem não gosta... The post “Mulheres aprendem a tomar toque desde pequenas”, diz Lula appeared first on O Ant",
-          "published_at": "2026-09-29T11:02:03+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: “Mulheres aprendem a tomar toque desde pequenas”, diz Lula",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "446e198d-4c1b-42d8-b545-ebbe6b686412",
-          "url": "https://revistaoeste.com/politica/lula-diz-que-mulheres-aprendem-a-tomar-toque-desde-pequenas",
-          "title": "Lula diz que mulheres aprendem a ‘tomar toque’ desde pequenas",
-          "lead": "O presidente Luiz Inácio Lula da Silva afirmou, nesta segunda-feira, 28, que as mulheres aprendem a “tomar toque” desde pequenas, enquanto os homens resistem aos exames de próstata. Ele deu a declaração durante um comício em Belém (PA). As eleições ocorrem no domingo 4. No discurso, Lula lembrou as condições precárias de tratamento no passado e citou a morte de sua mãe, dona Lindu, por câncer uter",
-          "published_at": "2026-09-29T11:16:43+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Lula diz que mulheres aprendem a ‘tomar toque’ desde pequenas",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "preview_topic": 17,
-      "topic_id": "90e52b6f-47da-4a0e-a2bf-fca8f8cda43a",
-      "current_canonical_title": "Previsão do tempo hoje para Olinda (PE): sol com algumas nuvens; chove rápido durante o dia e à noite",
-      "article_count": 3,
-      "status": "analyzed",
-      "title": "Previsão do tempo para Cabo de Santo Agostinho, Jaboatão e Olinda",
-      "summary": "Previsões meteorológicas divulgadas para o dia 29 de setembro de 2026 indicam sol com algumas nuvens e chuvas rápidas ao longo do dia e da noite para os municípios pernambucanos de Cabo de Santo Agostinho, Jaboatão dos Guararapes e Olinda. As temperaturas máximas previstas variam entre 28°C e 29°C, enquanto as mínimas ficam entre 24°C e 25°C. Para o dia seguinte, 30 de setembro, as previsões de chuva e nebulosidade variam de acordo com cada localidade.",
-      "categories": [
-        "Mundo"
-      ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": false,
-        "claim": "",
-        "article_ids": [],
-        "reason": "A matéria não contém um fato documental elegível."
-      },
-      "articles": [
-        {
-          "article_id": "c8159ec6-ad14-46c4-b104-ea9f60ee34d3",
-          "url": "https://g1.globo.com/pe/pernambuco/previsao-do-tempo/noticia/2026/09/29/previsao-do-tempo-hoje-para-cabo-de-santo-agostinho-pe-sol-com-algumas-nuvens-chove-rapido-durante-o-dia-e-a-noite.ghtml",
-          "title": "Previsão do tempo hoje para Cabo de Santo Agostinho (PE): sol com algumas nuvens; chove rápido durante o dia e à noite",
-          "lead": "Previsão do tempo hoje em Cabo de Santo Agostinho\ng1\nA previsão do tempo para esta terça-feira (29) para Cabo de Santo Agostinho (PE) é de sol com algumas nuvens. Chove rápido durante o dia e à noite. As máximas são de 28ºC e as mínimas de 25ºC. Clique aqui para ver a previsão em todo o Brasil.\nDurante a manhã, sol e chuva.\nNo período da tarde, sol e chuva.\nÀ noite, pancadas de chuva.\nPrevisão do ",
-          "published_at": "2026-09-29T04:01:45+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Previsão do tempo hoje para Cabo de Santo Agostinho (PE): sol com algumas nuvens; chove rápido durante o dia e à noite",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "45023bd6-4731-4fdc-8bb1-c0ed3606a941",
-          "url": "https://g1.globo.com/pe/pernambuco/previsao-do-tempo/noticia/2026/09/29/previsao-do-tempo-hoje-para-jaboatao-dos-guararapes-pe-sol-com-algumas-nuvens-chove-rapido-durante-o-dia-e-a-noite.ghtml",
-          "title": "Previsão do tempo hoje para Jaboatão dos Guararapes (PE): sol com algumas nuvens; chove rápido durante o dia e à noite",
-          "lead": "Previsão do tempo hoje em Jaboatão dos Guararapes\ng1\nA previsão do tempo para esta terça-feira (29) para Jaboatão dos Guararapes (PE) é de sol com algumas nuvens. Chove rápido durante o dia e à noite. As máximas são de 29ºC e as mínimas de 24ºC. Clique aqui para ver a previsão em todo o Brasil.\nDurante a manhã, sol e chuva.\nNo período da tarde, sol e chuva.\nÀ noite, pancadas de chuva.\nPrevisão do ",
-          "published_at": "2026-09-29T04:01:50+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Previsão do tempo hoje para Jaboatão dos Guararapes (PE): sol com algumas nuvens; chove rápido durante o dia e à noite",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "7f4900f1-8778-4448-9b0f-43f715fc8d5d",
-          "url": "https://g1.globo.com/pe/pernambuco/previsao-do-tempo/noticia/2026/09/29/previsao-do-tempo-hoje-para-olinda-pe-sol-com-algumas-nuvens-chove-rapido-durante-o-dia-e-a-noite.ghtml",
-          "title": "Previsão do tempo hoje para Olinda (PE): sol com algumas nuvens; chove rápido durante o dia e à noite",
-          "lead": "Previsão do tempo hoje em Olinda\ng1\nA previsão do tempo para esta terça-feira (29) para Olinda (PE) é de sol com algumas nuvens. Chove rápido durante o dia e à noite. As máximas são de 28ºC e as mínimas de 24ºC. Clique aqui para ver a previsão em todo o Brasil.\nDurante a manhã, sol e chuva.\nNo período da tarde, sol e chuva.\nÀ noite, pancadas de chuva.\nPrevisão do tempo para amanhã em Olinda, quart",
-          "published_at": "2026-09-29T04:02:08+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Previsão do tempo hoje para Olinda (PE): sol com algumas nuvens; chove rápido durante o dia e à noite",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "preview_topic": 18,
-      "topic_id": "f7d19e12-f4a7-4981-9830-c23931527cbe",
-      "current_canonical_title": "Horóscopo do dia: previsão para os 12 signos em 29/09/2026",
-      "article_count": 4,
-      "status": "analyzed",
-      "title": "Portais publicam previsões de horóscopo e tarot para 29 de setembro de 2026",
-      "summary": "Veículos de comunicação publicaram previsões de horóscopo e tarot para o dia 29 de setembro de 2026. Os textos trazem orientações gerais sobre finanças, bem-estar, relações pessoais e equilíbrio emocional para os signos do zodíaco.",
-      "categories": [
-        "Mundo"
-      ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": false,
-        "claim": "",
-        "article_ids": [],
-        "reason": "A matéria não contém um fato documental elegível."
-      },
-      "articles": [
-        {
-          "article_id": "901c6553-16f9-433f-b1b1-e22ad336fa2d",
-          "url": "https://oantagonista.com.br/ladooa/variedades/horoscopo-do-dia-previsao-para-os-12-signos-em-29-09-2026",
-          "title": "Horóscopo do dia: previsão para os 12 signos em 29/09/2026",
-          "lead": "Veja o que os astros revelam sobre a terça-feira de cada nativo do zodíaco The post Horóscopo do dia: previsão para os 12 signos em 29/09/2026 appeared first on O Antagonista .",
-          "published_at": "2026-09-29T04:04:53+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Horóscopo do dia: previsão para os 12 signos em 29/09/2026",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "5783550c-fc53-47f7-a38f-d9076e4e84f8",
-          "url": "https://www.metropoles.com/vida-e-estilo/horoscopo/horoscopo-2026-confira-a-previsao-de-hoje-29-9-para-seu-signo",
-          "title": "Horóscopo 2026: confira a previsão de hoje (29/9) para seu signo",
-          "lead": "Confira as previsões desta terça-feira (29/9) para o seu signo. Saiba o que os astros reservam nas áreas de amor, carreira e saúde",
-          "published_at": "2026-09-29T05:00:18+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Horóscopo 2026: confira a previsão de hoje (29/9) para seu signo",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "7ed40f82-892c-4c5c-bf96-da2c98211ca1",
-          "url": "https://www.terra.com.br/vida-e-estilo/horoscopo/astrologia/tarot-do-dia-previsao-para-os-12-signos-em-29092026,a7934b0e2673262fa6f8bca85ce35b754y91b7qh.html",
-          "title": "Tarot do dia: previsão para os 12 signos em 29/09/2026",
-          "lead": "A terça-feira trará uma energia de movimento, conexões e conquistas. As cartas do tarot mostram ...",
-          "published_at": "2026-09-29T07:02:51+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Tarot do dia: previsão para os 12 signos em 29/09/2026",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "36aaeac3-0b7f-4180-8a3d-ea017a145c7e",
-          "url": "https://oantagonista.com.br/ladooa/variedades/tarot-do-dia-previsao-para-os-12-signos-em-29-09-2026",
-          "title": "Tarot do dia: previsão para os 12 signos em 29/09/2026",
-          "lead": "Confira o que as cartas revelam sobre a terça-feira de cada nativo do zodíaco The post Tarot do dia: previsão para os 12 signos em 29/09/2026 appeared first on O Antagonista .",
-          "published_at": "2026-09-29T07:04:51+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Tarot do dia: previsão para os 12 signos em 29/09/2026",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "preview_topic": 19,
-      "topic_id": "44fa771c-ceec-43de-b4dc-d10b8376ff73",
-      "current_canonical_title": "Previsão do tempo hoje para o Rio de Janeiro (RJ): sol, com pancadas de chuva de manhã e muitas nuvens à tarde; à noite, tempo firme",
-      "article_count": 6,
-      "status": "analyzed",
-      "title": "Previsão do tempo para cidades brasileiras em setembro de 2026",
-      "summary": "Previsões meteorológicas divulgadas em 29 de setembro de 2026 detalham as condições de temperatura, nebulosidade e chuva para Recife (PE), Ribeirão das Neves (MG) e municípios do Rio de Janeiro (Duque de Caxias, Niterói, Nova Iguaçu e a capital) para os dias 29 e 30 de setembro.",
-      "categories": [
-        "Mundo"
-      ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": false,
-        "claim": "",
-        "article_ids": [],
-        "reason": "A matéria não contém um fato documental elegível."
-      },
-      "articles": [
-        {
-          "article_id": "b5bc5bbf-2c5f-4349-bedf-7830352511da",
-          "url": "https://g1.globo.com/pe/pernambuco/previsao-do-tempo/noticia/2026/09/29/previsao-do-tempo-hoje-para-o-recife-pe-sol-com-algumas-nuvens-e-chuva-passageira-durante-o-dia-a-noite-o-tempo-fica-firme.ghtml",
-          "title": "Previsão do tempo hoje para o Recife (PE): sol com algumas nuvens e chuva passageira durante o dia; à noite o tempo fica firme",
-          "lead": "Previsão do tempo hoje em Recife\ng1\nA previsão do tempo para esta terça-feira (29) para o Recife (PE) é de sol com algumas nuvens e chuva passageira durante o dia. À noite o tempo fica firme. As máximas são de 30ºC e as mínimas de 23ºC. Clique aqui para ver a previsão em todo o Brasil.\nDurante a manhã, sol e chuva.\nNo período da tarde, sol e chuva.\nÀ noite, algumas nuvens.\nPrevisão do tempo para a",
-          "published_at": "2026-09-29T04:02:47+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Previsão do tempo hoje para o Recife (PE): sol com algumas nuvens e chuva passageira durante o dia; à noite o tempo fica firme",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "fae6eee8-b4f5-401b-89cb-34dd568c1aca",
-          "url": "https://g1.globo.com/mg/minas-gerais/previsao-do-tempo/noticia/2026/09/29/previsao-do-tempo-hoje-para-ribeirao-das-neves-mg-sol-com-aumento-de-nuvens-ao-longo-do-dia-a-noite-ocorrem-pancadas-de-chuva.ghtml",
-          "title": "Previsão do tempo hoje para Ribeirão das Neves (MG): sol com aumento de nuvens ao longo do dia; à noite ocorrem pancadas de chuva",
-          "lead": "Previsão do tempo hoje em Ribeirão das Neves\ng1\nA previsão do tempo para esta terça-feira (29) para Ribeirão das Neves (MG) é de sol com aumento de nuvens ao longo do dia. À noite ocorrem pancadas de chuva. As máximas são de 35ºC e as mínimas de 21ºC. Clique aqui para ver a previsão em todo o Brasil.\nDurante a manhã, sol com algumas nuvens.\nNo período da tarde, sol com algumas nuvens.\nÀ noite, pan",
-          "published_at": "2026-09-29T04:04:15+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Previsão do tempo hoje para Ribeirão das Neves (MG): sol com aumento de nuvens ao longo do dia; à noite ocorrem pancadas de chuva",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "d7c29e12-4945-47c9-a79e-5e4803248469",
-          "url": "https://g1.globo.com/rj/rio-de-janeiro/previsao-do-tempo/noticia/2026/09/29/previsao-do-tempo-hoje-para-duque-de-caxias-rj-sol-com-muitas-nuvens-durante-o-dia-e-periodos-de-ceu-nublado-noite-com-muitas-nuvens.ghtml",
-          "title": "Previsão do tempo hoje para Duque de Caxias (RJ): sol com muitas nuvens durante o dia e períodos de céu nublado; noite com muitas nuvens",
-          "lead": "Previsão do tempo hoje em Duque de Caxias\ng1\nA previsão do tempo para esta terça-feira (29) para Duque de Caxias (RJ) é de sol com muitas nuvens durante o dia e períodos de céu nublado. Noite com muitas nuvens. As máximas são de 30ºC e as mínimas de 22ºC. Clique aqui para ver a previsão em todo o Brasil.\nDurante a manhã, sol com muitas nuvens.\nNo período da tarde, sol com muitas nuvens.\nÀ noite, m",
-          "published_at": "2026-09-29T04:04:53+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Previsão do tempo hoje para Duque de Caxias (RJ): sol com muitas nuvens durante o dia e períodos de céu nublado; noite com muitas nuvens",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "a6d99cf7-9d90-4005-89c4-97060fa5e699",
-          "url": "https://g1.globo.com/rj/rio-de-janeiro/previsao-do-tempo/noticia/2026/09/29/previsao-do-tempo-hoje-para-niteroi-rj-sol-com-muitas-nuvens-durante-o-dia-e-periodos-de-ceu-nublado-noite-com-muitas-nuvens.ghtml",
-          "title": "Previsão do tempo hoje para Niterói (RJ): sol com muitas nuvens durante o dia e períodos de céu nublado; noite com muitas nuvens",
-          "lead": "Previsão do tempo hoje em Niterói\ng1\nA previsão do tempo para esta terça-feira (29) para Niterói (RJ) é de sol com muitas nuvens durante o dia e períodos de céu nublado. Noite com muitas nuvens. As máximas são de 28ºC e as mínimas de 22ºC. Clique aqui para ver a previsão em todo o Brasil.\nDurante a manhã, sol com muitas nuvens.\nNo período da tarde, sol com muitas nuvens.\nÀ noite, muitas nuvens.\nPr",
-          "published_at": "2026-09-29T04:05:08+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Previsão do tempo hoje para Niterói (RJ): sol com muitas nuvens durante o dia e períodos de céu nublado; noite com muitas nuvens",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "9db99dd8-c7fb-436a-9e7a-c0b2244e430e",
-          "url": "https://g1.globo.com/rj/rio-de-janeiro/previsao-do-tempo/noticia/2026/09/29/previsao-do-tempo-hoje-para-nova-iguacu-rj-sol-com-muitas-nuvens-durante-o-dia-e-periodos-de-ceu-nublado-noite-com-muitas-nuvens.ghtml",
-          "title": "Previsão do tempo hoje para Nova Iguaçu (RJ): sol com muitas nuvens durante o dia e períodos de céu nublado; noite com muitas nuvens",
-          "lead": "Previsão do tempo hoje em Nova Iguaçu\ng1\nA previsão do tempo para esta terça-feira (29) para Nova Iguaçu (RJ) é de sol com muitas nuvens durante o dia e períodos de céu nublado. Noite com muitas nuvens. As máximas são de 32ºC e as mínimas de 21ºC. Clique aqui para ver a previsão em todo o Brasil.\nDurante a manhã, sol com muitas nuvens.\nNo período da tarde, sol com muitas nuvens.\nÀ noite, muitas nu",
-          "published_at": "2026-09-29T04:05:26+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Previsão do tempo hoje para Nova Iguaçu (RJ): sol com muitas nuvens durante o dia e períodos de céu nublado; noite com muitas nuvens",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
-        },
-        {
-          "article_id": "90d0c89c-bea0-4921-b85c-c2cf4dc7873c",
-          "url": "https://g1.globo.com/rj/rio-de-janeiro/previsao-do-tempo/noticia/2026/09/29/previsao-do-tempo-hoje-para-o-rio-de-janeiro-rj-sol-com-pancadas-de-chuva-de-manha-e-muitas-nuvens-a-tarde-a-noite-tempo-firme.ghtml",
-          "title": "Previsão do tempo hoje para o Rio de Janeiro (RJ): sol, com pancadas de chuva de manhã e muitas nuvens à tarde; à noite, tempo firme",
-          "lead": "Previsão do tempo hoje em Rio de Janeiro\ng1\nA previsão do tempo para esta terça-feira (29) para o Rio de Janeiro (RJ) é de sol, com pancadas de chuva de manhã e muitas nuvens à tarde. À noite, tempo firme. As máximas são de 32ºC e as mínimas de 22ºC. Clique aqui para ver a previsão em todo o Brasil.\nDurante a manhã, sol e chuva.\nNo período da tarde, sol com muitas nuvens.\nÀ noite, algumas nuvens.\n",
-          "published_at": "2026-09-29T04:05:45+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Previsão do tempo hoje para o Rio de Janeiro (RJ): sol, com pancadas de chuva de manhã e muitas nuvens à tarde; à noite, tempo firme",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "published_at": "2026-09-29T11:10:36+00:00"
         }
       ]
     },
     {
       "preview_topic": 20,
-      "topic_id": "78f752de-ea15-4f63-af2d-01f00039d81e",
-      "current_canonical_title": "Previsão do tempo hoje para São Bernardo do Campo (SP): sol com muitas nuvens e períodos de céu nublado; noite com pancadas de chuva",
-      "article_count": 5,
+      "topic_id": "5b45f408-657c-4468-b1bb-c3e24a31973d",
+      "current_canonical_title": "Cleitinho e Patrus Ananias devem disputar segundo turno em MG, diz pesquisa Atlas Estadão",
+      "article_count": 6,
       "status": "analyzed",
-      "title": "Previsão do tempo para cidades de SP e RJ em 29 de setembro de 2026",
-      "summary": "As previsões meteorológicas para o dia 29 de setembro de 2026 indicam temperaturas máximas entre 30ºC e 32ºC nas cidades analisadas de São Paulo e do Rio de Janeiro. Enquanto São Gonçalo (RJ) tem previsão de dia e noite nublados sem chuva, as cidades paulistas de Guarulhos, Osasco, Santo André e São Bernardo do Campo apresentam previsão de pancadas de chuva à tarde ou à noite.",
+      "title": "Cleitinho lidera pesquisa Atlas para o governo de Minas Gerais",
+      "summary": "Pesquisa AtlasIntel/Estadão para o governo de Minas Gerais, realizada de 22 a 27 de setembro de 2026, aponta o senador Cleitinho Azevedo (Republicanos) na liderança com 41,8% das intenções de voto no primeiro turno. O deputado federal Patrus Ananias (PT) aparece em segundo lugar com 33,6%. A margem de erro é de dois pontos percentuais. Em um eventual segundo turno entre os dois, Cleitinho registra 53,5% contra 40,3% do candidato petista.",
       "categories": [
-        "Mundo"
+        "Política"
       ],
-      "fact_check_status": "unverifiable",
-      "triage": {
-        "eligible": false,
-        "claim": "",
-        "article_ids": [],
-        "reason": "A matéria não contém um fato documental elegível."
+      "source_key": "registro de pesquisa eleitoral TSE AtlasIntel Minas Gerais 2026",
+      "official_source": {
+        "status": "probable",
+        "label": "Possível fonte oficial",
+        "sources": [
+          "https://pesqele-divulgacao.tse.jus.br/app/pesquisa/listar.xhtml"
+        ],
+        "scope": "registro oficial da pesquisa eleitoral no Tribunal Superior Eleitoral"
       },
       "articles": [
         {
-          "article_id": "aff91ff6-38ff-4644-b518-c719b8d91544",
-          "url": "https://g1.globo.com/rj/rio-de-janeiro/previsao-do-tempo/noticia/2026/09/29/previsao-do-tempo-hoje-para-sao-goncalo-rj-sol-com-muitas-nuvens-durante-o-dia-e-periodos-de-ceu-nublado-noite-com-muitas-nuvens.ghtml",
-          "title": "Previsão do tempo hoje para São Gonçalo (RJ): sol com muitas nuvens durante o dia e períodos de céu nublado; noite com muitas nuvens",
-          "lead": "Previsão do tempo hoje em São Gonçalo\ng1\nA previsão do tempo para esta terça-feira (29) para São Gonçalo (RJ) é de sol com muitas nuvens durante o dia e períodos de céu nublado. Noite com muitas nuvens. As máximas são de 30ºC e as mínimas de 22ºC. Clique aqui para ver a previsão em todo o Brasil.\nDurante a manhã, sol com muitas nuvens.\nNo período da tarde, sol com muitas nuvens.\nÀ noite, muitas nu",
-          "published_at": "2026-09-29T04:06:02+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Previsão do tempo hoje para São Gonçalo (RJ): sol com muitas nuvens durante o dia e períodos de céu nublado; noite com muitas nuvens",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "article_id": "e3b9372b-b7e7-4341-89a7-6d55004d2916",
+          "url": "https://revistaforum.com.br/politica/cleitinho-patrus-ananias-segundo-turno-mg-pesquisa-atlas-estadao",
+          "title": "Cleitinho e Patrus Ananias devem disputar segundo turno em MG, diz pesquisa Atlas Estadão",
+          "lead": "Levantamento divulgado cinco dias antes do primeiro turno apontou também cenários de segundo turno; veja aqui",
+          "published_at": "2026-09-29T10:32:49+00:00"
         },
         {
-          "article_id": "a0908e97-cf2e-45ba-857c-341fef4a581a",
-          "url": "https://g1.globo.com/sp/sao-paulo/previsao-do-tempo/noticia/2026/09/29/previsao-do-tempo-hoje-para-guarulhos-sp-sol-com-muitas-nuvens-pancadas-de-chuva-a-tarde-e-a-noite.ghtml",
-          "title": "Previsão do tempo hoje para Guarulhos (SP): sol com muitas nuvens; pancadas de chuva à tarde e à noite",
-          "lead": "Previsão do tempo hoje em Guarulhos\ng1\nA previsão do tempo para esta terça-feira (29) para Guarulhos (SP) é de sol com muitas nuvens. Pancadas de chuva à tarde e à noite. As máximas são de 32ºC e as mínimas de 19ºC. Clique aqui para ver a previsão em todo o Brasil.\nDurante a manhã, sol com muitas nuvens.\nNo período da tarde, sol, pancadas de chuva e trovoadas.\nÀ noite, pancadas de chuva e trovoada",
-          "published_at": "2026-09-29T04:06:20+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Previsão do tempo hoje para Guarulhos (SP): sol com muitas nuvens; pancadas de chuva à tarde e à noite",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "article_id": "35eab8f4-d9d9-41a9-a69d-e3ddfede9802",
+          "url": "https://jovempan.com.br/politica/atlas-cleitinho-tem-418-e-patrus-ananias-336-em-minas-gerais",
+          "title": "Atlas: Cleitinho tem 41,8% e Patrus Ananias, 33,6% em Minas Gerais",
+          "lead": "Diferença entre os dois é de 8,2 pontos; em eventual segundo turno, senador registra 53,5% e petista, 40,3%",
+          "published_at": "2026-09-29T12:00:00+00:00"
         },
         {
-          "article_id": "62eb4a25-e590-4aa7-a336-8f45cb50e10b",
-          "url": "https://g1.globo.com/sp/sao-paulo/previsao-do-tempo/noticia/2026/09/29/previsao-do-tempo-hoje-para-osasco-sp-sol-com-muitas-nuvens-e-periodos-de-ceu-nublado-noite-com-pancadas-de-chuva.ghtml",
-          "title": "Previsão do tempo hoje para Osasco (SP): sol com muitas nuvens e períodos de céu nublado; noite com pancadas de chuva",
-          "lead": "Previsão do tempo hoje em Osasco\ng1\nA previsão do tempo para esta terça-feira (29) para Osasco (SP) é de sol com muitas nuvens e períodos de céu nublado. Noite com pancadas de chuva. As máximas são de 32ºC e as mínimas de 18ºC. Clique aqui para ver a previsão em todo o Brasil.\nDurante a manhã, sol com muitas nuvens.\nNo período da tarde, sol com muitas nuvens.\nÀ noite, pancadas de chuva e trovoadas",
-          "published_at": "2026-09-29T04:06:37+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Previsão do tempo hoje para Osasco (SP): sol com muitas nuvens e períodos de céu nublado; noite com pancadas de chuva",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "article_id": "43e936ee-3c42-47cf-ac90-41c4a07329c4",
+          "url": "https://www.poder360.com.br/poder-eleicoes-2026/cleitinho-tem-418-e-patrus-336-em-mg-diz-atlasintel",
+          "title": "Cleitinho tem 41,8% e Patrus, 33,6% em MG, diz AtlasIntel",
+          "lead": "Levantamento ouviu 1.838 eleitores mineiros de 22 a 27 de setembro; margem de erro é de 2 pontos percentuais",
+          "published_at": "2026-09-29T12:00:21+00:00"
         },
         {
-          "article_id": "ce370566-1667-4715-aee3-a010567b3eb0",
-          "url": "https://g1.globo.com/sp/sao-paulo/previsao-do-tempo/noticia/2026/09/29/previsao-do-tempo-hoje-para-santo-andre-sp-sol-com-muitas-nuvens-e-periodos-de-ceu-nublado-noite-com-pancadas-de-chuva.ghtml",
-          "title": "Previsão do tempo hoje para Santo André (SP): sol com muitas nuvens e períodos de céu nublado; noite com pancadas de chuva",
-          "lead": "Previsão do tempo hoje em Santo André\ng1\nA previsão do tempo para esta terça-feira (29) para Santo André (SP) é de sol com muitas nuvens e períodos de céu nublado. Noite com pancadas de chuva. As máximas são de 31ºC e as mínimas de 18ºC. Clique aqui para ver a previsão em todo o Brasil.\nDurante a manhã, sol com muitas nuvens.\nNo período da tarde, sol com muitas nuvens.\nÀ noite, pancadas de chuva e",
-          "published_at": "2026-09-29T04:06:54+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Previsão do tempo hoje para Santo André (SP): sol com muitas nuvens e períodos de céu nublado; noite com pancadas de chuva",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "article_id": "2a9b3ad7-9796-4f41-bfdd-dcb2cde69b87",
+          "url": "https://www.cnnbrasil.com.br/eleicoes/atlas-cleitinho-tem-418-no-1o-turno-em-mg-patrus-336",
+          "title": "Atlas: Cleitinho tem 41,8% no 1º turno em MG; Patrus, 33,6%",
+          "lead": "Levantamento aponta vantagem de 8,2 pontos do candidato do Republicanos; margem de erro é de dois pontos percentuais para mais ou para menos",
+          "published_at": "2026-09-29T12:01:45+00:00"
         },
         {
-          "article_id": "34c62859-036e-4cce-838e-626c268e22cd",
-          "url": "https://g1.globo.com/sp/sao-paulo/previsao-do-tempo/noticia/2026/09/29/previsao-do-tempo-hoje-para-sao-bernardo-do-campo-sp-sol-com-muitas-nuvens-e-periodos-de-ceu-nublado-noite-com-pancadas-de-chuva.ghtml",
-          "title": "Previsão do tempo hoje para São Bernardo do Campo (SP): sol com muitas nuvens e períodos de céu nublado; noite com pancadas de chuva",
-          "lead": "Previsão do tempo hoje em São Bernardo do Campo\ng1\nA previsão do tempo para esta terça-feira (29) para São Bernardo do Campo (SP) é de sol com muitas nuvens e períodos de céu nublado. Noite com pancadas de chuva. As máximas são de 31ºC e as mínimas de 18ºC. Clique aqui para ver a previsão em todo o Brasil.\nDurante a manhã, sol com muitas nuvens.\nNo período da tarde, sol com muitas nuvens.\nÀ noite,",
-          "published_at": "2026-09-29T04:07:28+00:00",
-          "claims": [
-            {
-              "claim": "Verificação oficial: Previsão do tempo hoje para São Bernardo do Campo (SP): sol com muitas nuvens e períodos de céu nublado; noite com pancadas de chuva",
-              "verdict": "unverifiable",
-              "confidence": 0.0,
-              "evidence": "Não verificável por fontes oficiais: a matéria não descreve um fato documental elegível ou não foi localizada uma fonte oficial contemporânea."
-            }
-          ]
+          "article_id": "0bcba414-46a7-4557-a790-04aa5418a72c",
+          "url": "https://www.cnnbrasil.com.br/eleicoes/atlas-cleitinho-tem-555-no-2o-turno-em-mg-patrus-403",
+          "title": "Atlas: Cleitinho tem 55,5% no 2º turno em MG; Patrus, 40,3%",
+          "lead": "Levantamento ouviu 1.838 eleitores no estado por recrutamento digital com margem de erro de dois pontos percentuais",
+          "published_at": "2026-09-29T12:02:21+00:00"
+        },
+        {
+          "article_id": "29c7363d-a766-49b5-8cb1-dd8deb38ef0a",
+          "url": "https://veja.abril.com.br/politica/atlasintel-a-disputa-pelo-governo-de-minas-gerais-a-cinco-dias-da-eleicao",
+          "title": "Pesquisa AtlasIntel: a disputa pelo governo de Minas Gerais a cinco dias da eleição",
+          "lead": "Cleitinho Azevedo tem 41,8% das intenções de voto para o governo, contra 33,6% de Patrus Ananias",
+          "published_at": "2026-09-29T13:47:12+00:00"
         }
       ]
     }

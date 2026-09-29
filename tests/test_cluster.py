@@ -218,6 +218,8 @@ async def test_run_initial_prompt_builds_expected_prompt(monkeypatch):
     assert "Lead do artigo" in captured["prompt"]
     assert "Conteúdo completo" in captured["prompt"]
     assert "Preserve a linha do tempo" in captured["prompt"]
+    assert "não enumere candidatos, números de urna ou a lista completa" in captured["prompt"]
+    assert "O summary deve ter no máximo 450 caracteres" in captured["prompt"]
     assert "máx 80 caracteres" in captured["prompt"]
     assert captured["kwargs"]["purpose"] == "editorial_initial"
 
@@ -303,10 +305,8 @@ async def test_official_verification_prompt_includes_source_catalog(monkeypatch)
     async def fake_call(prompt, **kwargs):
         captured["prompt"] = prompt
         return {
-            "verdict": "unverifiable",
             "confidence": 0,
-            "source_url": "",
-            "explanation": "",
+            "source_urls": [],
             "_grounding_urls": [],
         }
 
@@ -316,19 +316,19 @@ async def test_official_verification_prompt_includes_source_catalog(monkeypatch)
     monkeypatch.setattr(cluster, "_call_gemini", fake_call)
     monkeypatch.setattr(cluster, "find_official_source_evidence", no_direct_sources)
 
-    assert await cluster._verify_official_claim("Candidaturas foram registradas.") is None
+    result = await cluster._verify_official_claim("Candidaturas foram registradas.")
+    assert result and "Possível fonte oficial" in result["evidence"]
     assert "DivulgaCandContas" in captured["prompt"]
     assert "tesourotransparente.gov.br" in captured["prompt"]
+    assert "POSSÍVEL FONTE OFICIAL" in captured["prompt"]
 
 
 @pytest.mark.asyncio
 async def test_official_verification_accepts_official_google_redirect_destination(monkeypatch):
     async def fake_call(_prompt, **_kwargs):
         return {
-            "verdict": "true",
             "confidence": 0.95,
-            "source_url": "https://www.gov.br/fazenda/dado",
-            "explanation": "Dado oficial publicado.",
+            "source_urls": ["https://www.gov.br/fazenda/dado"],
             "_grounding_urls": [
                 "https://vertexaisearch.cloud.google.com/grounding-api-redirect/token"
             ],
@@ -346,8 +346,8 @@ async def test_official_verification_accepts_official_google_redirect_destinatio
 
     result = await cluster._verify_official_claim("O dado foi publicado.")
 
-    assert result and result["verdict"] == "true"
-    assert result["evidence"].startswith("Fonte oficial: https://www.gov.br/fazenda/dado.")
+    assert result and result["verdict"] == "unverifiable"
+    assert result["evidence"] == "Fontes oficiais: https://www.gov.br/fazenda/dado"
 
 
 @pytest.mark.asyncio
@@ -357,10 +357,8 @@ async def test_official_verification_accepts_direct_official_api_evidence(monkey
     async def fake_call(prompt, **_kwargs):
         captured["prompt"] = prompt
         return {
-            "verdict": "true",
             "confidence": 0.95,
-            "source_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/6?formato=json",
-            "explanation": "A série oficial informa 13,75 na observação exibida.",
+            "source_urls": ["https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/6?formato=json"],
             "_grounding_urls": [],
         }
 
@@ -380,18 +378,39 @@ async def test_official_verification_accepts_direct_official_api_evidence(monkey
     result = await cluster._verify_official_claim("A taxa Selic está em 13,75%.")
 
     assert "EVIDÊNCIA DIRETA: Banco Central do Brasil" in captured["prompt"]
-    assert result and result["verdict"] == "true"
+    assert result and result["verdict"] == "unverifiable"
     assert "api.bcb.gov.br" in result["evidence"]
+
+
+@pytest.mark.asyncio
+async def test_official_verification_returns_a_fixed_probable_source_when_lookup_has_no_evidence(monkeypatch):
+    async def fake_call(_prompt, **_kwargs):
+        return {"confidence": 0, "source_urls": [], "probable_source_urls": []}
+
+    async def no_direct_sources(_claim):
+        return []
+
+    monkeypatch.setattr(cluster, "_call_gemini", fake_call)
+    monkeypatch.setattr(cluster, "find_official_source_evidence", no_direct_sources)
+
+    result = await cluster._verify_official_claim(
+        "A pesquisa foi registrada no TSE sob o código BR-04391/2026."
+    )
+
+    assert result == {
+        "claim": "A pesquisa foi registrada no TSE sob o código BR-04391/2026.",
+        "verdict": "unverifiable",
+        "confidence": 0.0,
+        "evidence": "Possível fonte oficial (não confirmada): https://divulgacandcontas.tse.jus.br/divulga/",
+    }
 
 
 @pytest.mark.asyncio
 async def test_official_verification_rejects_catalog_lead_as_evidence(monkeypatch):
     async def fake_call(_prompt, **_kwargs):
         return {
-            "verdict": "true",
             "confidence": 0.95,
-            "source_url": "https://dadosabertos.tse.jus.br/dataset/candidatos-2024",
-            "explanation": "O catálogo lista o conjunto de dados.",
+            "source_urls": ["https://dadosabertos.tse.jus.br/dataset/candidatos-2024"],
             "_grounding_urls": [],
         }
 
@@ -408,7 +427,11 @@ async def test_official_verification_rejects_catalog_lead_as_evidence(monkeypatc
     monkeypatch.setattr(cluster, "_call_gemini", fake_call)
     monkeypatch.setattr(cluster, "find_official_source_evidence", fake_sources)
 
-    assert await cluster._verify_official_claim("Uma candidatura foi registrada.") is None
+    result = await cluster._verify_official_claim("Uma candidatura foi registrada.")
+
+    assert result and result["confidence"] == 0.0
+    assert "dadosabertos.tse.jus.br" not in result["evidence"]
+    assert "divulgacandcontas.tse.jus.br" in result["evidence"]
 
 
 @pytest.mark.asyncio
@@ -416,10 +439,8 @@ async def test_direct_official_evidence_works_without_google_grounding(monkeypat
     async def fake_call(_prompt, **kwargs):
         assert kwargs["use_google_search"] is False
         return {
-            "verdict": "true",
             "confidence": 0.95,
-            "source_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/6?formato=json",
-            "explanation": "A observação direta confirma a taxa.",
+            "source_urls": ["https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/6?formato=json"],
             "_grounding_urls": [],
         }
 
@@ -439,7 +460,7 @@ async def test_direct_official_evidence_works_without_google_grounding(monkeypat
 
     result = await cluster._verify_official_claim("A taxa Selic está em 13,75%.")
 
-    assert result and result["verdict"] == "true"
+    assert result and result["verdict"] == "unverifiable"
 
 
 @pytest.mark.asyncio
@@ -476,9 +497,9 @@ async def test_triage_shares_one_official_result_only_with_related_articles(monk
         lookups.append(claim)
         return {
             "claim": claim,
-            "verdict": "true",
+            "verdict": "unverifiable",
             "confidence": 0.9,
-            "evidence": "Fonte oficial: https://www.gov.br/exemplo.",
+            "evidence": "Fontes oficiais: https://www.gov.br/exemplo",
         }
 
     monkeypatch.setattr(cluster, "_verify_official_claim", fake_lookup)
@@ -495,7 +516,7 @@ async def test_triage_shares_one_official_result_only_with_related_articles(monk
     )
 
     assert lookups == ["Uma medida foi publicada."]
-    assert result["article-1"][0]["verdict"] == "true"
+    assert result["article-1"][0]["verdict"] == "unverifiable"
     assert result["article-2"][0]["verdict"] == "unverifiable"
 
 
@@ -528,7 +549,7 @@ async def test_triage_reuses_only_an_exact_grounded_claim(monkeypatch):
         previous_claims,
     )
 
-    assert result["article-1"][0]["verdict"] == "true"
+    assert result["article-1"][0]["verdict"] == "unverifiable"
     assert result["article-1"][0]["evidence"] == previous_claims[0]["evidence"]
 
 
@@ -560,31 +581,28 @@ def test_fetch_official_claims_excludes_legacy_or_unverifiable_claims():
 
     claims = cluster._fetch_official_claims(db, "topic-1")
 
-    assert claims == [db.table_data["claims"][0]]
+    assert claims == [db.table_data["claims"][0], db.table_data["claims"][2]]
 
 
 def test_official_verification_requires_a_grounded_public_authority_url():
     accepted = cluster._normalize_official_verification(
         {
-            "verdict": "true",
             "confidence": 0.9,
-            "source_url": "https://www.gov.br/planalto/ato?utm=x",
-            "explanation": "Ato publicado.",
+            "source_urls": ["https://www.gov.br/planalto/ato?utm=x"],
             "_grounding_urls": ["https://www.gov.br/planalto/ato"],
         },
         "Ato foi publicado.",
     )
     rejected = cluster._normalize_official_verification(
         {
-            "verdict": "true",
             "confidence": 0.9,
-            "source_url": "https://example.com/ato",
+            "source_urls": ["https://example.com/ato"],
             "_grounding_urls": ["https://example.com/ato"],
         },
         "Ato foi publicado.",
     )
 
-    assert accepted and accepted["verdict"] == "true"
+    assert accepted and accepted["verdict"] == "unverifiable"
     assert "https://www.gov.br/planalto/ato" in accepted["evidence"]
     assert rejected is None
 
@@ -646,7 +664,7 @@ async def test_process_skips_gemini_for_a_nonverifiable_topic(monkeypatch):
 
 
 @pytest.mark.asyncio
-async def test_mark_new_articles_unverifiable_persists_checked_fallback():
+async def test_mark_new_articles_unverifiable_marks_articles_without_creating_claims():
     article = {
         "id": "article-1",
         "url": "https://example.com/article",
@@ -662,12 +680,7 @@ async def test_mark_new_articles_unverifiable_persists_checked_fallback():
 
     await cluster._mark_new_articles_unverifiable(db, "topic-1")
 
-    assert any(
-        call[0] == "upsert"
-        and call[1][0]["verdict"] == "unverifiable"
-        and call[1][0]["article_id"] == "article-1"
-        for call in db.calls
-    )
+    assert not any(call[0] == "upsert" for call in db.calls)
     assert any(
         call[0] == "update" and call[1] == {"checked": True}
         for call in db.calls
@@ -709,20 +722,19 @@ def test_normalize_claims_demotes_false_without_traceable_evidence():
     assert "não permite afirmar falsidade" in claims[0]["evidence"]
 
 
-def test_normalize_initial_analysis_rejects_unknown_article_ids():
+def test_normalize_initial_analysis_keeps_an_optional_topic_source_key():
     analysis = cluster._normalize_initial_analysis(
         {
             "canonical_title": "Título neutro",
             "summary": "Resumo baseado nas fontes disponíveis.",
-            "articles": [
-                {"article_id": "unknown", "claims": []},
-                {"article_id": "article-1", "claims": []},
-            ],
+            "source_key": "Registro de candidatura a deputado federal por SP",
+            "source_scope": "Candidaturas ao cargo e UF no TSE",
         },
         [{"id": "article-1", "url": "https://example.com/1"}],
     )
 
-    assert analysis["articles"] == [{"article_id": "article-1", "claims": []}]
+    assert analysis["source_key"] == "Registro de candidatura a deputado federal por SP"
+    assert analysis["source_scope"] == "Candidaturas ao cargo e UF no TSE"
 
 
 def test_ensure_topic_image_updates_when_missing():
@@ -978,21 +990,16 @@ async def test_initial_check_does_not_dispatch_an_immediate_push(monkeypatch):
     async def fake_fetch_contents(_db, _articles):
         return None
 
-    async def fake_run_initial_triage(_articles):
-        return {
-            "verification": {"eligible": False},
-        }
-
     async def fake_run_initial_prompt(_articles):
         return {
             "canonical_title": "Titulo Editorial Original",
             "summary": "Resumo editorial original",
             "categories": ["Política"],
-            "articles": [],
+            "source_key": "",
+            "source_scope": "",
         }
 
     monkeypatch.setattr(cluster, "_fetch_contents", fake_fetch_contents)
-    monkeypatch.setattr(cluster, "_run_initial_triage", fake_run_initial_triage)
     monkeypatch.setattr(cluster, "_run_initial_prompt", fake_run_initial_prompt)
 
     await cluster._initial_check(db, "topic-1")
@@ -1001,6 +1008,6 @@ async def test_initial_check_does_not_dispatch_an_immediate_push(monkeypatch):
     assert any(
         call[0] == "update"
         and call[1].get("canonical_title") == "Titulo Editorial Original"
-        and call[1].get("fact_check_status") == "unverifiable"
+        and call[1].get("fact_check_status") == "unavailable"
         for call in db.calls
     )

@@ -34,6 +34,25 @@ IBGE_IPCA_URL = (
     "variaveis/2265?localidades=N1%5Ball%5D"
 )
 
+# These landing pages are deliberately fixed and auditable. They are only used
+# as *possible* sources when a precise official record was not available; they
+# never count as direct evidence or increase verification confidence.
+PROBABLE_SOURCE_URLS = {
+    "elections": "https://divulgacandcontas.tse.jus.br/divulga/",
+    "electoral_polls": "https://pesqele-divulgacao.tse.jus.br/app/pesquisa/listar.xhtml",
+    "camara": "https://www.camara.leg.br/",
+    "senate": "https://www25.senado.leg.br/web/atividade/materias",
+    "judiciary": "https://portal.stf.jus.br/",
+    "official_gazette": "https://www.in.gov.br/leiturajornal",
+    "ibge": "https://www.ibge.gov.br/estatisticas/",
+    "bcb": "https://www.bcb.gov.br/estatisticas",
+    "treasury": "https://www.tesourotransparente.gov.br/",
+    "revenue": "https://www.gov.br/receitafederal/pt-br",
+    "federal_government": "https://www.gov.br/",
+    "transparency": "https://portaldatransparencia.gov.br/",
+    "federal_police": "https://www.gov.br/pf/pt-br",
+}
+
 
 # The codes are deliberately narrow. A connector never guesses a BCB series
 # identifier from a sentence, as an incorrect series would be worse than no
@@ -57,6 +76,7 @@ TREASURY_KEYWORDS = {
     "superavit",
 }
 TSE_KEYWORDS = {
+    "tse",
     "candidato",
     "candidatura",
     "candidaturas",
@@ -70,6 +90,32 @@ TSE_KEYWORDS = {
     "presidente",
     "partido",
 }
+ELECTION_PROBABLE_KEYWORDS = {
+    "tse",
+    "candidato",
+    "candidata",
+    "candidatura",
+    "candidaturas",
+    "eleicao",
+    "eleitoral",
+    "urna",
+    "partido",
+    "reeleicao",
+    "pesquisa",
+}
+ELECTORAL_POLL_KEYWORDS = {
+    "pesquisa",
+    "pesquisas",
+    "atlasintel",
+    "realtime",
+    "real",
+    "time",
+    "palver",
+    "gerp",
+    "intencao",
+    "intencoes",
+    "registro",
+}
 CAMARA_KEYWORDS = {
     "camara",
     "deputado",
@@ -82,6 +128,37 @@ CAMARA_KEYWORDS = {
     "relator",
 }
 IBGE_IPCA_KEYWORDS = {"ipca", "inflacao", "inflacionario"}
+IBGE_KEYWORDS = IBGE_IPCA_KEYWORDS | {
+    "ibge",
+    "pnad",
+    "desemprego",
+    "emprego",
+    "populacao",
+    "rendimento",
+}
+JUDICIARY_KEYWORDS = {
+    "stf",
+    "stj",
+    "tcu",
+    "tribunal",
+    "ministro",
+    "ministra",
+    "precatorio",
+    "decisao",
+    "denuncia",
+}
+OFFICIAL_GAZETTE_KEYWORDS = {
+    "diario",
+    "dou",
+    "nomeado",
+    "nomeacao",
+    "publicado",
+    "portaria",
+    "decreto",
+}
+REVENUE_KEYWORDS = {"receita", "imposto", "tributo", "tributaria", "irpf"}
+FEDERAL_POLICE_KEYWORDS = {"policia", "pf", "inquerito", "mandado", "operacao"}
+TRANSPARENCY_KEYWORDS = {"transparencia", "gasto", "despesa", "contrato", "convenio"}
 CAMARA_QUERY_STOP_WORDS = CAMARA_KEYWORDS | {
     "apresentou",
     "apresentada",
@@ -194,6 +271,48 @@ def _discovery_lead(source_name: str, source_url: str, excerpt: str) -> dict[str
         "excerpt": excerpt,
         "kind": "discovery_lead",
     }
+
+
+def probable_official_source_urls(claim: str) -> list[str]:
+    """Return fixed official starting points inferred from a claim's subject.
+
+    These URLs are intentionally broad. They help a reader continue a manual
+    consultation after an automated lookup fails, without representing that a
+    record was found or that the claim was verified.
+    """
+    words = _normalized_words(claim)
+    candidates: list[str] = []
+
+    def add(key: str) -> None:
+        url = PROBABLE_SOURCE_URLS[key]
+        if url not in candidates:
+            candidates.append(url)
+
+    if words & ELECTORAL_POLL_KEYWORDS:
+        add("electoral_polls")
+    elif words & ELECTION_PROBABLE_KEYWORDS:
+        add("elections")
+    elif {"senador", "senado"} & words:
+        add("senate")
+    elif words & CAMARA_KEYWORDS:
+        add("camara")
+    elif words & IBGE_KEYWORDS:
+        add("ibge")
+    elif words & BCB_SERIES_BY_TOPIC.keys():
+        add("bcb")
+    elif words & TREASURY_KEYWORDS:
+        add("treasury")
+    elif words & JUDICIARY_KEYWORDS:
+        add("judiciary")
+    elif words & OFFICIAL_GAZETTE_KEYWORDS:
+        add("official_gazette")
+    elif words & REVENUE_KEYWORDS:
+        add("revenue")
+    elif words & FEDERAL_POLICE_KEYWORDS:
+        add("federal_police")
+    elif words & TRANSPARENCY_KEYWORDS:
+        add("transparency")
+    return candidates[:1]
 
 
 async def _treasury_dpf(client: httpx.AsyncClient) -> list[dict[str, str]]:
