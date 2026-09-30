@@ -406,6 +406,29 @@ async def test_official_verification_returns_a_fixed_probable_source_when_lookup
 
 
 @pytest.mark.asyncio
+async def test_topic_probable_source_does_not_present_scope_as_confirmation(monkeypatch):
+    async def fake_verify(_claim):
+        return {
+            "evidence": (
+                "Possível fonte oficial (não confirmada): "
+                "https://www.tse.jus.br/jurisprudencia/pesquisa-de-jurisprudencia"
+            )
+        }
+
+    monkeypatch.setattr(cluster, "_verify_official_claim", fake_verify)
+
+    source = await cluster._build_topic_official_source(
+        "Decisão do TSE sobre remoção de posts",
+        "Decisão judicial eleitoral sobre remoção de posts",
+    )
+
+    assert source["status"] == "probable"
+    assert source["scope"] == (
+        "Consulta sugerida: Decisão judicial eleitoral sobre remoção de posts"
+    )
+
+
+@pytest.mark.asyncio
 async def test_official_verification_rejects_catalog_lead_as_evidence(monkeypatch):
     async def fake_call(_prompt, **_kwargs):
         return {

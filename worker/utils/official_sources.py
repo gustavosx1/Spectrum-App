@@ -40,6 +40,8 @@ IBGE_IPCA_URL = (
 PROBABLE_SOURCE_URLS = {
     "elections": "https://divulgacandcontas.tse.jus.br/divulga/",
     "electoral_polls": "https://pesqele-divulgacao.tse.jus.br/app/pesquisa/listar.xhtml",
+    "tse_jurisprudence": "https://www.tse.jus.br/jurisprudencia/pesquisa-de-jurisprudencia",
+    "sao_paulo_official_gazette": "https://diariooficial.prefeitura.sp.gov.br/",
     "camara": "https://www.camara.leg.br/",
     "senate": "https://www25.senado.leg.br/web/atividade/materias",
     "judiciary": "https://portal.stf.jus.br/",
@@ -90,18 +92,24 @@ TSE_KEYWORDS = {
     "presidente",
     "partido",
 }
-ELECTION_PROBABLE_KEYWORDS = {
-    "tse",
+ELECTION_DATA_KEYWORDS = {
     "candidato",
     "candidata",
     "candidatura",
     "candidaturas",
-    "eleicao",
-    "eleitoral",
     "urna",
     "partido",
-    "reeleicao",
-    "pesquisa",
+    "conta",
+    "contas",
+    "prestacao",
+    "resultado",
+    "resultados",
+}
+CANDIDACY_RECORD_KEYWORDS = {
+    "candidato",
+    "candidata",
+    "candidatura",
+    "candidaturas",
 }
 ELECTORAL_POLL_KEYWORDS = {
     "pesquisa",
@@ -115,6 +123,40 @@ ELECTORAL_POLL_KEYWORDS = {
     "intencao",
     "intencoes",
     "registro",
+}
+ELECTORAL_DECISION_KEYWORDS = {
+    "decisao",
+    "decisoes",
+    "acordao",
+    "acordaos",
+    "julgamento",
+    "julgamentos",
+    "julga",
+    "julgou",
+    "voto",
+    "votos",
+    "vota",
+    "sessao",
+    "sessoes",
+    "remocao",
+    "posts",
+    "propaganda",
+}
+SAO_PAULO_MUNICIPAL_KEYWORDS = {
+    "prefeitura",
+    "municipio",
+    "municipal",
+    "paulistana",
+    "paulistano",
+}
+FEDERAL_ACT_KEYWORDS = {
+    "governo",
+    "federal",
+    "uniao",
+    "presidencia",
+    "presidente",
+    "ministerio",
+    "ministerios",
 }
 CAMARA_KEYWORDS = {
     "camara",
@@ -138,14 +180,6 @@ IBGE_KEYWORDS = IBGE_IPCA_KEYWORDS | {
 }
 JUDICIARY_KEYWORDS = {
     "stf",
-    "stj",
-    "tcu",
-    "tribunal",
-    "ministro",
-    "ministra",
-    "precatorio",
-    "decisao",
-    "denuncia",
 }
 OFFICIAL_GAZETTE_KEYWORDS = {
     "diario",
@@ -288,10 +322,26 @@ def probable_official_source_urls(claim: str) -> list[str]:
         if url not in candidates:
             candidates.append(url)
 
-    if words & ELECTORAL_POLL_KEYWORDS:
+    has_tse = "tse" in words
+    has_electoral_context = has_tse or bool(words & {"eleicao", "eleicoes", "eleitoral"})
+
+    # Election data, judicial decisions, and polling registrations are handled
+    # by different TSE services. Never use a generic election keyword as a
+    # reason to send a reader to DivulgaCandContas.
+    if has_tse and words & ELECTORAL_DECISION_KEYWORDS:
+        add("tse_jurisprudence")
+    elif has_electoral_context and words & ELECTORAL_POLL_KEYWORDS:
         add("electoral_polls")
-    elif words & ELECTION_PROBABLE_KEYWORDS:
+    elif words & CANDIDACY_RECORD_KEYWORDS or (
+        has_electoral_context and words & ELECTION_DATA_KEYWORDS
+    ):
         add("elections")
+    elif "sao" in words and "paulo" in words and words & SAO_PAULO_MUNICIPAL_KEYWORDS:
+        add("sao_paulo_official_gazette")
+    elif words & JUDICIARY_KEYWORDS:
+        add("judiciary")
+    elif words & FEDERAL_ACT_KEYWORDS and words & OFFICIAL_GAZETTE_KEYWORDS:
+        add("official_gazette")
     elif {"senador", "senado"} & words:
         add("senate")
     elif words & CAMARA_KEYWORDS:
@@ -302,10 +352,10 @@ def probable_official_source_urls(claim: str) -> list[str]:
         add("bcb")
     elif words & TREASURY_KEYWORDS:
         add("treasury")
-    elif words & JUDICIARY_KEYWORDS:
-        add("judiciary")
     elif words & OFFICIAL_GAZETTE_KEYWORDS:
-        add("official_gazette")
+        # A decree or ordinance without an identified authority is too
+        # ambiguous to attach a federal publication portal safely.
+        pass
     elif words & REVENUE_KEYWORDS:
         add("revenue")
     elif words & FEDERAL_POLICE_KEYWORDS:

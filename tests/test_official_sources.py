@@ -59,6 +59,30 @@ def test_probable_sources_use_pesqele_for_electoral_poll_records():
     ]
 
 
+def test_probable_sources_use_tse_jurisprudence_for_electoral_decisions():
+    sources = official_sources.probable_official_source_urls(
+        "Ministro vota no TSE para manter remoção de posts falsos."
+    )
+
+    assert sources == [
+        "https://www.tse.jus.br/jurisprudencia/pesquisa-de-jurisprudencia"
+    ]
+
+
+def test_probable_sources_use_sao_paulo_official_gazette_for_municipal_acts():
+    sources = official_sources.probable_official_source_urls(
+        "Prefeitura de São Paulo publica ato municipal sobre a Avenida Paulista."
+    )
+
+    assert sources == ["https://diariooficial.prefeitura.sp.gov.br/"]
+
+
+def test_probable_sources_do_not_map_generic_election_news_to_candidate_records():
+    assert official_sources.probable_official_source_urls(
+        "Prefeitura mantém avenida aberta em domingo de eleição."
+    ) == []
+
+
 def test_probable_sources_fall_back_to_fixed_government_portal():
     assert official_sources.probable_official_source_urls("Um fato sem assunto catalogado.") == []
 
