@@ -128,7 +128,7 @@ def _list_topics(
     query = (
         db.table("topics")
         .select(
-            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at, categories, official_source"
+            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at, categories"
         )
         # A topic is only safe to expose once the hot-topic pipeline has
         # finished producing the editorial fields consumed by the app.
@@ -369,7 +369,7 @@ def get_topic(topic_id: str, request: Request):
     topic = (
         db.table("topics")
         .select(
-            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at, categories"
+            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at, categories, official_source"
         )
         .eq("id", topic_id)
         .eq("is_hot", True)
@@ -442,8 +442,7 @@ def get_topic(topic_id: str, request: Request):
     blindspot = _build_blindspot(articles_raw, outlets_map)
 
     return TopicDetail(
-        **topic,
-        official_source=_official_source(topic.get("official_source")),
+        **{**topic, "official_source": _official_source(topic.get("official_source"))},
         blindspot=blindspot,
         articles_left=grouped["left"],
         articles_center_left=grouped["center_left"],
@@ -569,7 +568,7 @@ def get_topic(topic_id: str, request: Request):
     topic = (
         db.table("topics")
         .select(
-            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at, categories"
+            "id, canonical_title, summary, image_url, article_count, is_hot, initial_check, created_at, categories, official_source"
         )
         .eq("id", topic_id)
         .eq("is_hot", True)
@@ -642,8 +641,7 @@ def get_topic(topic_id: str, request: Request):
     blindspot = _build_blindspot(articles_raw, outlets_map)
 
     return TopicDetail(
-        **topic,
-        official_source=_official_source(topic.get("official_source")),
+        **{**topic, "official_source": _official_source(topic.get("official_source"))},
         blindspot=blindspot,
         articles_left=grouped["left"],
         articles_center_left=grouped["center_left"],

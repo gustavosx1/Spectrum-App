@@ -128,6 +128,12 @@ def client(monkeypatch):
                     "is_hot": True,
                     "initial_check": True,
                     "created_at": recent_created_at,
+                    "official_source": {
+                        "status": "probable",
+                        "label": "Possível fonte oficial",
+                        "sources": ["https://www.gov.br/exemplo"],
+                        "scope": "Consulta de exemplo",
+                    },
                 },
                 {
                     "id": "topic-draft",
@@ -347,10 +353,10 @@ def test_get_topic_endpoint_returns_grouped_articles(client):
     assert len(body["articles_right"]) == 1
     assert "claims" not in body["articles_left"][0]
     assert body["official_source"] == {
-        "status": "unavailable",
-        "label": "Nenhuma fonte oficial aplicável",
-        "sources": [],
-        "scope": "",
+        "status": "probable",
+        "label": "Possível fonte oficial",
+        "sources": ["https://www.gov.br/exemplo"],
+        "scope": "Consulta de exemplo",
     }
 
 
