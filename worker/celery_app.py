@@ -27,9 +27,9 @@ app.conf.update(
     task_soft_time_limit=120,  # 2 min — levanta SoftTimeLimitExceeded
     task_time_limit=180,  # 3 min — mata o worker se travar
     beat_schedule={
-        "coverage-digest-every-six-hours": {
+        "coverage-digest-twice-daily": {
             "task": "worker.tasks.cluster.send_coverage_digest",
-            "schedule": crontab(minute=0, hour="*/6"),
+            "schedule": crontab(minute=0, hour="9,18"),
         },
     },
 )

@@ -17,7 +17,7 @@ Fluxo principal:
 3. Cada artigo vai para `worker.tasks.embed.process_article` (Celery + Redis).
 4. O worker gera embedding, encontra/cria topico e insere artigo.
 5. Quando topico atinge threshold (`article_count == hot_topic_threshold`), dispara `worker.tasks.cluster.process_hot_topic`.
-6. Cluster gera título/resumo/claims. O Celery Beat envia, a cada seis horas, somente o título do tópico com maior cobertura.
+6. Cluster gera título/resumo/claims. O Celery Beat envia no máximo dois alertas por dia (09:00 e 18:00, horário de São Paulo) para o tópico recente com maior cobertura entre veículos distintos.
 
 ## Requisitos
 
@@ -95,7 +95,8 @@ Push:
 - `PUSH_WEBHOOK_BEARER`
 - `PUSH_EXPO_SEND_URL`
 - `PUSH_EXPO_ACCESS_TOKEN`
-- `PUSH_DIGEST_LOOKBACK_HOURS` (padrão: `6`)
+- `PUSH_DIGEST_LOOKBACK_HOURS` (padrão: `12`)
+- `PUSH_DIGEST_MIN_DISTINCT_OUTLETS` (padrão: `2`)
 
 Pagamentos:
 - `REVENUECAT_WEBHOOK_SECRET`
@@ -139,11 +140,16 @@ Observacao:
 - `GET /auth/subscription`
 - `GET /feed/topics`
 - `GET /feed/topics/{topic_id}`
+- `PUT /feed/topics/{topic_id}/official-source-vote`
 - `POST /notifications/token`
 - `DELETE /notifications/token`
 - `DELETE /auth/delete`
 - `POST /payments/verify`
 - `GET /payments/status`
+
+### Migrações pendentes
+
+Antes de publicar esta versão, execute [migrations/20261002_push_limits_and_official_source_votes.sql](migrations/20261002_push_limits_and_official_source_votes.sql) no Supabase. Ela cria a trava persistente dos dois alertas diários e os votos comunitários de fontes oficiais.
 
 ### Tier free vs premium
 

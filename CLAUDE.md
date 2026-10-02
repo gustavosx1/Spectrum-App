@@ -91,8 +91,9 @@ Observação importante:
 - Fluxo 1 (`initial_check = false`): gera `canonical_title`, `summary` e claims para todos os artigos fundadores.
 - Fluxo 2 (`initial_check = true`): gera claims apenas para novos artigos do tópico.
 - Em ambos os prompts, existe instrução explícita para ignorar divergências de data de publicação e tratar como contexto de notícia recente do mesmo dia.
-- O Celery Beat envia, a cada seis horas, somente o título do tópico publicado
-	com maior cobertura na janela; não há push individual quando um tópico vira hot.
+- O Celery Beat envia no máximo dois alertas por dia (09:00 e 18:00, horário de
+	São Paulo) para o tópico publicado com maior cobertura entre veículos distintos
+	na janela de 12 horas; não há push individual quando um tópico vira hot.
 - O feed restringe a exposição de tópicos a conteúdos com no máximo 90 dias.
 
 ### API (FastAPI)

@@ -62,7 +62,8 @@ class Settings(BaseSettings):
     push_active_column: str = "is_active"
     push_locale: str = "pt-BR"
     push_ai_title_version: str = "gpt-title-v2"
-    push_digest_lookback_hours: int = 6
+    push_digest_lookback_hours: int = 12
+    push_digest_min_distinct_outlets: int = 2
 
     model_config = {"env_file": ".env"}
 

@@ -7,11 +7,15 @@ from urllib.parse import urlparse
 
 from fastapi import APIRouter, HTTPException, Query, Request
 
+from api.middleware.auth import get_user_id
 from api.models.schemas import (
     ArticleResponse,
     ArticlePreview,
     BlindspotResponse,
+    OfficialSourcePollResponse,
     OfficialSourceResponse,
+    OfficialSourceVoteRequest,
+    OfficialSourceVoteResponse,
     OutletSummary,
     TopicFreeDetail,
     TopicDetail,
@@ -70,6 +74,39 @@ def _official_source(raw_source: object) -> OfficialSourceResponse:
     label = raw_source.get("label") if isinstance(raw_source.get("label"), str) else "Nenhuma fonte oficial aplicável"
     scope = raw_source.get("scope") if isinstance(raw_source.get("scope"), str) else ""
     return OfficialSourceResponse(status=status, label=label, sources=sources, scope=scope)
+
+
+def _official_source_poll(db, topic_id: str, user_id: str) -> OfficialSourcePollResponse:
+    """Return only an aggregate percentage; never expose vote totals to clients."""
+    votes = (
+        db.table("official_source_votes")
+        .select("user_id, vote")
+        .eq("topic_id", topic_id)
+        .execute()
+    ).data or []
+
+    normalized_votes = [
+        vote
+        for vote in votes
+        if isinstance(vote, dict) and vote.get("vote") in {"accurate", "inaccurate"}
+    ]
+    agreement_percentage = None
+    if normalized_votes:
+        accurate_votes = sum(vote["vote"] == "accurate" for vote in normalized_votes)
+        agreement_percentage = round(accurate_votes * 100 / len(normalized_votes))
+
+    user_vote = next(
+        (
+            vote["vote"]
+            for vote in normalized_votes
+            if vote.get("user_id") == user_id
+        ),
+        None,
+    )
+    return OfficialSourcePollResponse(
+        agreement_percentage=agreement_percentage,
+        user_vote=user_vote,
+    )
 
 
 # Mapeamento de score político → lean
@@ -356,6 +393,49 @@ def search_topics(
     return _list_topics(db, limit=limit, offset=offset, search=q.strip())
 
 
+@router.put(
+    "/topics/{topic_id}/official-source-vote",
+    response_model=OfficialSourceVoteResponse,
+)
+def vote_on_official_source(
+    topic_id: str,
+    body: OfficialSourceVoteRequest,
+    request: Request,
+) -> OfficialSourceVoteResponse:
+    """Save or replace the current user's vote for a displayed official source."""
+    db = get_client()
+    require_premium(request)
+
+    topic = (
+        db.table("topics")
+        .select("id, official_source")
+        .eq("id", topic_id)
+        .eq("is_hot", True)
+        .eq("initial_check", True)
+        .gte("created_at", _news_content_cutoff())
+        .single()
+        .execute()
+    ).data
+    if not topic:
+        raise HTTPException(status_code=404, detail="Tópico não encontrado")
+
+    if not _official_source(topic.get("official_source")).sources:
+        raise HTTPException(status_code=409, detail="Este tópico não tem uma fonte oficial disponível para avaliar")
+
+    user_id = get_user_id(request)
+    db.table("official_source_votes").upsert(
+        {
+            "topic_id": topic_id,
+            "user_id": user_id,
+            "vote": body.vote,
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+        },
+        on_conflict="topic_id,user_id",
+    ).execute()
+
+    return OfficialSourceVoteResponse(poll=_official_source_poll(db, topic_id, user_id))
+
+
 @router.get("/topics/{topic_id}", response_model=TopicDetail)
 def get_topic(topic_id: str, request: Request):
     """
@@ -442,7 +522,11 @@ def get_topic(topic_id: str, request: Request):
     blindspot = _build_blindspot(articles_raw, outlets_map)
 
     return TopicDetail(
-        **{**topic, "official_source": _official_source(topic.get("official_source"))},
+        **{
+            **topic,
+            "official_source": _official_source(topic.get("official_source")),
+            "official_source_poll": _official_source_poll(db, topic_id, get_user_id(request)),
+        },
         blindspot=blindspot,
         articles_left=grouped["left"],
         articles_center_left=grouped["center_left"],

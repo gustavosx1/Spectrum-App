@@ -6,6 +6,7 @@ import logging
 import unicodedata
 from datetime import datetime, timedelta, timezone
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
+from zoneinfo import ZoneInfo
 
 import httpx
 
@@ -22,7 +23,7 @@ from worker.utils.official_sources import (
 
 """
 Task cluster — analisa tópicos quando atingem o threshold (is_hot = true) e
-envia o tópico com maior cobertura a cada seis horas.
+envia até dois resumos diários do tópico com maior cobertura entre veículos.
 
 Dois fluxos distintos:
 ─────────────────────────────────────────────────────────────────────
@@ -44,6 +45,7 @@ PUSH_TYPE_COVERAGE_DIGEST = "COVERAGE_DIGEST"
 PUSH_TARGET_SCREEN = "TopicDetail"
 PUSH_FALLBACK_SCREEN = "Premium"
 EXPO_MAX_BATCH_SIZE = 100
+PUSH_DIGEST_TIMEZONE = ZoneInfo("America/Sao_Paulo")
 ALLOWED_VERDICTS = {"true", "partial", "false", "unverifiable"}
 ALLOWED_CATEGORIES = {"Política", "Economia", "Tecnologia", "Mundo", "Esportes"}
 FALSE_VERDICT_MIN_CONFIDENCE = 0.9
@@ -107,7 +109,7 @@ def process_hot_topic(self, topic_id: str, expected_run_at: str | None = None) -
     name="worker.tasks.cluster.send_coverage_digest",
 )
 def send_coverage_digest(self) -> None:
-    """Envia o único tópico mais coberto em cada janela de seis horas."""
+    """Envia o tópico com maior cobertura em veículos em uma das duas janelas diárias."""
     try:
         asyncio.run(_send_coverage_digest())
     except Exception as exc:
@@ -1166,7 +1168,7 @@ async def _call_gemini(
 
 
 def _fetch_most_covered_topic(db) -> dict | None:
-    """Retorna o tópico publicado com mais matérias na janela atual."""
+    """Retorna o tópico publicado com maior cobertura em veículos distintos."""
     cutoff = (
         datetime.now(timezone.utc)
         .replace(microsecond=0)
@@ -1174,16 +1176,23 @@ def _fetch_most_covered_topic(db) -> dict | None:
     ).isoformat()
     recent_articles = (
         db.table("articles")
-        .select("topic_id, published_at")
+        .select("topic_id, outlet_id, published_at")
         .gte("published_at", cutoff)
         .execute()
     ).data or []
 
-    coverage_by_topic: dict[str, int] = {}
+    outlets_by_topic: dict[str, set[str]] = {}
     for article in recent_articles:
         topic_id = article.get("topic_id")
-        if topic_id:
-            coverage_by_topic[topic_id] = coverage_by_topic.get(topic_id, 0) + 1
+        outlet_id = article.get("outlet_id")
+        if topic_id and outlet_id:
+            outlets_by_topic.setdefault(topic_id, set()).add(str(outlet_id))
+
+    coverage_by_topic = {
+        topic_id: len(outlets)
+        for topic_id, outlets in outlets_by_topic.items()
+        if len(outlets) >= settings.push_digest_min_distinct_outlets
+    }
 
     if not coverage_by_topic:
         return None
@@ -1200,7 +1209,7 @@ def _fetch_most_covered_topic(db) -> dict | None:
     if not topics:
         return None
 
-    return max(
+    most_covered = max(
         topics,
         key=lambda topic: (
             coverage_by_topic.get(topic["id"], 0),
@@ -1208,6 +1217,7 @@ def _fetch_most_covered_topic(db) -> dict | None:
             topic.get("created_at") or "",
         ),
     )
+    return {**most_covered, "coverage_outlet_count": coverage_by_topic[most_covered["id"]]}
 
 
 def _digest_window_start() -> datetime:
@@ -1217,8 +1227,12 @@ def _digest_window_start() -> datetime:
 
 
 def _build_coverage_digest_body(topic: dict) -> str:
-    coverage = int(topic.get("article_count") or 0)
-    return f"Tema com maior cobertura: {coverage} matérias nas últimas seis horas."
+    coverage = int(topic.get("coverage_outlet_count") or topic.get("article_count") or 0)
+    outlet_label = "veículo" if coverage == 1 else "veículos"
+    return (
+        f"Tema com maior cobertura: {coverage} {outlet_label} nas últimas "
+        f"{settings.push_digest_lookback_hours} horas."
+    )
 
 
 def _build_coverage_digest_push_payload(topic: dict) -> dict:
@@ -1394,6 +1408,55 @@ def _mark_tokens_inactive(db, tokens: set[str]) -> None:
         )
 
 
+def _digest_delivery_slot(now: datetime | None = None) -> tuple[str, str]:
+    """Return one of the two São Paulo daily slots used by the Beat schedule."""
+    local_now = (now or datetime.now(timezone.utc)).astimezone(PUSH_DIGEST_TIMEZONE)
+    return local_now.date().isoformat(), "morning" if local_now.hour < 14 else "evening"
+
+
+def _claim_digest_delivery_slot(db, topic_id: str, dedup_key: str) -> bool:
+    """Atomically reserve a daily slot before external dispatch.
+
+    The database's unique constraint is the final guard when Beat is started
+    twice or a task is invoked manually. A failed reservation is treated as
+    already handled to favor the two-notification cap over duplicate alerts.
+    """
+    delivery_date, delivery_slot = _digest_delivery_slot()
+    try:
+        db.table("push_digest_deliveries").insert(
+            {
+                "delivery_date": delivery_date,
+                "delivery_slot": delivery_slot,
+                "topic_id": topic_id,
+                "dedup_key": dedup_key,
+                "status": "pending",
+            }
+        ).execute()
+        return True
+    except Exception as exc:
+        logger.warning(
+            "Resumo de cobertura não enviado: slot %s/%s já reservado ou indisponível: %s",
+            delivery_date,
+            delivery_slot,
+            exc,
+        )
+        return False
+
+
+def _update_digest_delivery_status(
+    db,
+    dedup_key: str,
+    status: str,
+    error_message: str | None = None,
+) -> None:
+    update = {"status": status}
+    if status == "sent":
+        update["sent_at"] = datetime.now(timezone.utc).isoformat()
+    if error_message:
+        update["error_message"] = error_message[:500]
+    db.table("push_digest_deliveries").update(update).eq("dedup_key", dedup_key).execute()
+
+
 async def _dispatch_push_expo(db, payload: dict) -> None:
     tokens = _fetch_active_push_tokens(db)
     if not tokens:
@@ -1444,8 +1507,19 @@ async def _send_coverage_digest() -> None:
         logger.warning("Resumo de cobertura cancelado: %s", reason)
         return
 
-    if settings.push_provider.lower() == "expo":
-        await _dispatch_push_expo(db, payload)
-    else:
-        await _dispatch_push(payload)
-    logger.info("Resumo de cobertura enviado: %s", payload["data"]["dedupKey"])
+    dedup_key = payload["data"]["dedupKey"]
+    if not _claim_digest_delivery_slot(db, topic["id"], dedup_key):
+        return
+
+    try:
+        if settings.push_provider.lower() == "expo":
+            await _dispatch_push_expo(db, payload)
+        else:
+            await _dispatch_push(payload)
+    except Exception as exc:
+        _update_digest_delivery_status(db, dedup_key, "failed", str(exc))
+        logger.exception("Resumo de cobertura falhou no envio: %s", dedup_key)
+        return
+
+    _update_digest_delivery_status(db, dedup_key, "sent")
+    logger.info("Resumo de cobertura enviado: %s", dedup_key)

@@ -820,11 +820,11 @@ def test_fetch_most_covered_topic_uses_recent_article_coverage():
     db = FakeDB(
         {
             "articles": [
-                {"topic_id": "topic-1"},
-                {"topic_id": "topic-1"},
-                {"topic_id": "topic-2"},
-                {"topic_id": "topic-2"},
-                {"topic_id": "topic-2"},
+                {"topic_id": "topic-1", "outlet_id": "outlet-a"},
+                {"topic_id": "topic-1", "outlet_id": "outlet-a"},
+                {"topic_id": "topic-2", "outlet_id": "outlet-a"},
+                {"topic_id": "topic-2", "outlet_id": "outlet-b"},
+                {"topic_id": "topic-2", "outlet_id": "outlet-c"},
             ],
             "topics": topics,
         }
@@ -832,9 +832,9 @@ def test_fetch_most_covered_topic_uses_recent_article_coverage():
 
     result = cluster._fetch_most_covered_topic(db)
 
-    assert result == topics[1]
+    assert result == {**topics[1], "coverage_outlet_count": 3}
     assert any(call[0] == "gte" and call[1][0] == "published_at" for call in db.calls)
-    assert ("in_", ("id", ["topic-1", "topic-2"]), {}) in db.calls
+    assert ("in_", ("id", ["topic-2"]), {}) in db.calls
 
 
 def test_build_coverage_digest_push_payload_contract_v1_fields():
@@ -843,7 +843,7 @@ def test_build_coverage_digest_push_payload_contract_v1_fields():
     )
 
     assert payload["notification"]["title"] == "Titulo IA"
-    assert payload["notification"]["body"] == "Tema com maior cobertura: 8 matérias nas últimas seis horas."
+    assert payload["notification"]["body"] == "Tema com maior cobertura: 8 veículos nas últimas 12 horas."
     assert payload["data"]["schemaVersion"] == "1"
     assert payload["data"]["type"] == "COVERAGE_DIGEST"
     assert payload["data"]["topicId"] == "topic-abc"
@@ -871,6 +871,14 @@ def test_fetch_active_push_tokens_deduplicates_and_skips_empty():
     assert tokens == ["ExponentPushToken[a]", "ExponentPushToken[b]"]
 
 
+def test_digest_delivery_slot_has_only_morning_and_evening_windows():
+    morning = datetime(2026, 10, 2, 12, tzinfo=timezone.utc)
+    evening = datetime(2026, 10, 2, 22, tzinfo=timezone.utc)
+
+    assert cluster._digest_delivery_slot(morning) == ("2026-10-02", "morning")
+    assert cluster._digest_delivery_slot(evening) == ("2026-10-02", "evening")
+
+
 def test_build_expo_messages_maps_contract_payload():
     payload = cluster._build_coverage_digest_push_payload(
         {"id": "topic-1", "canonical_title": "Titulo IA", "article_count": 3}
@@ -879,7 +887,7 @@ def test_build_expo_messages_maps_contract_payload():
 
     assert messages[0]["to"] == "ExponentPushToken[a]"
     assert messages[0]["title"] == "Titulo IA"
-    assert messages[0]["body"] == "Tema com maior cobertura: 3 matérias nas últimas seis horas."
+    assert messages[0]["body"] == "Tema com maior cobertura: 3 veículos nas últimas 12 horas."
     assert messages[0]["data"]["type"] == "COVERAGE_DIGEST"
 
 

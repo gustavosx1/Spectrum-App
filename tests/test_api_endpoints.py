@@ -358,6 +358,27 @@ def test_get_topic_endpoint_returns_grouped_articles(client):
         "sources": ["https://www.gov.br/exemplo"],
         "scope": "Consulta de exemplo",
     }
+    assert body["official_source_poll"] == {
+        "agreement_percentage": None,
+        "user_vote": None,
+    }
+
+
+def test_vote_on_official_source_returns_percentage_without_raw_vote_counts(client):
+    response = client.put(
+        "/feed/topics/topic-1/official-source-vote",
+        json={"vote": "accurate"},
+        headers={"Authorization": "Bearer token"},
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "poll": {
+            "agreement_percentage": 100,
+            "user_vote": "accurate",
+        }
+    }
+    assert "total_votes" not in response.text
 
 
 def test_topic_detail_rejects_draft_topics(client):

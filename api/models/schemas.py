@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional
+from typing import Literal, Optional
 from pydantic import BaseModel, Field
 
 
@@ -30,6 +30,19 @@ class OfficialSourceResponse(BaseModel):
     label: str
     sources: list[str] = Field(default_factory=list)
     scope: str = ""
+
+
+class OfficialSourcePollResponse(BaseModel):
+    agreement_percentage: Optional[int] = Field(default=None, ge=0, le=100)
+    user_vote: Optional[Literal["accurate", "inaccurate"]] = None
+
+
+class OfficialSourceVoteRequest(BaseModel):
+    vote: Literal["accurate", "inaccurate"]
+
+
+class OfficialSourceVoteResponse(BaseModel):
+    poll: OfficialSourcePollResponse
 
 
 class ArticleResponse(BaseModel):
@@ -68,6 +81,7 @@ class TopicListItem(BaseModel):
 
 class TopicDetail(TopicListItem):
     official_source: OfficialSourceResponse
+    official_source_poll: OfficialSourcePollResponse
     articles_left: list[ArticleResponse] = Field(default_factory=list)
     articles_center_left: list[ArticleResponse] = Field(default_factory=list)
     articles_center: list[ArticleResponse] = Field(default_factory=list)
